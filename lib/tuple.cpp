@@ -18,6 +18,10 @@ namespace rt {
         return Tuple{x - tuple.x, y - tuple.y, z - tuple.z, w - tuple.w};
     }
 
+    Tuple Tuple::operator-() const {
+        return Tuple{-x, -y, -z, -w};
+    }
+
     Tuple Tuple::point(double x, double y, double z) {
         return {x, y, z, 1.0};
     }

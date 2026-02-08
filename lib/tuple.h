@@ -1,4 +1,5 @@
 #pragma once
+#include <ostream>
 #include <tuple>
 
 namespace rt {
@@ -12,9 +13,11 @@ namespace rt {
 
         [[nodiscard]] bool is_vector() const;
 
-        Tuple operator+(const Tuple & tuple) const;
+        Tuple operator+(const Tuple &tuple) const;
 
-        Tuple operator-(const Tuple & tuple) const;
+        Tuple operator-(const Tuple &tuple) const;
+
+        Tuple operator-() const;
 
         static Tuple point(double x, double y, double z);
 
@@ -27,5 +30,17 @@ namespace rt {
         friend bool operator!=(const Tuple &lhs, const Tuple &rhs) {
             return !(lhs == rhs);
         }
+
+        friend std::ostream &operator<<(std::ostream &os, const Tuple &obj) {
+            return os
+                   << "(" << obj.x
+                   << ", " << obj.y
+                   << ", " << obj.z
+                   << ", " << obj.w
+                   << ")";
+        }
     };
+
+    using Point = Tuple;
+    using Vector = Tuple;
 }

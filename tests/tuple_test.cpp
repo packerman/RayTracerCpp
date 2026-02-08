@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <tuple>
 #include "tuple.h"
 
 namespace rt {
@@ -38,9 +39,31 @@ namespace rt {
         EXPECT_EQ(a1 + a2, Tuple(1, 1, 6, 1));
     }
 
-    TEST(TupleTest, SubtractingTuples) {
-        const auto p1 = Tuple::point(3, 2, 1);
-        const auto p2 = Tuple::point(5, 6, 7);
-        EXPECT_EQ(p1 - p2, Tuple::vector(-2, -4, -6));
+    class TupleSubtractTest : public ::testing::TestWithParam<std::tuple<Tuple, Tuple, Tuple> > {
+    };
+
+    TEST_P(TupleSubtractTest, SubtractingTuples) {
+        auto [a, b, expected] = GetParam();
+        EXPECT_EQ(a - b, expected);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        SubtractSuite,
+        TupleSubtractTest,
+        ::testing::Values(
+            std::make_tuple(Tuple::point(3, 2, 1), Tuple::point(5, 6, 7),
+                Tuple::vector(-2, -4, -6)),
+            std::make_tuple(Tuple::point(3, 2, 1), Tuple::vector(5, 6, 7),
+                Tuple::point(-2, -4, -6)),
+            std::make_tuple(Tuple::vector(3, 2, 1), Tuple::vector(5, 6, 7),
+                Tuple::vector(-2, -4, -6)),
+            std::make_tuple(Tuple::vector(0, 0, 0), Tuple::vector(1, -2, 3),
+                Tuple::vector(-1, 2, -3))
+        )
+    );
+
+    TEST(TupleTest, NegatingTuple) {
+        const Tuple a{1, -2, 3, -4};
+        EXPECT_EQ(-a, Tuple(-1, 2, -3, 4));
     }
 }

@@ -31,5 +31,16 @@ namespace rt {
         const auto p = Tuple::vector(4, -4, 3);
         EXPECT_EQ(p, Tuple(4, -4, 3, 0));
     }
-}
 
+    TEST(TupleTest, AddingTuples) {
+        constexpr Tuple a1{3, -2, 5, 1};
+        constexpr Tuple a2{-2, 3, 1, 0};
+        EXPECT_EQ(a1 + a2, Tuple(1, 1, 6, 1));
+    }
+
+    TEST(TupleTest, SubtractingTuples) {
+        const auto p1 = Tuple::point(3, 2, 1);
+        const auto p2 = Tuple::point(5, 6, 7);
+        EXPECT_EQ(p1 - p2, Tuple::vector(-2, -4, -6));
+    }
+}

@@ -1,7 +1,7 @@
 #include "Tuple.h"
+#include <cmath>
 
 namespace rt {
-
     bool Tuple::is_point() const {
         return w == 1.0;
     }
@@ -24,6 +24,14 @@ namespace rt {
 
     Tuple Tuple::operator*(const double s) const {
         return Tuple{x * s, y * s, z * s, w * s};
+    }
+
+    Tuple Tuple::operator/(const double s) const {
+        return Tuple{x / s, y / s, z / s, w / s};
+    }
+
+    double Tuple::magnitude() const {
+        return std::sqrt(x * x + y * y + z * z + w * w);
     }
 
     Tuple Tuple::point(const double x, const double y, const double z) {

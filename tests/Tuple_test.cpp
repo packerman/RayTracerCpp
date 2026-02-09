@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <tuple>
+#include <cmath>
 #include "Tuple.h"
 
 namespace rt {
@@ -63,7 +64,7 @@ namespace rt {
     );
 
     TEST(TupleTest, NegatingTuple) {
-        const Tuple a{1, -2, 3, -4};
+        constexpr Tuple a{1, -2, 3, -4};
         EXPECT_EQ(-a, Tuple(-1, 2, -3, 4));
     }
 
@@ -81,6 +82,31 @@ namespace rt {
         ::testing::Values(
             std::make_tuple(Tuple(1, -2, 3, -4), 3.5, Tuple(3.5, -7, 10.5, -14)),
             std::make_tuple(Tuple(1, -2, 3, -4), 0.5, Tuple(0.5, -1, 1.5, -2))
+        )
+    );
+
+    TEST(TupleTest, DividingTuples) {
+        constexpr Tuple a{1, -2, 3, -4};
+        EXPECT_EQ(a / 2, Tuple(0.5, -1, 1.5, -2));
+    }
+
+    class TupleMagnitudeTest : public ::testing::TestWithParam<std::tuple<Tuple, double>> {
+    };
+
+    TEST_P(TupleMagnitudeTest, TupleMagnitude) {
+        auto [a, expected] = GetParam();
+        EXPECT_EQ(a.magnitude(), expected);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        MagnitudeSuite,
+        TupleMagnitudeTest,
+        ::testing::Values(
+            std::make_tuple(Tuple::vector(1, 0, 0), 1),
+            std::make_tuple(Tuple::vector(0, 1, 0), 1),
+            std::make_tuple(Tuple::vector(0, 0, 1), 1),
+            std::make_tuple(Tuple::vector(1, 2, 3), std::sqrt(14)),
+            std::make_tuple(Tuple::vector(-1, -2, -3), std::sqrt(14))
         )
     );
 }

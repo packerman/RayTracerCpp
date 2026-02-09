@@ -21,6 +21,10 @@ namespace rt {
 
         Tuple operator*(double s) const;
 
+        Tuple operator/(double s) const;
+
+        [[nodiscard]] double magnitude() const;
+
         static Tuple point(double x, double y, double z);
 
         static Tuple vector(double x, double y, double z);

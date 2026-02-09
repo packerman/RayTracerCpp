@@ -1,4 +1,4 @@
-#include "tuple.h"
+#include "Tuple.h"
 
 namespace rt {
 
@@ -22,11 +22,15 @@ namespace rt {
         return Tuple{-x, -y, -z, -w};
     }
 
-    Tuple Tuple::point(double x, double y, double z) {
+    Tuple Tuple::operator*(const double s) const {
+        return Tuple{x * s, y * s, z * s, w * s};
+    }
+
+    Tuple Tuple::point(const double x, const double y, const double z) {
         return {x, y, z, 1.0};
     }
 
-    Tuple Tuple::vector(double x, double y, double z) {
+    Tuple Tuple::vector(const double x, const double y, const double z) {
         return {x, y, z, 0.0};
     }
 }

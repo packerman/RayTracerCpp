@@ -19,6 +19,8 @@ namespace rt {
 
         Tuple operator-() const;
 
+        Tuple operator*(double s) const;
+
         static Tuple point(double x, double y, double z);
 
         static Tuple vector(double x, double y, double z);

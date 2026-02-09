@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <tuple>
-#include "tuple.h"
+#include "Tuple.h"
 
 namespace rt {
     TEST(TupleTest, CreatingPointTuple) {
@@ -39,7 +39,7 @@ namespace rt {
         EXPECT_EQ(a1 + a2, Tuple(1, 1, 6, 1));
     }
 
-    class TupleSubtractTest : public ::testing::TestWithParam<std::tuple<Tuple, Tuple, Tuple> > {
+    class TupleSubtractTest : public ::testing::TestWithParam<std::tuple<Tuple, Tuple, Tuple>> {
     };
 
     TEST_P(TupleSubtractTest, SubtractingTuples) {
@@ -66,4 +66,21 @@ namespace rt {
         const Tuple a{1, -2, 3, -4};
         EXPECT_EQ(-a, Tuple(-1, 2, -3, 4));
     }
+
+    class TupleMultiplyTest : public ::testing::TestWithParam<std::tuple<Tuple, double, Tuple>> {
+    };
+
+    TEST_P(TupleMultiplyTest, MultiplyingTuples) {
+        auto [a, s, expected] = GetParam();
+        EXPECT_EQ(a * s, expected);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        MultiplySuite,
+        TupleMultiplyTest,
+        ::testing::Values(
+            std::make_tuple(Tuple(1, -2, 3, -4), 3.5, Tuple(3.5, -7, 10.5, -14)),
+            std::make_tuple(Tuple(1, -2, 3, -4), 0.5, Tuple(0.5, -1, 1.5, -2))
+        )
+    );
 }

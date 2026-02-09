@@ -12,7 +12,9 @@ add_executable(test_lib)
 
 target_sources(test_lib
         PRIVATE
-        tuple_test.cpp
+        Common.h
+        Common.cpp
+        Tuple_test.cpp
 )
 
 target_link_libraries(test_lib

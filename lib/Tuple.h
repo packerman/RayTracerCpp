@@ -25,6 +25,12 @@ namespace rt {
 
         [[nodiscard]] double magnitude() const;
 
+        [[nodiscard]] Tuple normalize() const;
+
+        [[nodiscard]] double dot(const Tuple& other) const;
+
+        [[nodiscard]] Tuple cross(const Tuple& other) const;
+
         static Tuple point(double x, double y, double z);
 
         static Tuple vector(double x, double y, double z);

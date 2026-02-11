@@ -19,7 +19,7 @@ target_sources(test_lib
 
 target_link_libraries(test_lib
         PRIVATE
-        lib
+        ray_tracer
         GTest::gtest_main
 )
 

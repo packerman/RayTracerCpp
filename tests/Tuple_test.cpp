@@ -1,7 +1,9 @@
-#include <gtest/gtest.h>
-#include <tuple>
-#include <cmath>
 #include "Tuple.h"
+
+#include <cmath>
+#include <tuple>
+#include <gtest/gtest.h>
+
 #include "Common.h"
 
 namespace rt {

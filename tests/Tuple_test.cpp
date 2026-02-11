@@ -28,12 +28,12 @@ namespace rt {
     }
 
     TEST(TupleTest, PointMethod) {
-        const auto p = Tuple::point(4, -4, 3);
+        const auto p = point(4, -4, 3);
         EXPECT_EQ(p, Tuple(4, -4, 3, 1));
     }
 
     TEST(TupleTest, VectorMethod) {
-        const auto p = Tuple::vector(4, -4, 3);
+        const auto p = vector(4, -4, 3);
         EXPECT_EQ(p, Tuple(4, -4, 3, 0));
     }
 
@@ -55,14 +55,14 @@ namespace rt {
         SubtractSuite,
         TupleSubtractTest,
         ::testing::Values(
-            std::make_tuple(Tuple::point(3, 2, 1), Tuple::point(5, 6, 7),
-                Tuple::vector(-2, -4, -6)),
-            std::make_tuple(Tuple::point(3, 2, 1), Tuple::vector(5, 6, 7),
-                Tuple::point(-2, -4, -6)),
-            std::make_tuple(Tuple::vector(3, 2, 1), Tuple::vector(5, 6, 7),
-                Tuple::vector(-2, -4, -6)),
-            std::make_tuple(Tuple::vector(0, 0, 0), Tuple::vector(1, -2, 3),
-                Tuple::vector(-1, 2, -3))
+            std::make_tuple(point(3, 2, 1), point(5, 6, 7),
+                vector(-2, -4, -6)),
+            std::make_tuple(point(3, 2, 1), vector(5, 6, 7),
+                point(-2, -4, -6)),
+            std::make_tuple(vector(3, 2, 1), vector(5, 6, 7),
+                vector(-2, -4, -6)),
+            std::make_tuple(vector(0, 0, 0), vector(1, -2, 3),
+                vector(-1, 2, -3))
         )
     );
 
@@ -105,11 +105,11 @@ namespace rt {
         MagnitudeSuite,
         TupleMagnitudeTest,
         ::testing::Values(
-            std::make_tuple(Tuple::vector(1, 0, 0), 1),
-            std::make_tuple(Tuple::vector(0, 1, 0), 1),
-            std::make_tuple(Tuple::vector(0, 0, 1), 1),
-            std::make_tuple(Tuple::vector(1, 2, 3), std::sqrt(14)),
-            std::make_tuple(Tuple::vector(-1, -2, -3), std::sqrt(14))
+            std::make_tuple(vector(1, 0, 0), 1),
+            std::make_tuple(vector(0, 1, 0), 1),
+            std::make_tuple(vector(0, 0, 1), 1),
+            std::make_tuple(vector(1, 2, 3), std::sqrt(14)),
+            std::make_tuple(vector(-1, -2, -3), std::sqrt(14))
         )
     );
 
@@ -127,20 +127,20 @@ namespace rt {
         MagnitudeSuite,
         TupleNormalizeTest,
         ::testing::Values(
-            std::make_tuple(Tuple::vector(4, 0, 0), Tuple::vector(1, 0, 0)),
-            std::make_tuple(Tuple::vector(1, 2, 3), Tuple::vector(0.26726, 0.53452, 0.80178))
+            std::make_tuple(vector(4, 0, 0), vector(1, 0, 0)),
+            std::make_tuple(vector(1, 2, 3), vector(0.26726, 0.53452, 0.80178))
         )
     );
 
     TEST(TupleTest, NormalizingTuple) {
-        const auto v = Tuple::vector(1, 20, 3);
+        const auto v = vector(1, 20, 3);
         const auto norm = v.normalize();
         EXPECT_EQ(norm.magnitude(), 1.0);
     }
 
     TEST(TupleTest, DotProduct) {
-        const auto a = Tuple::vector(1, 2, 3);
-        const auto b = Tuple::vector(2, 3, 4);
+        const auto a = vector(1, 2, 3);
+        const auto b = vector(2, 3, 4);
         EXPECT_EQ(a.dot(b), 20.0);
     }
 
@@ -156,10 +156,40 @@ namespace rt {
         CrossProductSuite,
         TupleCrossProductTest,
         ::testing::Values(
-            std::make_tuple(Tuple::vector(1, 2, 3), Tuple::vector(2, 3, 4),
-                Tuple::vector(-1, 2, -1)),
-            std::make_tuple(Tuple::vector(2, 3, 4), Tuple::vector(1, 2, 3),
-                Tuple::vector(1, -2, 1))
+            std::make_tuple(vector(1, 2, 3), vector(2, 3, 4),
+                vector(-1, 2, -1)),
+            std::make_tuple(vector(2, 3, 4), vector(1, 2, 3),
+                vector(1, -2, 1))
         )
     );
+
+    TEST(ColorTest, CreatingColor) {
+        const auto c = color(-0.5, 0.4, 1.7);
+        EXPECT_EQ(c.red(), -0.5);
+        EXPECT_EQ(c.green(), 0.4);
+        EXPECT_EQ(c.blue(), 1.7);
+    }
+
+    TEST(ColorTest, AddingColors) {
+        const auto c1 = color(0.9, 0.6, 0.75);
+        const auto c2 = color(0.7, 0.1, 0.25);
+        EXPECT_EQ(c1 + c2, color(1.6, 0.7, 1.0));
+    }
+
+    TEST(ColorTest, SubtractingColors) {
+        const auto c1 = color(0.9, 0.6, 0.75);
+        const auto c2 = color(0.7, 0.1, 0.25);
+        EXPECT_TRUE(approx_equals(c1 - c2, color(0.2, 0.5, 0.5), machine_epsilon));
+    }
+
+    TEST(ColorTest, MultiplyingByScalar) {
+        const auto c = color(0.2, 0.3, 0.4);
+        EXPECT_EQ(c * 2, color(0.4, 0.6, 0.8));
+    }
+
+    TEST(ColorTest, MultiplyingColors) {
+        const auto c1 = color(1, 0.2, 0.4);
+        const auto c2 = color(0.9, 1, 0.1);
+        EXPECT_TRUE(approx_equals(c1*c2, color(0.9, 0.2, 0.04), machine_epsilon));
+    }
 }

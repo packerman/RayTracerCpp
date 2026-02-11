@@ -26,6 +26,10 @@ namespace rt {
         return Tuple{x * s, y * s, z * s, w * s};
     }
 
+    Tuple Tuple::operator*(const Tuple &tuple) const {
+        return Tuple{x * tuple.x, y * tuple.y, z * tuple.z, w * tuple.w};
+    }
+
     Tuple Tuple::operator/(const double s) const {
         return Tuple{x / s, y / s, z / s, w / s};
     }
@@ -45,16 +49,20 @@ namespace rt {
 
     Tuple Tuple::cross(const Tuple &other) const {
         return vector(
-            y*other.z - z*other.y,
-            z*other.x - x*other.z,
-            x*other.y - y*other.x);
+            y * other.z - z * other.y,
+            z * other.x - x * other.z,
+            x * other.y - y * other.x);
     }
 
-    Tuple Tuple::point(const double x, const double y, const double z) {
+    Point point(const double x, const double y, const double z) {
         return {x, y, z, 1.0};
     }
 
-    Tuple Tuple::vector(const double x, const double y, const double z) {
+    Vector vector(const double x, const double y, const double z) {
         return {x, y, z, 0.0};
+    }
+
+    Color color(const double red, const double green, const double blue) {
+        return Tuple{red, green, blue, 0.0};
     }
 }

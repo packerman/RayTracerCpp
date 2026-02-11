@@ -21,6 +21,8 @@ namespace rt {
 
         Tuple operator*(double s) const;
 
+        Tuple operator*(const Tuple& tuple) const;
+
         Tuple operator/(double s) const;
 
         [[nodiscard]] double magnitude() const;
@@ -30,10 +32,6 @@ namespace rt {
         [[nodiscard]] double dot(const Tuple& other) const;
 
         [[nodiscard]] Tuple cross(const Tuple& other) const;
-
-        static Tuple point(double x, double y, double z);
-
-        static Tuple vector(double x, double y, double z);
 
         friend bool operator==(const Tuple &lhs, const Tuple &rhs) {
             return std::tie(lhs.x, lhs.y, lhs.z, lhs.w) == std::tie(rhs.x, rhs.y, rhs.z, rhs.w);
@@ -51,8 +49,29 @@ namespace rt {
                    << ", " << obj.w
                    << ")";
         }
+
+        [[nodiscard]] double red() const {
+            return x;
+        }
+
+        [[nodiscard]] double green() const {
+            return y;
+        }
+
+        [[nodiscard]] double blue() const {
+            return z;
+        }
     };
 
     using Point = Tuple;
+
+    Point point(double x, double y, double z);
+
     using Vector = Tuple;
+
+    Vector vector(double x, double y, double z);
+
+    using Color = Tuple;
+
+    Color color(double red, double green, double blue);
 }

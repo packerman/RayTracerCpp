@@ -19,8 +19,8 @@ Projectile tick(const Environment &env, const Projectile &proj) {
 }
 
 int main() {
-    auto p = Projectile(rt::Tuple::point(0, 1, 0), rt::Tuple::vector(1, 1, 0).normalize());
-    const auto e = Environment(rt::Tuple::vector(0, -0.1, 0), rt::Tuple::vector(-0.01, 0, 0));
+    auto p = Projectile(rt::point(0, 1, 0), rt::vector(1, 1, 0).normalize());
+    const auto e = Environment(rt::vector(0, -0.1, 0), rt::vector(-0.01, 0, 0));
     size_t t = 0;
     while (p.position.y >= 0) {
         std::cout << t << ": " << p.position << "\n";

@@ -53,4 +53,32 @@ namespace rt {
         EXPECT_EQ(ppm_lines[5],
             "0 0 0 0 0 0 0 0 0 0 0 0 0 0 255");
     }
+
+    TEST(CanvasTest, SplittingLongLines) {
+        auto c = Canvas{10, 2};
+
+        for (auto i = 0; i < c.width(); ++i) {
+            for (auto j = 0; j < c.height(); ++j) {
+                c.write_pixel(i, j, color(1, 0.8, 0.6));
+            }
+        }
+        const auto ppm_lines = string_lines(to_ppm_string(c));
+
+        EXPECT_EQ(ppm_lines[3],
+            "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204");
+        EXPECT_EQ(ppm_lines[4],
+            "153 255 204 153 255 204 153 255 204 153 255 204 153");
+        EXPECT_EQ(ppm_lines[5],
+            "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204");
+        EXPECT_EQ(ppm_lines[6],
+            "153 255 204 153 255 204 153 255 204 153 255 204 153");
+    }
+
+    TEST(CanvasTest, NewlineAtThePPMEnd) {
+        const auto c = Canvas{5, 3};
+
+        const auto ppm = to_ppm_string(c);
+
+        EXPECT_EQ(ppm.back(), '\n');
+    }
 }

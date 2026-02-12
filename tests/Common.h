@@ -3,9 +3,13 @@
 #include <gtest/gtest.h>
 #include "Tuple.h"
 #include <limits>
+#include <vector>
+#include <string>
 
 constexpr auto machine_epsilon = std::numeric_limits<double>::epsilon();
 
 testing::AssertionResult approx_equals(double a, double b, double epsilon);
 
 testing::AssertionResult approx_equals(const rt::Tuple& a, const rt::Tuple& b, double epsilon);
+
+std::vector<std::string> string_lines(const std::string& s);

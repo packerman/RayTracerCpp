@@ -19,9 +19,16 @@ namespace rt {
             return height_;
         }
 
-        [[nodiscard]] const Color& pixel_at(const std::size_t i, const std::size_t j) const {
+        [[nodiscard]] const Color &pixel_at(const std::size_t i, const std::size_t j) const {
             return pixels_[j][i];
         }
+
+        void write_pixel(const std::size_t i, const std::size_t j, const Color &color) {
+            pixels_[j][i] = color;
+        }
+
+        void to_ppm(std::ostream &os) const;;
+
     private:
         std::size_t width_, height_;
         std::vector<std::vector<Color> > pixels_{};

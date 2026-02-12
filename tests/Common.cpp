@@ -1,5 +1,6 @@
 #include "Common.h"
 #include <cmath>
+#include <sstream>
 
 testing::AssertionResult approx_equals(const double a, const double b, const double epsilon) {
     if (std::abs(a - b) < epsilon) {
@@ -22,4 +23,14 @@ testing::AssertionResult approx_equals(const rt::Tuple &a, const rt::Tuple &b, c
         return result << " at Tuple::w";
     }
     return testing::AssertionSuccess();
+}
+
+std::vector<std::string> string_lines(const std::string &s) {
+    std::vector<std::string> result;
+    std::istringstream iss(s);
+    std::string line;
+    while (std::getline(iss, line)) {
+        result.push_back(line);
+    }
+    return result;
 }

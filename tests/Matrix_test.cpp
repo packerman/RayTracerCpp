@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <Matrix.h>
 
+#include "Common.h"
+
 namespace rt {
     TEST(MatrixTest, CreateMatrix4x4) {
         Matrix<4> m = {
@@ -238,4 +240,57 @@ namespace rt {
         EXPECT_EQ(a.cofactor(0, 3), 51);
         EXPECT_EQ(a.determinant(), -4071);
     }
+
+    TEST(MatrixTest, InvertibleMatrix) {
+        constexpr Matrix<4> a{
+            6, 4, 4, 4,
+            5, 5, 7, 6,
+            4, -9, 3, -7,
+            9, 1, 7, -6
+        };
+
+        EXPECT_EQ(a.determinant(), -2120);
+        EXPECT_TRUE(a.is_invertible());
+    }
+
+    TEST(MatrixTest, NotInvertibleMatrix) {
+        constexpr Matrix<4> a{
+            -4, 2, -2, -3,
+            9, 6, 2, 6,
+            0, -5, 1, -5,
+            0, 0, 0, 0
+        };
+
+        EXPECT_EQ(a.determinant(), 0);
+        EXPECT_FALSE(a.is_invertible());
+    }
+
+    constexpr auto epsilon = 0.00001;
+
+    class MatrixInverseTest : public ::testing::TestWithParam<std::tuple<Matrix<4>, Matrix<4> > > {
+    };
+
+    TEST_P(MatrixInverseTest, Matrix4x4Inverse) {
+        auto [a, expected] = GetParam();
+        EXPECT_TRUE(approx_equals(a.inverse(), expected, epsilon));
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        MatrixInverseSuite,
+        MatrixInverseTest,
+        ::testing::Values(
+            std::make_tuple(Matrix<4>({
+                    -5, 2, 6, -8,
+                    1, -5, 1, 8,
+                    7, 7, -6, -7,
+                    1, -3, 7, 4
+                    }),
+                Matrix<4>({
+                    0.21805, 0.45113, 0.24060, -0.04511,
+                    -0.80827, -1.45677, -0.44361, 0.52068,
+                    -0.07895, -0.22368, -0.05263, 0.19737,
+                    -0.52256, -0.81391, -0.30075, 0.30639
+                    }))
+        )
+    );
 }

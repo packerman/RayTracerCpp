@@ -103,10 +103,29 @@ namespace rt {
         }
 
         [[nodiscard]] constexpr double cofactor(const std::size_t i, const std::size_t j) const {
-            if (i + j % 2 == 0) {
+            if ((i + j) % 2 == 0) {
                 return minor(i, j);
             }
             return -minor(i, j);
+        }
+
+        [[nodiscard]] constexpr bool is_invertible() const {
+            return determinant() != 0.0;
+        }
+
+        [[nodiscard]] constexpr Matrix inverse() const {
+            const double det = determinant();
+            if (det == 0) {
+                throw std::runtime_error("Matrix is not invertible");
+            }
+            Matrix m;
+            for (std::size_t i = 0; i < N; ++i) {
+                for (std::size_t j = 0; j < N; ++j) {
+                    const auto c = cofactor(i, j);
+                    m(j, i) = c / det;
+                }
+            }
+            return m;
         }
 
         friend std::ostream &operator<<(std::ostream &os, const Matrix &obj) {

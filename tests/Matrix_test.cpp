@@ -210,4 +210,32 @@ namespace rt {
         EXPECT_EQ(a.minor(1, 0), 25);
         EXPECT_EQ(a.cofactor(1, 0), -25);
     }
+
+    TEST(MatrixTest, Matrix3x3Determinant) {
+        constexpr Matrix<3> a{
+            1, 2, 6,
+            -5, 8, -4,
+            2, 6, 4
+        };
+
+        EXPECT_EQ(a.cofactor(0, 0), 56);
+        EXPECT_EQ(a.cofactor(0, 1), 12);
+        EXPECT_EQ(a.cofactor(0, 2), -46);
+        EXPECT_EQ(a.determinant(), -196);
+    }
+
+    TEST(MatrixTest, Matrix4x4Determinant) {
+        constexpr Matrix<4> a{
+            -2, -8, 3, 5,
+            -3, 1, 7, 3,
+            1, 2, -9, 6,
+            -6, 7, 7, -9
+        };
+
+        EXPECT_EQ(a.cofactor(0, 0), 690);
+        EXPECT_EQ(a.cofactor(0, 1), 447);
+        EXPECT_EQ(a.cofactor(0, 2), 210);
+        EXPECT_EQ(a.cofactor(0, 3), 51);
+        EXPECT_EQ(a.determinant(), -4071);
+    }
 }

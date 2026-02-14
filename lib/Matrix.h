@@ -68,24 +68,34 @@ namespace rt {
         }
 
         [[nodiscard]] constexpr double determinant() const {
-            static_assert(N >= 2);
-            if (N == 2) {
+            if constexpr (N == 1) {
+                return data_[0];
+            } else if constexpr (N == 2) {
                 return data_[0] * data_[3] - data_[1] * data_[2];
+            } else {
+                double det = 0;
+                for (std::size_t j = 0; j < N; ++j) {
+                    det += data_[j] * cofactor(0, j);
+                }
+                return det;
             }
-            return 0;
         }
 
         [[nodiscard]] constexpr Matrix<N - 1> submatrix(const std::size_t k, const std::size_t l) const {
-            Storage<N - 1> data;
-            std::size_t p = 0;
-            for (std::size_t i = 0; i < N; ++i) {
-                for (std::size_t j = 0; j < N; ++j) {
-                    if (i != k && j != l) {
-                        data[p++] = data_[i * N + j];
+            if constexpr (N == 1) {
+                return Matrix<0>{};
+            } else {
+                Storage<N - 1> data;
+                std::size_t p = 0;
+                for (std::size_t i = 0; i < N; ++i) {
+                    for (std::size_t j = 0; j < N; ++j) {
+                        if (i != k && j != l) {
+                            data[p++] = data_[i * N + j];
+                        }
                     }
                 }
+                return Matrix<N - 1>(data);
             }
-            return Matrix<N - 1>(data);
         }
 
         [[nodiscard]] constexpr double minor(const std::size_t i, const std::size_t j) const {

@@ -16,6 +16,7 @@ target_sources(test_lib
         Common.cpp
         Tuple_test.cpp
         Canvas_test.cpp
+        Matrix_test.cpp
 )
 
 target_link_libraries(test_lib

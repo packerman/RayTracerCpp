@@ -6,6 +6,8 @@ target_sources(ray_tracer
         Tuple.cpp
         Canvas.h
         Canvas.cpp
+        Matrix.h
+        Matrix.cpp
 )
 
 target_include_directories(ray_tracer

@@ -1,6 +1,7 @@
 #pragma once
 #include <ostream>
 #include <tuple>
+#include <cmath>
 
 namespace rt {
     struct Tuple {
@@ -41,9 +42,14 @@ namespace rt {
             return Tuple{x / s, y / s, z / s, w / s};
         }
 
-        [[nodiscard]] double magnitude() const;
+        [[nodiscard]] constexpr double magnitude() const {
+            return std::sqrt(x * x + y * y + z * z + w * w);
+        }
 
-        [[nodiscard]] Tuple normalize() const;
+        [[nodiscard]] constexpr Tuple normalize() const {
+            const auto m = magnitude();
+            return Tuple{x / m, y / m, z / m, w / m};
+        }
 
         friend constexpr bool operator==(const Tuple &lhs, const Tuple &rhs) {
             return std::tie(lhs.x, lhs.y, lhs.z, lhs.w) == std::tie(rhs.x, rhs.y, rhs.z, rhs.w);

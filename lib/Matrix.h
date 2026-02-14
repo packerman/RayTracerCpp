@@ -88,6 +88,17 @@ namespace rt {
             return Matrix<N - 1>(data);
         }
 
+        [[nodiscard]] constexpr double minor(const std::size_t i, const std::size_t j) const {
+            return submatrix(i, j).determinant();
+        }
+
+        [[nodiscard]] constexpr double cofactor(const std::size_t i, const std::size_t j) const {
+            if (i + j % 2 == 0) {
+                return minor(i, j);
+            }
+            return -minor(i, j);
+        }
+
         friend std::ostream &operator<<(std::ostream &os, const Matrix &obj) {
             os << "|";
             for (std::size_t i = 0; i < N; ++i) {

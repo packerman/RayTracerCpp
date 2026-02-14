@@ -159,7 +159,7 @@ namespace rt {
     }
 
     TEST(MatrixTest, Matrix3x3Submatrix) {
-        constexpr  Matrix<3> a{
+        constexpr Matrix<3> a{
             1, 5, 0,
             -3, 2, 7,
             0, 6, -3
@@ -169,5 +169,45 @@ namespace rt {
                       -3, 2,
                       0, 6
                       }));
+    }
+
+    TEST(MatrixTest, Matrix4x4Submatrix) {
+        constexpr Matrix<4> a{
+            -6, 1, 1, 6,
+            -8, 5, 8, 6,
+            -1, 0, 8, 2,
+            -7, 1, -1, 1
+        };
+
+        EXPECT_EQ(a.submatrix(2, 1), Matrix<3>({
+                      -6, 1, 6,
+                      -8, 8, 6,
+                      -7, -1, 1
+                      }));
+    }
+
+    TEST(MatrixTest, Matrix3x3Minor) {
+        constexpr Matrix<3> a{
+            3, 5, 0,
+            2, -1, -7,
+            6, -1, 5
+        };
+        constexpr auto b = a.submatrix(1, 0);
+
+        EXPECT_EQ(b.determinant(), 25);
+        EXPECT_EQ(a.minor(1, 0), 25);
+    }
+
+    TEST(MatrixTest, Matrix3x3Cofactor) {
+        constexpr Matrix<3> a{
+            3, 5, 0,
+            2, -1, -7,
+            6, -1, 5
+        };
+
+        EXPECT_EQ(a.minor(0, 0), -12);
+        EXPECT_EQ(a.cofactor(0, 0), -12);
+        EXPECT_EQ(a.minor(1, 0), 25);
+        EXPECT_EQ(a.cofactor(1, 0), -25);
     }
 }

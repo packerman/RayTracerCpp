@@ -9,35 +9,47 @@ namespace rt {
         double z;
         double w;
 
-        [[nodiscard]] bool is_point() const;
+        [[nodiscard]] constexpr bool is_point() const {
+            return w == 1.0;
+        }
 
-        [[nodiscard]] bool is_vector() const;
+        [[nodiscard]] constexpr bool is_vector() const {
+            return w == 0.0;
+        }
 
-        Tuple operator+(const Tuple &tuple) const;
+        constexpr Tuple operator+(const Tuple &tuple) const {
+            return Tuple{x + tuple.x, y + tuple.y, z + tuple.z, w + tuple.w};
+        }
 
-        Tuple operator-(const Tuple &tuple) const;
+        constexpr Tuple operator-(const Tuple &tuple) const {
+            return Tuple{x - tuple.x, y - tuple.y, z - tuple.z, w - tuple.w};
+        }
 
-        Tuple operator-() const;
+        constexpr Tuple operator-() const {
+            return Tuple{-x, -y, -z, -w};
+        }
 
-        Tuple operator*(double s) const;
+        constexpr Tuple operator*(const double s) const {
+            return Tuple{x * s, y * s, z * s, w * s};
+        }
 
-        Tuple operator*(const Tuple& tuple) const;
+        constexpr Tuple operator*(const Tuple &tuple) const {
+            return Tuple{x * tuple.x, y * tuple.y, z * tuple.z, w * tuple.w};
+        }
 
-        Tuple operator/(double s) const;
+        constexpr Tuple operator/(const double s) const {
+            return Tuple{x / s, y / s, z / s, w / s};
+        }
 
         [[nodiscard]] double magnitude() const;
 
         [[nodiscard]] Tuple normalize() const;
 
-        [[nodiscard]] double dot(const Tuple& other) const;
-
-        [[nodiscard]] Tuple cross(const Tuple& other) const;
-
-        friend bool operator==(const Tuple &lhs, const Tuple &rhs) {
+        friend constexpr bool operator==(const Tuple &lhs, const Tuple &rhs) {
             return std::tie(lhs.x, lhs.y, lhs.z, lhs.w) == std::tie(rhs.x, rhs.y, rhs.z, rhs.w);
         }
 
-        friend bool operator!=(const Tuple &lhs, const Tuple &rhs) {
+        friend constexpr bool operator!=(const Tuple &lhs, const Tuple &rhs) {
             return !(lhs == rhs);
         }
 
@@ -50,28 +62,45 @@ namespace rt {
                    << ")";
         }
 
-        [[nodiscard]] double red() const {
+        [[nodiscard]] constexpr double red() const {
             return x;
         }
 
-        [[nodiscard]] double green() const {
+        [[nodiscard]] constexpr double green() const {
             return y;
         }
 
-        [[nodiscard]] double blue() const {
+        [[nodiscard]] constexpr double blue() const {
             return z;
         }
     };
 
     using Point = Tuple;
 
-    Point point(double x, double y, double z);
+    constexpr Point point(const double x, const double y, const double z) {
+        return {x, y, z, 1.0};
+    }
 
     using Vector = Tuple;
 
-    Vector vector(double x, double y, double z);
+    constexpr Vector vector(const double x, const double y, const double z) {
+        return {x, y, z, 0.0};
+    }
 
     using Color = Tuple;
 
-    Color color(double red, double green, double blue);
+    constexpr Color color(const double red, const double green, const double blue) {
+        return Tuple{red, green, blue, 0.0};
+    }
+
+    constexpr double dot(const Tuple& a, const Tuple &b) {
+        return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
+    }
+
+    constexpr Tuple cross(const Tuple& a, const Tuple &b) {
+        return vector(
+                    a.y * b.z - a.z * b.y,
+                    a.z * b.x - a.x * b.z,
+                    a.x * b.y - a.y * b.x);
+    }
 }

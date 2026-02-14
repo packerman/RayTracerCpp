@@ -9,6 +9,9 @@
 
 namespace rt {
     template<std::size_t N>
+    using Storage = std::array<double, N * N>;
+
+    template<std::size_t N>
     class Matrix {
     public:
         constexpr Matrix() : data_{} {
@@ -19,6 +22,9 @@ namespace rt {
                 throw std::runtime_error("Matrix size does not match");
             }
             std::copy(data.begin(), data.end(), data_.begin());
+        }
+
+        explicit constexpr Matrix(const Storage<N> &data) : data_(data) {
         }
 
         constexpr double &operator()(const std::size_t i, const std::size_t j) {
@@ -51,6 +57,37 @@ namespace rt {
             return m;
         }
 
+        [[nodiscard]] constexpr Matrix transpose() const {
+            Matrix m;
+            for (std::size_t i = 0; i < N; ++i) {
+                for (std::size_t j = 0; j < N; ++j) {
+                    m(i, j) = data_[j * N + i];
+                }
+            }
+            return m;
+        }
+
+        [[nodiscard]] constexpr double determinant() const {
+            static_assert(N >= 2);
+            if (N == 2) {
+                return data_[0] * data_[3] - data_[1] * data_[2];
+            }
+            return 0;
+        }
+
+        [[nodiscard]] constexpr Matrix<N - 1> submatrix(const std::size_t k, const std::size_t l) const {
+            Storage<N - 1> data;
+            std::size_t p = 0;
+            for (std::size_t i = 0; i < N; ++i) {
+                for (std::size_t j = 0; j < N; ++j) {
+                    if (i != k && j != l) {
+                        data[p++] = data_[i * N + j];
+                    }
+                }
+            }
+            return Matrix<N - 1>(data);
+        }
+
         friend std::ostream &operator<<(std::ostream &os, const Matrix &obj) {
             os << "|";
             for (std::size_t i = 0; i < N; ++i) {
@@ -62,8 +99,16 @@ namespace rt {
             return os;
         }
 
+        constexpr static Matrix identity() {
+            Matrix m{};
+            for (std::size_t i = 0; i < N; ++i) {
+                m(i, i) = 1;
+            }
+            return m;
+        }
+
     private:
-        std::array<double, N * N> data_;
+        Storage<N> data_;
     };
 
     constexpr Tuple operator*(const Matrix<4> &a, const Tuple &t) {

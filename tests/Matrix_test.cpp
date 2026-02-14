@@ -42,4 +42,39 @@ namespace rt {
         EXPECT_EQ(m(1, 1), -2);
         EXPECT_EQ(m(2, 2), 1);
     }
+
+    TEST(MatrixTest, MatrixEquality) {
+        const Matrix<4> a = {
+            1, 2, 3, 4,
+            5, 6, 7, 8,
+            9, 8, 7, 6,
+            5, 4, 3, 2
+        };
+        const Matrix<4> b = {
+            1, 2, 3, 4,
+            5, 6, 7, 8,
+            9, 8, 7, 6,
+            5, 4, 3, 2
+        };
+
+        EXPECT_EQ(a, b);
+    }
+
+    TEST(MatrixTest, MatrixInequality) {
+        const Matrix<4> a = {
+            1, 2, 3, 4,
+            5, 6, 7, 8,
+            9, 8, 7, 6,
+            5, 4, 3, 2
+        };
+        const Matrix<4> b = {
+            2, 3, 4, 5,
+            6, 7, 8, 9,
+            8, 7, 6, 5,
+            4, 3, 2, 1
+        };
+
+        EXPECT_NE(a, b);
+        EXPECT_TRUE(a != b);
+    }
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <cstddef>
+#include <ostream>
 #include <stdexcept>
 
 namespace rt {
@@ -26,6 +27,25 @@ namespace rt {
 
         constexpr double operator()(const std::size_t i, const std::size_t j) const {
             return data_[i * N + j];
+        }
+
+        friend bool operator==(const Matrix &a, const Matrix &b) {
+            return a.data_ == b.data_;
+        }
+
+        friend bool operator!=(const Matrix &a, const Matrix &b) {
+            return !(a == b);
+        }
+
+        friend std::ostream &operator<<(std::ostream &os, const Matrix &obj) {
+            os << "|";
+            for (std::size_t i = 0; i < N; ++i) {
+                for (std::size_t j = 0; j < N; ++j) {
+                    os << " " << obj.data_[i * N + j];
+                }
+                os << " |";
+            }
+            return os;
         }
 
     private:

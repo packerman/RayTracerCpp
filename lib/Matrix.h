@@ -113,7 +113,7 @@ namespace rt {
             return determinant() != 0.0;
         }
 
-        [[nodiscard]] constexpr Matrix inverse() const {
+        [[nodiscard]] Matrix inverse() const {
             const double det = determinant();
             if (det == 0) {
                 throw std::runtime_error("Matrix is not invertible");

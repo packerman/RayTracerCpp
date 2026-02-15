@@ -17,6 +17,7 @@ target_sources(test_lib
         Tuple_test.cpp
         Canvas_test.cpp
         Matrix_test.cpp
+        Transformation_test.cpp
 )
 
 target_link_libraries(test_lib

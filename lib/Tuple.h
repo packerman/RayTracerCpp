@@ -42,11 +42,11 @@ namespace rt {
             return Tuple{x / s, y / s, z / s, w / s};
         }
 
-        [[nodiscard]] constexpr double magnitude() const {
+        [[nodiscard]] double magnitude() const {
             return std::sqrt(x * x + y * y + z * z + w * w);
         }
 
-        [[nodiscard]] constexpr Tuple normalize() const {
+        [[nodiscard]] Tuple normalize() const {
             const auto m = magnitude();
             return Tuple{x / m, y / m, z / m, w / m};
         }

@@ -10,12 +10,12 @@
 
 constexpr auto machine_epsilon = std::numeric_limits<double>::epsilon();
 
-testing::AssertionResult approx_equals(double a, double b, double epsilon);
+testing::AssertionResult approx_equals(double a, double b, double epsilon = machine_epsilon);
 
-testing::AssertionResult approx_equals(const rt::Tuple& a, const rt::Tuple& b, double epsilon);
+testing::AssertionResult approx_equals(const rt::Tuple& a, const rt::Tuple& b, double epsilon = machine_epsilon);
 
 template <std::size_t N>
-testing::AssertionResult approx_equals(const rt::Matrix<N> &a, const rt::Matrix<N> &b, const double epsilon) {
+testing::AssertionResult approx_equals(const rt::Matrix<N> &a, const rt::Matrix<N> &b, const double epsilon = machine_epsilon) {
     for (std::size_t i = 0; i < N; ++i) {
         for (std::size_t j = 0; j < N; ++j) {
             if (auto result = approx_equals(a(i, j), b(i, j), epsilon); !result) {

@@ -2,6 +2,8 @@
 
 #include "Matrix.h"
 
+#include <cmath>
+
 namespace rt {
     using Transformation = Matrix<4>;
 
@@ -20,6 +22,36 @@ namespace rt {
             x, 0, 0, 0,
             0, y, 0, 0,
             0, 0, z, 0,
+            0, 0, 0, 1
+        };
+        return t;
+    }
+
+    inline Transformation rotation_x(const double r) {
+        const Transformation t{
+            1, 0, 0, 0,
+            0, std::cos(r), -std::sin(r), 0,
+            0, std::sin(r), std::cos(r), 0,
+            0, 0, 0, 1
+        };
+        return t;
+    }
+
+    inline Transformation rotation_y(const double r) {
+        const Transformation t{
+            std::cos(r), 0, std::sin(r), 0,
+            0, 1, 0, 0,
+            -std::sin(r), 0, std::cos(r), 0,
+            0, 0, 0, 1
+        };
+        return t;
+    }
+
+    inline Transformation rotation_z(const double r) {
+        const Transformation t{
+            std::cos(r), -std::sin(r), 0, 0,
+            std::sin(r), std::cos(r), 0, 0,
+            0, 0, 1, 0,
             0, 0, 0, 1
         };
         return t;

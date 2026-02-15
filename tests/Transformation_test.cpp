@@ -1,9 +1,10 @@
 #include <gtest/gtest.h>
+#include <numbers>
 
 #include <Transformation.h>
+#include "Common.h"
 
 namespace rt {
-
     TEST(TransformationTest, Translation) {
         constexpr auto transform = translation(5, -3, 2);
         constexpr auto p = point(-3, 4, 5);
@@ -53,5 +54,40 @@ namespace rt {
         constexpr auto p = point(2, 3, 4);
 
         EXPECT_EQ(transform * p, point(-2, 3, 4));
+    }
+
+    TEST(TransformationTest, RotationX) {
+        constexpr auto p = point(0, 1, 0);
+        const auto half_quarter = rotation_x(std::numbers::pi / 4);
+        const auto full_quarter = rotation_x(std::numbers::pi / 2);
+
+        EXPECT_TRUE(approx_equals(half_quarter * p,point(0, std::numbers::sqrt2 / 2, std::numbers::sqrt2 / 2)));
+        EXPECT_TRUE(approx_equals(full_quarter * p, point(0, 0, 1)));
+    }
+
+    TEST(TransformationTest, RotationXInverse) {
+        constexpr auto p = point(0, 1, 0);
+        const auto half_quarter = rotation_x(std::numbers::pi / 4);
+        const auto inv = half_quarter.inverse();
+
+        EXPECT_TRUE(approx_equals(inv * p, point(0, std::numbers::sqrt2 / 2, - std::numbers::sqrt2 / 2)));
+    }
+
+    TEST(TransformationTest, RotationY) {
+        constexpr auto p = point(0, 0, 1);
+        const auto half_quarter = rotation_y(std::numbers::pi / 4);
+        const auto full_quarter = rotation_y(std::numbers::pi / 2);
+
+        EXPECT_TRUE(approx_equals(half_quarter * p,point(std::numbers::sqrt2 / 2, 0, std::numbers::sqrt2 / 2)));
+        EXPECT_TRUE(approx_equals(full_quarter * p, point(1, 0, 0)));
+    }
+
+    TEST(TransformationTest, RotationZ) {
+        constexpr auto p = point(0, 1, 0);
+        const auto half_quarter = rotation_z(std::numbers::pi / 4);
+        const auto full_quarter = rotation_z(std::numbers::pi / 2);
+
+        EXPECT_TRUE(approx_equals(half_quarter * p,point(-std::numbers::sqrt2 / 2, std::numbers::sqrt2 / 2, 0)));
+        EXPECT_TRUE(approx_equals(full_quarter * p, point(-1, 0, 0)));
     }
 }

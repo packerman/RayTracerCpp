@@ -21,17 +21,17 @@ Projectile tick(const Environment &env, const Projectile &proj) {
 }
 
 int main() {
-    const auto start = rt::point(0, 1, 0);
+    constexpr auto start = rt::point(0, 1, 0);
     const auto velocity = rt::vector(1, 1.8, 0).normalize() * 11.25;
     auto p = Projectile(start, velocity);
 
-    const auto gravity = rt::vector(0, -0.1, 0);
-    const auto wind = rt::vector(-0.01, 0, 0);
-    const auto e = Environment(gravity, wind);
+    constexpr auto gravity = rt::vector(0, -0.1, 0);
+    constexpr auto wind = rt::vector(-0.01, 0, 0);
+    constexpr auto e = Environment(gravity, wind);
 
     constexpr int height = 550;
     auto c = rt::Canvas(990, height);
-    const auto red = rt::color(1, 0, 0);
+    constexpr auto red = rt::color(1, 0, 0);
 
     size_t t = 0;
     while (p.position.y >= 0) {

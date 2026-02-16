@@ -6,9 +6,9 @@
 namespace rt {
     class Canvas {
     public:
-        Canvas(const std::size_t width, const std::size_t height) : width_(width), height_(height),
-                                                                    pixels_(height, std::vector(
-                                                                                width, color(0, 0, 0))) {
+        Canvas(const std::size_t width, const std::size_t height,
+               const Color &background_color = color(0, 0, 0)) : width_(width), height_(height),
+                                                                 pixels_(height, std::vector(width, background_color)) {
         }
 
         [[nodiscard]] std::size_t width() const {

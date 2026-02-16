@@ -8,6 +8,8 @@ target_sources(ray_tracer
         Matrix.h
         Transformation.h
         Ray.h
+        Sphere.h
+        Sphere.cpp
 )
 
 target_include_directories(ray_tracer

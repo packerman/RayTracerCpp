@@ -7,6 +7,7 @@ target_sources(ray_tracer
         Canvas.cpp
         Matrix.h
         Transformation.h
+        Ray.h
 )
 
 target_include_directories(ray_tracer

@@ -4,13 +4,13 @@
 
 namespace rt {
     std::vector<double> Sphere::intersect(const Ray &ray) {
-        Vector sphere_to_ray = ray.origin() - point(0, 0, 0);
+        const Vector sphere_to_ray = ray.origin() - point(0, 0, 0);
 
-        auto a = dot(ray.direction(), ray.direction());
-        auto b = 2 * dot(ray.direction(), sphere_to_ray);
-        auto c = dot(sphere_to_ray, sphere_to_ray) - 1;
+        const auto a = dot(ray.direction(), ray.direction());
+        const auto b = 2 * dot(ray.direction(), sphere_to_ray);
+        const auto c = dot(sphere_to_ray, sphere_to_ray) - 1;
 
-        auto discriminant = b * b - 4 * a * c;
+        const auto discriminant = b * b - 4 * a * c;
 
         if (discriminant < 0) {
             return {};

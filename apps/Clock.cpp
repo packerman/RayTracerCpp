@@ -3,7 +3,6 @@
 #include <Canvas.h>
 
 #include <numbers>
-#include <fstream>
 
 int main() {
     constexpr auto canvas_size = 800;
@@ -23,6 +22,5 @@ int main() {
         );
     }
 
-    std::ofstream outfile("clock.ppm");
-    canvas.to_ppm(outfile);
+    rt::save_to_file("clock.ppm", canvas);
 }

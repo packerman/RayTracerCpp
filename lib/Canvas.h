@@ -33,4 +33,6 @@ namespace rt {
         std::size_t width_, height_;
         std::vector<std::vector<Color> > pixels_{};
     };
+
+    void save_to_file(const std::string &filename, const Canvas &canvas);
 } // rt

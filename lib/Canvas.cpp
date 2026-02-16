@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cmath>
 #include <string>
+#include <fstream>
+#include <iostream>
 
 namespace rt {
 
@@ -39,6 +41,15 @@ namespace rt {
             }
             os << "\n";
             line_length = 0;
+        }
+    }
+
+    void save_to_file(const std::string &filename, const Canvas &canvas) {
+        std::ofstream outfile(filename);
+        if (outfile) {
+            canvas.to_ppm(outfile);
+        } else {
+            std::cerr << "Cannot open file " << filename << "\n";
         }
     }
 } // rt

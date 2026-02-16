@@ -90,4 +90,24 @@ namespace rt {
         EXPECT_TRUE(approx_equals(half_quarter * p,point(-std::numbers::sqrt2 / 2, std::numbers::sqrt2 / 2, 0)));
         EXPECT_TRUE(approx_equals(full_quarter * p, point(-1, 0, 0)));
     }
+
+    class ShearingTransformationTest : public ::testing::TestWithParam<std::tuple<Transformation, Point, Point> > {
+    };
+
+    TEST_P(ShearingTransformationTest, ShearingTransformation) {
+        auto [transform, p, expected] = GetParam();
+        EXPECT_EQ(transform * p, expected);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        ShearingTransformationSuite,
+        ShearingTransformationTest,
+        ::testing::Values(
+            std::make_tuple(shearing(1, 0, 0, 0, 0, 0), point(2, 3, 4), point(5, 3, 4)),
+            std::make_tuple(shearing(0, 1, 0, 0, 0, 0), point(2, 3, 4), point(6, 3, 4)),
+            std::make_tuple(shearing(0, 0, 1, 0, 0, 0), point(2, 3, 4), point(2, 5, 4)),
+            std::make_tuple(shearing(0, 0, 0, 1, 0, 0), point(2, 3, 4), point(2, 7, 4)),
+            std::make_tuple(shearing(0, 0, 0, 0, 1, 0), point(2, 3, 4), point(2, 3, 6)),
+            std::make_tuple(shearing(0, 0, 0, 0, 0, 1), point(2, 3, 4), point(2, 3, 7))
+        ));
 }

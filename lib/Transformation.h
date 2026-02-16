@@ -56,4 +56,15 @@ namespace rt {
         };
         return t;
     }
+
+    constexpr Transformation shearing(const double x_y, const double x_z, const double y_x, const double y_z,
+                                      const double z_x, const double z_y) {
+        const Transformation t{
+            1, x_y, x_z, 0,
+            y_x, 1, y_z, 0,
+            z_x, z_y, 1, 0,
+            0, 0, 0, 1
+        };
+        return t;
+    }
 }

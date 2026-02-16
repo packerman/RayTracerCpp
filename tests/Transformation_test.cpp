@@ -110,4 +110,40 @@ namespace rt {
             std::make_tuple(shearing(0, 0, 0, 0, 1, 0), point(2, 3, 4), point(2, 3, 6)),
             std::make_tuple(shearing(0, 0, 0, 0, 0, 1), point(2, 3, 4), point(2, 3, 7))
         ));
+
+    TEST(TransformationTest, TransformationSequence) {
+        constexpr auto p = point(1, 0, 1);
+        const auto a = rotation_x(std::numbers::pi / 2);
+        constexpr auto b = scaling(5, 5, 5);
+        constexpr auto c = translation(10, 5, 7);
+
+        const auto p2 = a * p;
+        EXPECT_TRUE(approx_equals(p2, point(1, -1, 0)));
+
+        const auto p3 = b * p2;
+        EXPECT_TRUE(approx_equals(p3, point(5, -5, 0), 2*machine_epsilon));
+
+        const auto p4 = c * p3;
+        EXPECT_EQ(p4, point(15, 0, 7));
+    }
+
+    TEST(TransformationTest, ChainTransformation) {
+        constexpr auto p = point(1, 0, 1);
+        const auto a = rotation_x(std::numbers::pi / 2);
+        constexpr auto b = scaling(5, 5, 5);
+        constexpr auto c = translation(10, 5, 7);
+
+        const auto t = c * b * a;
+        EXPECT_EQ(t * p, point(15, 0, 7));
+    }
+
+    TEST(TransformationTest, ChainTransformationFluentApi) {
+        const auto t = Transformation::identity()
+                .then(rotation_x(std::numbers::pi / 2))
+                .then(scaling(5, 5, 5))
+                .then(translation(10, 5, 7));
+        constexpr auto p = point(1, 0, 1);
+
+        EXPECT_EQ(t * p, point(15, 0, 7));
+    }
 }

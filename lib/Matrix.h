@@ -57,6 +57,10 @@ namespace rt {
             return m;
         }
 
+        constexpr Matrix then(const Matrix &m) {
+            return m * *this;
+        }
+
         [[nodiscard]] constexpr Matrix transpose() const {
             Matrix m;
             for (std::size_t i = 0; i < N; ++i) {

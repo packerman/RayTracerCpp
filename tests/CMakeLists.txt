@@ -20,6 +20,7 @@ target_sources(test_lib
         Transformation_test.cpp
         Ray_test.cpp
         Sphere_test.cpp
+        Intersection_test.cpp
 )
 
 target_link_libraries(test_lib

@@ -1,9 +1,10 @@
 #include "Sphere.h"
+#include "Intersection.h"
 
 #include <cmath>
 
 namespace rt {
-    std::vector<double> Sphere::intersect(const Ray &ray) {
+    std::vector<Intersection> Sphere::intersect(const Ray &ray) {
         const Vector sphere_to_ray = ray.origin() - point(0, 0, 0);
 
         const auto a = dot(ray.direction(), ray.direction());
@@ -16,8 +17,8 @@ namespace rt {
             return {};
         }
 
-        auto t1 = (-b - std::sqrt(discriminant)) / (2 * a);
-        auto t2 = (-b + std::sqrt(discriminant)) / (2 * a);
-        return {t1, t2};
+        const auto t1 = (-b - std::sqrt(discriminant)) / (2 * a);
+        const auto t2 = (-b + std::sqrt(discriminant)) / (2 * a);
+        return {{t1, this}, {t2, this}};
     }
 }

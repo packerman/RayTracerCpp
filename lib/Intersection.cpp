@@ -6,7 +6,9 @@ namespace rt {
 
     std::optional<Intersection> hit(std::vector<Intersection> &xs) {
         std::ranges::sort(xs, [](auto& a, auto& b) { return a.t() < b.t();});
-        const auto it = std::ranges::find_if(xs, [](auto &x) { return x.t() >= 0; });
+        const auto it = std::ranges::find_if(xs, [](auto &x) {
+            return x.t() >= 0;
+        });
         if (it == xs.end()) {
             return {};
         }

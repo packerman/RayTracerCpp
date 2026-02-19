@@ -3,6 +3,8 @@
 #include <optional>
 #include <tuple>
 #include "Intersection.h"
+
+#include "Common.h"
 #include "Sphere.h"
 
 namespace rt {
@@ -27,20 +29,24 @@ namespace rt {
         EXPECT_EQ(xs[1].t(), 2);
     }
 
+    std::vector<Intersection> make_intersections(Sphere* object, const std::vector<double> &ts) {
+        std::vector<Intersection> xs (ts.size());
+        std::ranges::transform(ts, xs.begin(), [&](auto t) {
+                return Intersection{t, object};
+            });
+        return xs;
+    }
+
     class HitTest : public ::testing::TestWithParam<std::tuple<std::vector<double>, std::optional<int> > > {
     protected:
         void SetUp() override {
             auto [ts, expected_index] = GetParam();
-            xs.resize(ts.size());
-            std::ranges::transform(ts, xs.begin(), [&](auto t) {
-                return Intersection{t, &s};
-            });
-            expected = expected_index.transform([&](auto index) {
-                return xs[index];
-            });
+            object = std::make_unique<Sphere>();
+            xs = make_intersections(object.get(), ts);
+            expected = optional_at(xs, expected_index);
         }
 
-        Sphere s{};
+        std::unique_ptr<Sphere> object{};
         std::vector<Intersection> xs{};
         std::optional<Intersection> expected{};
     };

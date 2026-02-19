@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Tuple.h"
+#include "Transformation.h"
 
 namespace rt {
     class Ray {
@@ -18,8 +19,20 @@ namespace rt {
             return direction_;
         }
 
+        friend bool operator==(const Ray &lhs, const Ray &rhs) {
+            return std::tie(lhs.origin_, lhs.direction_) == std::tie(rhs.origin_, rhs.direction_);
+        }
+
+        friend bool operator!=(const Ray &lhs, const Ray &rhs) {
+            return !(lhs == rhs);
+        }
+
         [[nodiscard]] constexpr Point position(const double t) const {
             return origin_ + direction_ * t;
+        }
+
+        Ray transform(const Transformation &m) const {
+            return { m * origin_, m * direction_ };
         }
 
     private:

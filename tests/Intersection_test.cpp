@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <algorithm>
+#include <optional>
 #include <tuple>
 #include "Intersection.h"
 #include "Sphere.h"
@@ -26,22 +27,27 @@ namespace rt {
         EXPECT_EQ(xs[1].t(), 2);
     }
 
-    class HitTest : public ::testing::TestWithParam<std::tuple<std::vector<double>, std::optional<int>> > {
+    class HitTest : public ::testing::TestWithParam<std::tuple<std::vector<double>, std::optional<int> > > {
+    protected:
+        void SetUp() override {
+            auto [ts, expected_index] = GetParam();
+            xs.resize(ts.size());
+            std::ranges::transform(ts, xs.begin(), [&](auto t) {
+                return Intersection{t, &s};
+            });
+            expected = expected_index.transform([&](auto index) {
+                return xs[index];
+            });
+        }
+
+        Sphere s{};
+        std::vector<Intersection> xs{};
+        std::optional<Intersection> expected{};
     };
 
-    TEST_P(HitTest, ShearingTransformation) {
-        auto [ts, expected_index] = GetParam();
-        Sphere s{};
-
-        std::vector<Intersection> xs(ts.size());
-        std::ranges::transform(ts, xs.begin(), [&](auto t) { return Intersection{t, &s}; });
-
+    TEST_P(HitTest, Hit) {
         const auto i = hit(xs);
-        if (expected_index) {
-            EXPECT_EQ(i->t(), ts[expected_index.value()]);
-        } else {
-            EXPECT_FALSE(i);
-        }
+        EXPECT_EQ(i, expected);
     }
 
     INSTANTIATE_TEST_SUITE_P(

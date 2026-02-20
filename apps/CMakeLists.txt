@@ -17,3 +17,13 @@ target_link_libraries(clock
         PRIVATE
         ray_tracer
 )
+
+add_executable(silhouette)
+target_sources(silhouette
+        PRIVATE
+        Common.h
+        Silhouette.cpp)
+target_link_libraries(silhouette
+        PRIVATE
+        ray_tracer
+)

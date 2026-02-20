@@ -4,6 +4,10 @@
 #include <cmath>
 
 namespace rt {
+    struct Tuple;
+
+    constexpr double dot(const Tuple &a, const Tuple &b);
+
     struct Tuple {
         double x;
         double y;
@@ -54,6 +58,10 @@ namespace rt {
             return Tuple{x / m, y / m, z / m, w / m};
         }
 
+        [[nodiscard]] Tuple reflect(const Tuple &normal) const {
+            return *this - normal * 2 * dot(*this, normal);
+        }
+
         friend constexpr bool operator==(const Tuple &lhs, const Tuple &rhs) {
             return std::tie(lhs.x, lhs.y, lhs.z, lhs.w) == std::tie(rhs.x, rhs.y, rhs.z, rhs.w);
         }
@@ -102,14 +110,14 @@ namespace rt {
         return Tuple{red, green, blue, 0.0};
     }
 
-    constexpr double dot(const Tuple& a, const Tuple &b) {
+    constexpr double dot(const Tuple &a, const Tuple &b) {
         return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
     }
 
-    constexpr Tuple cross(const Tuple& a, const Tuple &b) {
+    constexpr Tuple cross(const Tuple &a, const Tuple &b) {
         return vector(
-                    a.y * b.z - a.z * b.y,
-                    a.z * b.x - a.x * b.z,
-                    a.x * b.y - a.y * b.x);
+            a.y * b.z - a.z * b.y,
+            a.z * b.x - a.x * b.z,
+            a.x * b.y - a.y * b.x);
     }
 }

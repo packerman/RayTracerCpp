@@ -43,7 +43,7 @@ namespace rt {
         EXPECT_EQ(a1 + a2, Tuple(1, 1, 6, 1));
     }
 
-    class TupleSubtractTest : public ::testing::TestWithParam<std::tuple<Tuple, Tuple, Tuple>> {
+    class TupleSubtractTest : public ::testing::TestWithParam<std::tuple<Tuple, Tuple, Tuple> > {
     };
 
     TEST_P(TupleSubtractTest, SubtractingTuples) {
@@ -71,7 +71,7 @@ namespace rt {
         EXPECT_EQ(-a, Tuple(-1, 2, -3, 4));
     }
 
-    class TupleMultiplyTest : public ::testing::TestWithParam<std::tuple<Tuple, double, Tuple>> {
+    class TupleMultiplyTest : public ::testing::TestWithParam<std::tuple<Tuple, double, Tuple> > {
     };
 
     TEST_P(TupleMultiplyTest, MultiplyingTuples) {
@@ -93,7 +93,7 @@ namespace rt {
         EXPECT_EQ(a / 2, Tuple(0.5, -1, 1.5, -2));
     }
 
-    class TupleMagnitudeTest : public ::testing::TestWithParam<std::tuple<Tuple, double>> {
+    class TupleMagnitudeTest : public ::testing::TestWithParam<std::tuple<Tuple, double> > {
     };
 
     TEST_P(TupleMagnitudeTest, TupleMagnitude) {
@@ -115,7 +115,7 @@ namespace rt {
 
     constexpr auto epsilon = 0.00001;
 
-    class TupleNormalizeTest : public ::testing::TestWithParam<std::tuple<Tuple, Tuple>> {
+    class TupleNormalizeTest : public ::testing::TestWithParam<std::tuple<Tuple, Tuple> > {
     };
 
     TEST_P(TupleNormalizeTest, TupleNormalize) {
@@ -144,7 +144,7 @@ namespace rt {
         EXPECT_EQ(dot(a, b), 20.0);
     }
 
-    class TupleCrossProductTest : public ::testing::TestWithParam<std::tuple<Tuple, Tuple, Tuple>> {
+    class TupleCrossProductTest : public ::testing::TestWithParam<std::tuple<Tuple, Tuple, Tuple> > {
     };
 
     TEST_P(TupleCrossProductTest, CrossProduct) {
@@ -192,4 +192,26 @@ namespace rt {
         const auto c2 = color(0.9, 1, 0.1);
         EXPECT_TRUE(approx_equals(c1*c2, color(0.9, 0.2, 0.04), machine_epsilon));
     }
+
+    class TupleReflectTest : public ::testing::TestWithParam<std::tuple<Vector, Vector, Vector> > {
+    };
+
+    TEST_P(TupleReflectTest, TupleReflect) {
+        auto [input, normal, expected] = GetParam();
+
+        const auto reflected = input.reflect(normal);
+
+        EXPECT_TRUE(approx_equals(reflected, expected, 2*machine_epsilon));
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        TupleReflectSuite,
+        TupleReflectTest,
+        ::testing::Values(
+            std::make_tuple(vector(1, -1, 0), vector(0, 1, 0), vector(1, 1, 0)),
+            std::make_tuple(
+                vector(0, -1, 0),
+                vector(std::numbers::sqrt2 /2, std::numbers::sqrt2 / 2, 0),
+                vector(1, 0, 0))
+        ));
 }

@@ -58,4 +58,30 @@ namespace rt {
 
         EXPECT_EQ(s.transform(), t);
     }
+
+    class RayTransformedSphereIntersectionTest
+            : public ::testing::TestWithParam<std::tuple<Transformation, std::vector<double> > > {
+    };
+
+    TEST_P(RayTransformedSphereIntersectionTest, RayTransformedSphereIntersection) {
+        auto r = Ray{point(0, 0, -5), vector(0, 0, 1)};
+        auto [m, expected] = GetParam();
+        auto s = Sphere();
+
+        s.set_transform(m);
+        const auto xs = s.intersect(r);
+
+        EXPECT_EQ(xs.size(), expected.size());
+        for (auto i = 0; i < expected.size(); ++i) {
+            EXPECT_EQ(xs[i].t(), expected[i]);
+        }
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        RayTransformedSphereIntersectionSuite,
+        RayTransformedSphereIntersectionTest,
+        ::testing::Values(
+            std::make_tuple(scaling(2, 2, 2), std::vector<double>{3, 7}),
+            std::make_tuple(translation(5, 0, 0), std::vector<double>{})
+        ));
 }

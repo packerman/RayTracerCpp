@@ -5,10 +5,12 @@
 
 namespace rt {
     std::vector<Intersection> Sphere::intersect(const Ray &ray) {
-        const Vector sphere_to_ray = ray.origin() - point(0, 0, 0);
+        const auto ray2 = ray.transform(inversed_transform());
 
-        const auto a = dot(ray.direction(), ray.direction());
-        const auto b = 2 * dot(ray.direction(), sphere_to_ray);
+        const Vector sphere_to_ray = ray2.origin() - point(0, 0, 0);
+
+        const auto a = dot(ray2.direction(), ray2.direction());
+        const auto b = 2 * dot(ray2.direction(), sphere_to_ray);
         const auto c = dot(sphere_to_ray, sphere_to_ray) - 1;
 
         const auto discriminant = b * b - 4 * a * c;

@@ -32,7 +32,8 @@ std::vector<std::string> string_lines(const std::string &s);
 
 template<typename T>
 std::optional<T> optional_at(const std::vector<T> &v, const std::optional<std::size_t> &i) {
-    return i.transform([&](auto index) {
-        return v.at(index);
-    });
+    if (!i) {
+        return {};
+    }
+    return v[*i];
 }

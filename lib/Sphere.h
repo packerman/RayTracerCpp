@@ -23,13 +23,19 @@ namespace rt {
             return transform_;
         }
 
+        [[nodiscard]] const Transformation &inversed_transform() const {
+            return inversed_transform_;
+        }
+
         void set_transform(const Transformation &transform) {
             transform_ = transform;
+            inversed_transform_ = transform.inverse();
         }
 
         std::vector<Intersection> intersect(const Ray &ray);
 
     private:
         Transformation transform_{Transformation::identity()};
+        Transformation inversed_transform_{Transformation::identity()};
     };
 }

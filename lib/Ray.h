@@ -31,7 +31,7 @@ namespace rt {
             return origin_ + direction_ * t;
         }
 
-        Ray transform(const Transformation &m) const {
+        [[nodiscard]] constexpr Ray transform(const Transformation &m) const {
             return { m * origin_, m * direction_ };
         }
 

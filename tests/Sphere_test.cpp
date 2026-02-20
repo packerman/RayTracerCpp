@@ -4,6 +4,7 @@
 #include "Ray.h"
 #include "Tuple.h"
 #include "Intersection.h"
+#include "Transformation.h"
 
 namespace rt {
     class RaySphereIntersectionTest : public ::testing::TestWithParam<std::tuple<Ray, std::vector<double> > > {
@@ -42,5 +43,19 @@ namespace rt {
         EXPECT_EQ(xs.size(), 2);
         EXPECT_EQ(xs[0].object(), &s);
         EXPECT_EQ(xs[1].object(), &s);
+    }
+
+    TEST(SphereTest, DefaultTransformation) {
+        constexpr Sphere s{};
+        EXPECT_EQ(s.transform(), Transformation::identity());
+    }
+
+    TEST(SphereTest, ChangeTransformation) {
+        Sphere s{};
+        constexpr auto t = translation(2, 3, 4);
+
+        s.set_transform(t);
+
+        EXPECT_EQ(s.transform(), t);
     }
 }

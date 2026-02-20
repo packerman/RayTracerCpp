@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
 #include "Sphere.h"
+
+#include "Common.h"
 #include "Ray.h"
 #include "Tuple.h"
 #include "Intersection.h"
@@ -64,7 +66,7 @@ namespace rt {
     };
 
     TEST_P(RayTransformedSphereIntersectionTest, RayTransformedSphereIntersection) {
-        auto r = Ray{point(0, 0, -5), vector(0, 0, 1)};
+        constexpr auto r = Ray{point(0, 0, -5), vector(0, 0, 1)};
         auto [m, expected] = GetParam();
         auto s = Sphere();
 
@@ -83,5 +85,69 @@ namespace rt {
         ::testing::Values(
             std::make_tuple(scaling(2, 2, 2), std::vector<double>{3, 7}),
             std::make_tuple(translation(5, 0, 0), std::vector<double>{})
+        ));
+
+    class SphereNormalTest : public ::testing::TestWithParam<std::tuple<Point, Vector> > {
+    };
+
+    TEST_P(SphereNormalTest, SphereNormal) {
+        auto [input_point, expected_normal] = GetParam();
+
+        Sphere s{};
+
+        const auto n = s.normal_at(input_point);
+
+        EXPECT_EQ(n, expected_normal);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        SphereNormalSuite,
+        SphereNormalTest,
+        ::testing::Values(
+            std::make_tuple(point(1, 0, 0), vector(1, 0, 0)),
+            std::make_tuple(point(0, 1, 0), vector(0, 1, 0)),
+            std::make_tuple(point(0, 0, 1), vector(0, 0, 1)),
+            std::make_tuple(
+                point(std::numbers::sqrt3 / 3, std::numbers::sqrt3 / 3, std::numbers::sqrt3 / 3),
+                vector(std::numbers::sqrt3 / 3, std::numbers::sqrt3 / 3, std::numbers::sqrt3 / 3)
+            )
+        ));
+
+    TEST(SphereTest, NormalizedNormal) {
+        Sphere s{};
+
+        const auto n = s.normal_at(
+            point(std::numbers::sqrt3 / 3, std::numbers::sqrt3 / 3, std::numbers::sqrt3 / 3));
+
+        EXPECT_EQ(n, n.normalize());
+    }
+
+    class SphereTransformedNormalTest
+            : public ::testing::TestWithParam<std::tuple<Transformation, Point, Vector> > {
+    };
+
+    TEST_P(SphereTransformedNormalTest, SphereTransformedNormal) {
+        auto [transform, point, expected_normal] = GetParam();
+
+        Sphere s{};
+        s.set_transform(transform);
+
+        const auto n = s.normal_at(point);
+
+        EXPECT_TRUE(approx_equals(n, expected_normal, 1e-5));
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        SphereTransformedNormalSuite,
+        SphereTransformedNormalTest,
+        ::testing::Values(
+            std::make_tuple(
+                translation(0, 1, 0),
+                point(0, 1.70711, -0.70711),
+                vector(0, 0.70711, -0.70711)),
+            std::make_tuple(
+                scaling(1, 0.5, 1) * rotation_z(std::numbers::pi / 5),
+                point(0, std::numbers::sqrt2 / 2, - std::numbers::sqrt2 / 2),
+                vector(0, 0.97014, -0.24254))
         ));
 }

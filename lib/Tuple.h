@@ -48,6 +48,9 @@ namespace rt {
 
         [[nodiscard]] Tuple normalize() const {
             const auto m = magnitude();
+            if (m == 0.0) {
+                return *this;
+            }
             return Tuple{x / m, y / m, z / m, w / m};
         }
 

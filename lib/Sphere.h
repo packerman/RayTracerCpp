@@ -34,6 +34,8 @@ namespace rt {
 
         std::vector<Intersection> intersect(const Ray &ray);
 
+        Vector normal_at(const Point& world_point);
+
     private:
         Transformation transform_{Transformation::identity()};
         Transformation inversed_transform_{Transformation::identity()};

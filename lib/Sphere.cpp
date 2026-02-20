@@ -23,4 +23,12 @@ namespace rt {
         const auto t2 = (-b + std::sqrt(discriminant)) / (2 * a);
         return {{t1, this}, {t2, this}};
     }
+
+    Vector Sphere::normal_at(const Point &world_point) {
+        const auto object_point = inversed_transform() * world_point;
+        const auto object_normal = object_point - point(0, 0, 0);
+        auto world_normal = inversed_transform().transpose() * object_normal;
+        world_normal.w = 0;
+        return world_normal.normalize();
+    }
 }

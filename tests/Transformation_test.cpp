@@ -146,4 +146,43 @@ namespace rt {
 
         EXPECT_EQ(t * p, point(15, 0, 7));
     }
+
+    class ViewTransformationTest
+            : public ::testing::TestWithParam<std::tuple<Point, Point, Vector, Transformation> > {
+    };
+
+    TEST_P(ViewTransformationTest, ViewTransformation) {
+        auto [from, to, up, expected] = GetParam();
+
+        const auto t = view_transform(from, to, up);
+
+        EXPECT_TRUE(approx_equals(t, expected, 1e-5));
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        ViewTransformationSuite,
+        ViewTransformationTest,
+        ::testing::Values(
+            std::make_tuple(
+                point(0, 0, 0), point(0, 0, -1), vector(0, 1, 0),
+                Transformation::identity()
+            ),
+            std::make_tuple(
+                point(0, 0, 0), point(0, 0, 1), vector(0, 1, 0),
+                scaling(-1, 1, -1)
+            ),
+            std::make_tuple(
+                point(0, 0, 8), point(0, 0, 0), vector(0, 1, 0),
+                translation(0, 0, -8)
+            ),
+            std::make_tuple(
+                point(1, 3, 2), point(4, -2, 8), vector(1, 1, 0),
+                Transformation({
+                    -0.50709, 0.50709, 0.67612, -2.36643,
+                    0.76772, 0.60609, 0.12122, -2.82843,
+                    -0.35857, 0.59761, -0.71714, 0.0,
+                    0.0, 0.0, 0.0, 1.0
+                })
+            )
+        ));
 }

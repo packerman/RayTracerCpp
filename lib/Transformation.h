@@ -67,4 +67,19 @@ namespace rt {
         };
         return t;
     }
+
+    inline Transformation view_transform(const Point& from, const Point& to, const Vector& up) {
+        const auto forward = (to - from).normalize();
+        const auto up_n = up.normalize();
+        const auto left = forward.cross(up_n);
+        const auto true_up = left.cross(forward);
+
+        const Transformation orientation{
+            left.x, left.y, left.z, 0,
+            true_up.x, true_up.y, true_up.z, 0,
+            -forward.x, -forward.y, -forward.z, 0,
+            0, 0, 0, 1
+        };
+        return orientation * translation(-from.x, -from.y, -from.z);
+    }
 }

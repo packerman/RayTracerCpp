@@ -61,4 +61,17 @@ namespace rt {
             std::make_tuple(100, 50, rotation_y(std::numbers::pi / 4) * translation(0, -2, 5),
                 Ray{point(0, 2, -5), vector(std::numbers::sqrt2 / 2, 0, -std::numbers::sqrt2 / 2)})
         ));
+
+    TEST(CameraTest, RenderWorld) {
+        const auto w = default_world();
+        Camera c{11, 11, std::numbers::pi / 2};
+        constexpr auto from = point(0, 0, -5);
+        constexpr auto to = point(0, 0, 0);
+        constexpr auto up = vector(0, 1, 0);
+        c.set_transform(view_transform(from, to, up));
+
+        const auto image = c.render(w);
+
+        EXPECT_TRUE(approx_equals(image.pixel_at(5, 5), color(0.38066, 0.47583, 0.2855), 1e-5));
+    }
 }

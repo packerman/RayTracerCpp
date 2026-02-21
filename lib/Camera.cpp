@@ -32,4 +32,18 @@ namespace rt {
         const Ray ray{origin, direction};
         return ray;
     }
+
+    Canvas Camera::render(const World &world) const {
+        auto image = Canvas{h_size(), v_size()};
+
+        for (std::size_t y = 0; y < v_size(); ++y) {
+            for (std::size_t x = 0; x < h_size(); ++x) {
+                auto ray = ray_for_pixel(x, y);
+                auto color = world.color_at(ray);
+                image.write_pixel(x, y, color);
+            }
+        }
+
+        return image;
+    }
 }

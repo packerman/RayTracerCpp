@@ -9,9 +9,9 @@ namespace rt {
 
         const Vector sphere_to_ray = ray2.origin() - point(0, 0, 0);
 
-        const auto a = dot(ray2.direction(), ray2.direction());
-        const auto b = 2 * dot(ray2.direction(), sphere_to_ray);
-        const auto c = dot(sphere_to_ray, sphere_to_ray) - 1;
+        const auto a = ray2.direction().dot( ray2.direction());
+        const auto b = 2 * ray2.direction().dot(sphere_to_ray);
+        const auto c = sphere_to_ray.dot(sphere_to_ray) - 1;
 
         const auto discriminant = b * b - 4 * a * c;
 

@@ -141,7 +141,7 @@ namespace rt {
     TEST(TupleTest, DotProduct) {
         constexpr auto a = vector(1, 2, 3);
         constexpr auto b = vector(2, 3, 4);
-        EXPECT_EQ(dot(a, b), 20.0);
+        EXPECT_EQ(a.dot(b), 20.0);
     }
 
     class TupleCrossProductTest : public ::testing::TestWithParam<std::tuple<Tuple, Tuple, Tuple> > {
@@ -149,7 +149,7 @@ namespace rt {
 
     TEST_P(TupleCrossProductTest, CrossProduct) {
         auto [a, b, expected] = GetParam();
-        EXPECT_EQ(cross(a, b), expected);
+        EXPECT_EQ(a.cross(b), expected);
     }
 
     INSTANTIATE_TEST_SUITE_P(

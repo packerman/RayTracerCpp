@@ -8,8 +8,7 @@ namespace rt {
     using Point = Tuple;
     using Vector = Tuple;
     using Color = Tuple;
-
-    constexpr double dot(const Tuple &a, const Tuple &b);
+    constexpr Vector vector(double x, double y, double z);
 
     struct Tuple {
         double x;
@@ -66,8 +65,19 @@ namespace rt {
             return Tuple{x / m, y / m, z / m, w / m};
         }
 
+        [[nodiscard]] constexpr double dot(const Tuple &other) const {
+            return this->x * other.x + this->y * other.y + this->z * other.z + this->w * other.w;
+        }
+
+        [[nodiscard]] constexpr Tuple cross(const Tuple &other) const {
+            return vector(
+                this->y * other.z - this->z * other.y,
+                this->z * other.x - this->x * other.z,
+                this->x * other.y - this->y * other.x);
+        }
+
         [[nodiscard]] Tuple reflect(const Tuple &normal) const {
-            return *this - normal * 2 * dot(*this, normal);
+            return *this - normal * 2 * dot(normal);
         }
 
         friend constexpr bool operator==(const Tuple &lhs, const Tuple &rhs) {
@@ -113,15 +123,4 @@ namespace rt {
     }
 
     constexpr Color black{color(0, 0, 0)};
-
-    constexpr double dot(const Tuple &a, const Tuple &b) {
-        return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
-    }
-
-    constexpr Tuple cross(const Tuple &a, const Tuple &b) {
-        return vector(
-            a.y * b.z - a.z * b.y,
-            a.z * b.x - a.x * b.z,
-            a.x * b.y - a.y * b.x);
-    }
 }

@@ -12,11 +12,11 @@ namespace rt {
 
         auto diffuse_color = black;
         auto specular_color = black;
-        if (const auto light_dot_normal = dot(light_v, normal_v); light_dot_normal >= 0) {
+        if (const auto light_dot_normal = light_v.dot(normal_v); light_dot_normal >= 0) {
             diffuse_color = effective_color * this->diffuse * light_dot_normal;
 
             const auto reflect_v = -light_v.reflect(normal_v);
-            if (const auto reflect_dot_eye = dot(reflect_v, eye_v); reflect_dot_eye > 0) {
+            if (const auto reflect_dot_eye = reflect_v.dot(eye_v); reflect_dot_eye > 0) {
                 const auto factor = std::pow(reflect_dot_eye, this->shininess);
                 specular_color = light.intensity * this->specular * factor;
             }

@@ -32,6 +32,13 @@ namespace rt {
         comps.eye_v = -ray.direction();
         comps.normal_v = comps.object->normal_at(comps.point);
 
+        if (comps.normal_v.dot(comps.eye_v) < 0) {
+            comps.inside = true;
+            comps.normal_v = -comps.normal_v;
+        } else {
+            comps.inside = false;
+        }
+
         return comps;
     }
 } // rt

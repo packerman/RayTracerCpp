@@ -67,16 +67,39 @@ namespace rt {
         ));
 
     TEST(IntersectionTest, Precompute) {
-        Ray r{point(0, 0, -5), vector(0, 0, 1)};
+        constexpr Ray r{point(0, 0, -5), vector(0, 0, 1)};
         Sphere shape{};
-        Intersection i{4, &shape};
+        const Intersection i{4, &shape};
 
-        auto comps = prepare_computations(i, r);
+        const auto comps = prepare_computations(i, r);
 
         EXPECT_EQ(comps.t, i.t());
         EXPECT_EQ(comps.object, i.object());
         EXPECT_EQ(comps.point, point(0, 0, -1));
         EXPECT_EQ(comps.eye_v, vector(0, 0, -1));
+        EXPECT_EQ(comps.normal_v, vector(0, 0, -1));
+    }
+
+    TEST(IntersectionTest, HitOutside) {
+        constexpr Ray r{point(0, 0, -5), vector(0, 0, 1)};
+        Sphere shape{};
+        const Intersection i{4, &shape};
+
+        const auto comps = prepare_computations(i, r);
+
+        EXPECT_EQ(comps.inside, false);
+    }
+
+    TEST(IntersectionTest, HitInside) {
+        constexpr Ray r{point(0, 0, 0), vector(0, 0, 1)};
+        Sphere shape{};
+        const Intersection i{1, &shape};
+
+        const auto comps = prepare_computations(i, r);
+
+        EXPECT_EQ(comps.point, point(0, 0, 1));
+        EXPECT_EQ(comps.eye_v, vector(0, 0, -1));
+        EXPECT_EQ(comps.inside, true);
         EXPECT_EQ(comps.normal_v, vector(0, 0, -1));
     }
 }

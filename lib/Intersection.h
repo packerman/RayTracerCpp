@@ -52,6 +52,7 @@ namespace rt {
         Point point;
         Vector eye_v;
         Vector normal_v;
+        bool inside;
     };
 
     Computations prepare_computations(const Intersection &intersection, const Ray& ray);

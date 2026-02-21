@@ -81,9 +81,9 @@ namespace rt {
 
     TEST(WorldTest, ColorWithIntersectionBehindTheRay) {
         const auto w = default_world();
-        auto& outer = w.object(0);
+        auto &outer = w.object(0);
         outer->material().ambient = 1;
-        auto& inner = w.object(1);
+        auto &inner = w.object(1);
         inner->material().ambient = 1;
         constexpr Ray r{point(0, 0, 0.75), vector(0, 0, -1)};
 

@@ -9,3 +9,4 @@
 #include <Intersection.h>
 #include <Material.h>
 #include <World.h>
+#include <Camera.h>

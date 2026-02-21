@@ -16,6 +16,8 @@ target_sources(ray_tracer
         Material.cpp
         World.h
         World.cpp
+        Camera.h
+        Camera.cpp
 )
 
 target_include_directories(ray_tracer

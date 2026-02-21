@@ -12,6 +12,7 @@ target_sources(ray_tracer
         Sphere.cpp
         Intersection.h
         Intersection.cpp
+        Material.h
 )
 
 target_include_directories(ray_tracer

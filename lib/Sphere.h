@@ -5,6 +5,7 @@
 #include "Ray.h"
 #include "Intersection.h"
 #include "Transformation.h"
+#include "Material.h"
 
 namespace rt {
     class Sphere {
@@ -32,6 +33,14 @@ namespace rt {
             inversed_transform_ = transform.inverse();
         }
 
+        [[nodiscard]] const Material &material() const {
+            return material_;
+        }
+
+        void set_material(const Material &material) {
+            material_ = material;
+        }
+
         std::vector<Intersection> intersect(const Ray &ray);
 
         Vector normal_at(const Point& world_point);
@@ -39,5 +48,6 @@ namespace rt {
     private:
         Transformation transform_{Transformation::identity()};
         Transformation inversed_transform_{Transformation::identity()};
+        Material material_{};
     };
 }

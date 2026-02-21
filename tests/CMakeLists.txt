@@ -21,6 +21,7 @@ target_sources(test_lib
         Ray_test.cpp
         Sphere_test.cpp
         Intersection_test.cpp
+        Material_test.cpp
 )
 
 target_link_libraries(test_lib

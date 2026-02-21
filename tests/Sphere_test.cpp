@@ -150,4 +150,22 @@ namespace rt {
                 point(0, std::numbers::sqrt2 / 2, - std::numbers::sqrt2 / 2),
                 vector(0, 0.97014, -0.24254))
         ));
+
+    TEST(SphereTest, HasMaterial) {
+        constexpr Sphere s{};
+
+        const auto m = s.material();
+
+        EXPECT_EQ(m, Material{});
+    }
+
+    TEST(SphereTest, SetTransform) {
+        Sphere s{};
+        Material m{};
+        m.ambient = 1;
+
+        s.set_material(m);
+
+        EXPECT_EQ(s.material(), m);
+    }
 }

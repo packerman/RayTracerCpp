@@ -7,3 +7,4 @@
 #include <Ray.h>
 #include <Sphere.h>
 #include <Intersection.h>
+#include <Material.h>

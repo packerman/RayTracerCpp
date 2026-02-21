@@ -5,6 +5,9 @@
 
 namespace rt {
     struct Tuple;
+    using Point = Tuple;
+    using Vector = Tuple;
+    using Color = Tuple;
 
     constexpr double dot(const Tuple &a, const Tuple &b);
 
@@ -13,6 +16,10 @@ namespace rt {
         double y;
         double z;
         double w;
+
+        Tuple() = delete;
+        constexpr Tuple(const double x, const double y, const double z, const double w) : x(x), y(y), z(z), w(w) {
+        }
 
         [[nodiscard]] constexpr bool is_point() const {
             return w == 1.0;
@@ -92,19 +99,13 @@ namespace rt {
         }
     };
 
-    using Point = Tuple;
-
     constexpr Point point(const double x, const double y, const double z) {
         return {x, y, z, 1.0};
     }
 
-    using Vector = Tuple;
-
     constexpr Vector vector(const double x, const double y, const double z) {
         return {x, y, z, 0.0};
     }
-
-    using Color = Tuple;
 
     constexpr Color color(const double red, const double green, const double blue) {
         return Tuple{red, green, blue, 0.0};

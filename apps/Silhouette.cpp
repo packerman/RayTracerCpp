@@ -11,8 +11,10 @@ int main() {
     constexpr auto half{wall_size / 2};
 
     Canvas canvas{canvas_pixels, canvas_pixels};
-    constexpr auto color{rt::color(1, 0, 0)};
     Sphere shape{};
+    shape.set_material(Material{color(1, 0.2, 1)});
+
+    Light light{point(-10, 10, -10), color(1, 1, 1)};
 
     for (auto y = 0; y < canvas_pixels; y++) {
         const auto world_y = half - pixels_size * y;
@@ -23,9 +25,14 @@ int main() {
 
             auto position = point(world_x, world_y, wall_z);
 
-            Ray r{ray_origin, (position - ray_origin).normalize()};
+            Ray ray{ray_origin, (position - ray_origin).normalize()};
 
-            if (auto xs = shape.intersect(r); hit(xs)) {
+            auto xs = shape.intersect(ray);
+            if (auto hit = rt::hit(xs)) {
+                auto point = ray.position(hit->t());
+                auto normal = hit->object()->normal_at(point);
+                auto eye = -ray.direction();
+                auto color = hit->object()->material().lighting(light, point, eye, normal);
                 canvas.write_pixel(x, y, color);
             }
         }

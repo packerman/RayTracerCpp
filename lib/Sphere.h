@@ -37,6 +37,10 @@ namespace rt {
             return material_;
         }
 
+        [[nodiscard]] Material &material() {
+            return material_;
+        }
+
         void set_material(const Material &material) {
             material_ = material;
         }

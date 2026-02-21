@@ -14,6 +14,8 @@ target_sources(ray_tracer
         Intersection.cpp
         Material.h
         Material.cpp
+        World.h
+        World.cpp
 )
 
 target_include_directories(ray_tracer

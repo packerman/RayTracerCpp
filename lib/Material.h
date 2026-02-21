@@ -7,6 +7,14 @@ namespace rt {
     struct Light {
         Point position;
         Color intensity;
+
+        friend bool operator==(const Light &lhs, const Light &rhs) {
+            return std::tie(lhs.position, lhs.intensity) == std::tie(rhs.position, rhs.intensity);
+        }
+
+        friend bool operator!=(const Light &lhs, const Light &rhs) {
+            return !(lhs == rhs);
+        }
     };
 
     struct Material {

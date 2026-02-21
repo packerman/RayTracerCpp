@@ -22,6 +22,7 @@ target_sources(test_lib
         Sphere_test.cpp
         Intersection_test.cpp
         Material_test.cpp
+        World_test.cpp
 )
 
 target_link_libraries(test_lib

@@ -8,3 +8,4 @@
 #include <Sphere.h>
 #include <Intersection.h>
 #include <Material.h>
+#include <World.h>

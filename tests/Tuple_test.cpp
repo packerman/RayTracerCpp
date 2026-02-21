@@ -43,6 +43,15 @@ namespace rt {
         EXPECT_EQ(a1 + a2, Tuple(1, 1, 6, 1));
     }
 
+    TEST(TupleTest, PlusEqual) {
+         Tuple a1{3, -2, 5, 1};
+         constexpr Tuple a2{-2, 3, 1, 0};
+
+        a1 += a2;
+
+        EXPECT_EQ(a1, Tuple(1, 1, 6, 1));
+    }
+
     class TupleSubtractTest : public ::testing::TestWithParam<std::tuple<Tuple, Tuple, Tuple> > {
     };
 

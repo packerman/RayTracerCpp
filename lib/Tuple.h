@@ -28,6 +28,14 @@ namespace rt {
             return Tuple{x + tuple.x, y + tuple.y, z + tuple.z, w + tuple.w};
         }
 
+        Tuple &operator+=(const Tuple &tuple) {
+            x += tuple.x;
+            y += tuple.y;
+            z += tuple.z;
+            w += tuple.w;
+            return *this;
+        }
+
         constexpr Tuple operator-(const Tuple &tuple) const {
             return Tuple{x - tuple.x, y - tuple.y, z - tuple.z, w - tuple.w};
         }

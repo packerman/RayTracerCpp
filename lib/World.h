@@ -13,7 +13,7 @@ namespace rt {
             return objects_;
         }
 
-        [[nodiscard]] const std::vector<std::unique_ptr<Light>>& lights() const {
+        [[nodiscard]] const std::vector<std::unique_ptr<Light> > &lights() const {
             return lights_;
         }
 
@@ -39,11 +39,11 @@ namespace rt {
 
         [[nodiscard]] std::vector<Intersection> intersect(const Ray &ray) const;
 
-        [[nodiscard]] Color shade_hit(const Computations& comps) const;
+        [[nodiscard]] Color shade_hit(const Computations &comps) const;
 
     private:
         std::vector<std::unique_ptr<Sphere> > objects_;
-        std::vector<std::unique_ptr<Light>> lights_;
+        std::vector<std::unique_ptr<Light> > lights_;
     };
 
     World default_world();

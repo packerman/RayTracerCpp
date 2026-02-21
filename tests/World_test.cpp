@@ -60,4 +60,35 @@ namespace rt {
 
         EXPECT_TRUE(approx_equals(c, color(0.90498, 0.90498, 0.90498), 1e-5));
     }
+
+    TEST(WorldTest, ColorWhenRayMisses) {
+        const auto w = default_world();
+        constexpr Ray r{point(0, 0, -5), vector(0, 1, 0)};
+
+        const auto c = w.color_at(r);
+
+        EXPECT_EQ(c, color(0, 0, 0));
+    }
+
+    TEST(WorldTest, ColorWhenRayHits) {
+        const auto w = default_world();
+        constexpr Ray r{point(0, 0, -5), vector(0, 0, 1)};
+
+        const auto c = w.color_at(r);
+
+        EXPECT_TRUE(approx_equals(c, color(0.38066, 0.47583, 0.2855), 1e-5));
+    }
+
+    TEST(WorldTest, ColorWithIntersectionBehindTheRay) {
+        const auto w = default_world();
+        auto& outer = w.object(0);
+        outer->material().ambient = 1;
+        auto& inner = w.object(1);
+        inner->material().ambient = 1;
+        constexpr Ray r{point(0, 0, 0.75), vector(0, 0, -1)};
+
+        const auto c = w.color_at(r);
+
+        EXPECT_EQ(c, inner->material().color);
+    }
 }

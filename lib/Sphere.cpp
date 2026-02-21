@@ -31,4 +31,8 @@ namespace rt {
         world_normal.w = 0;
         return world_normal.normalize();
     }
+
+    std::unique_ptr<Sphere> sphere() {
+        return std::make_unique<Sphere>();
+    }
 }

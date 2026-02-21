@@ -80,7 +80,7 @@ namespace rt {
         }
 
         [[nodiscard]] Tuple reflect(const Tuple &normal) const {
-            return *this - normal * 2 * dot(normal);
+            return *this - normal * 2 * this->dot(normal);
         }
 
         friend constexpr bool operator==(const Tuple &lhs, const Tuple &rhs) {

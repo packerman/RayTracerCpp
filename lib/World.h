@@ -41,6 +41,8 @@ namespace rt {
 
         [[nodiscard]] Color shade_hit(const Computations &comps) const;
 
+        [[nodiscard]] Color color_at(const Ray& ray) const;
+
     private:
         std::vector<std::unique_ptr<Sphere> > objects_;
         std::vector<std::unique_ptr<Light> > lights_;

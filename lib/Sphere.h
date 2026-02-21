@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
 #include "Ray.h"
@@ -54,4 +55,6 @@ namespace rt {
         Transformation inversed_transform_{Transformation::identity()};
         Material material_{};
     };
+
+    std::unique_ptr<Sphere> sphere();
 }

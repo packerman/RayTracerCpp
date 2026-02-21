@@ -18,6 +18,7 @@ namespace rt {
         double w;
 
         Tuple() = delete;
+
         constexpr Tuple(const double x, const double y, const double z, const double w) : x(x), y(y), z(z), w(w) {
         }
 
@@ -110,6 +111,8 @@ namespace rt {
     constexpr Color color(const double red, const double green, const double blue) {
         return Tuple{red, green, blue, 0.0};
     }
+
+    constexpr Color black{color(0, 0, 0)};
 
     constexpr double dot(const Tuple &a, const Tuple &b) {
         return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;

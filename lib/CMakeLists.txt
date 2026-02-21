@@ -13,6 +13,7 @@ target_sources(ray_tracer
         Intersection.h
         Intersection.cpp
         Material.h
+        Material.cpp
 )
 
 target_include_directories(ray_tracer

@@ -16,6 +16,9 @@ namespace rt {
         double specular{0.9};
         double shininess{200.0};
 
+        [[nodiscard]] Color lighting(const Light &light, const Point &point, const Vector &eye_v,
+                                     const Vector &normal_v) const;;
+
         friend bool operator==(const Material &lhs, const Material &rhs) {
             return std::tie(lhs.color, lhs.ambient, lhs.diffuse, lhs.specular, lhs.shininess) == std::tie(
                        rhs.color, rhs.ambient, rhs.diffuse, rhs.specular, rhs.shininess);
@@ -25,13 +28,6 @@ namespace rt {
             return !(lhs == rhs);
         }
 
-        friend std::ostream & operator<<(std::ostream &os, const Material &obj) {
-            return os
-                   << "color: " << obj.color
-                   << " ambient: " << obj.ambient
-                   << " diffuse: " << obj.diffuse
-                   << " specular: " << obj.specular
-                   << " shininess: " << obj.shininess;
-        }
+        friend std::ostream &operator<<(std::ostream &os, const Material &obj);
     };
 }

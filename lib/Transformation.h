@@ -68,7 +68,7 @@ namespace rt {
         return t;
     }
 
-    inline Transformation view_transform(const Point& from, const Point& to, const Vector& up) {
+    inline Transformation view_transform(const Point &from, const Point &to, const Vector &up) {
         const auto forward = (to - from).normalize();
         const auto up_n = up.normalize();
         const auto left = forward.cross(up_n);

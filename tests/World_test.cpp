@@ -11,7 +11,7 @@ namespace rt {
     }
 
     TEST(WorldTest, DefaultWorld) {
-        const Light light{point(-10, 10, -10), color(1, 1, 1)};
+        constexpr Light light{point(-10, 10, -10), color(1, 1, 1)};
 
         const auto s1 = std::make_unique<Sphere>();
         s1->material().color = color(0.8, 1.0, 0.6);
@@ -31,10 +31,10 @@ namespace rt {
     }
 
     TEST(WorldTest, Intersect) {
-        auto w = default_world();
-        Ray r{point(0, 0, -5), vector(0, 0, 1)};
+        const auto w = default_world();
+        constexpr Ray r{point(0, 0, -5), vector(0, 0, 1)};
 
-        auto xs = w.intersect(r);
+        const auto xs = w.intersect(r);
 
         EXPECT_EQ(xs.size(), 4);
         EXPECT_EQ(xs[0].t(), 4);

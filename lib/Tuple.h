@@ -16,11 +16,6 @@ namespace rt {
         double z;
         double w;
 
-        Tuple() = delete;
-
-        constexpr Tuple(const double x, const double y, const double z, const double w) : x(x), y(y), z(z), w(w) {
-        }
-
         [[nodiscard]] constexpr bool is_point() const {
             return w == 1.0;
         }

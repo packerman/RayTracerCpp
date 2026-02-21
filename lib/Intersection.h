@@ -4,6 +4,9 @@
 #include <ostream>
 #include <vector>
 
+#include "Ray.h"
+#include "Tuple.h"
+
 namespace rt {
     class Sphere;
 
@@ -42,4 +45,14 @@ namespace rt {
     }
 
     std::optional<Intersection> hit(std::vector<Intersection> &xs);
+
+    struct Computations {
+        double t;
+        Sphere *object;
+        Point point;
+        Vector eye_v;
+        Vector normal_v;
+    };
+
+    Computations prepare_computations(const Intersection &intersection, const Ray& ray);
 } // rt

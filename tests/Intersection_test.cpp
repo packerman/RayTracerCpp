@@ -65,4 +65,18 @@ namespace rt {
             std::make_tuple(std::vector<double>{-2, -1}, std::optional<int>{}),
             std::make_tuple(std::vector<double>{5, 7, -3, 2}, 3)
         ));
+
+    TEST(IntersectionTest, Precompute) {
+        Ray r{point(0, 0, -5), vector(0, 0, 1)};
+        Sphere shape{};
+        Intersection i{4, &shape};
+
+        auto comps = prepare_computations(i, r);
+
+        EXPECT_EQ(comps.t, i.t());
+        EXPECT_EQ(comps.object, i.object());
+        EXPECT_EQ(comps.point, point(0, 0, -1));
+        EXPECT_EQ(comps.eye_v, vector(0, 0, -1));
+        EXPECT_EQ(comps.normal_v, vector(0, 0, -1));
+    }
 }

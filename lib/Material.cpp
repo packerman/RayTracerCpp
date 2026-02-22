@@ -3,6 +3,10 @@
 #include <cmath>
 
 namespace rt {
+    std::unique_ptr<Light> point_light(const Point &position, const Color &intensity) {
+        return std::make_unique<Light>(position, intensity);
+    }
+
     Color Material::lighting(const Light &light, const Point &point, const Vector &eye_v,
                              const Vector &normal_v) const {
         const auto effective_color = this->color * light.intensity;

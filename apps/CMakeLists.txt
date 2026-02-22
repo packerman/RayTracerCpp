@@ -27,3 +27,13 @@ target_link_libraries(silhouette
         PRIVATE
         ray_tracer
 )
+
+add_executable(scene)
+target_sources(scene
+        PRIVATE
+        Common.h
+        Scene.cpp)
+target_link_libraries(scene
+        PRIVATE
+        ray_tracer
+)

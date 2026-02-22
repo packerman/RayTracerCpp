@@ -1,5 +1,5 @@
 #pragma once
-#include <ostream>
+#include <memory>
 
 #include "Tuple.h"
 
@@ -16,6 +16,8 @@ namespace rt {
             return !(lhs == rhs);
         }
     };
+
+    std::unique_ptr<Light> point_light(const Point &position, const Color &intensity);
 
     struct Material {
         Color color{rt::color(1, 1, 1)};

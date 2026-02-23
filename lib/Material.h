@@ -27,7 +27,7 @@ namespace rt {
         double shininess{200.0};
 
         [[nodiscard]] Color lighting(const Light &light, const Point &point, const Vector &eye_v,
-                                     const Vector &normal_v) const;;
+                                     const Vector &normal_v, bool in_shadow = false) const;;
 
         friend bool operator==(const Material &lhs, const Material &rhs) {
             return std::tie(lhs.color, lhs.ambient, lhs.diffuse, lhs.specular, lhs.shininess) == std::tie(

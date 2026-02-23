@@ -15,8 +15,9 @@ namespace rt {
     Color World::shade_hit(const Computations &comps) const {
         Color result{color(0, 0, 0)};
         for (auto &light: lights_) {
+            const auto shadowed = is_shadowed(comps.over_point, *light);
             result += comps.object->material()
-                    .lighting(*light, comps.point, comps.eye_v, comps.normal_v);
+                    .lighting(*light, comps.over_point, comps.eye_v, comps.normal_v, shadowed);
         }
         return result;
     }
@@ -29,6 +30,18 @@ namespace rt {
         }
         const auto comps = prepare_computations(hit.value(), ray);
         return shade_hit(comps);
+    }
+
+    bool World::is_shadowed(const Point &point, const Light &light) const {
+        const auto v = light.position - point;
+        const auto distance = v.magnitude();
+        const auto direction = v.normalize();
+
+        const Ray r{point, direction};
+        auto intersections = intersect(r);
+
+        const auto h = intersections.hit();
+        return h && h->t() < distance;
     }
 
     World default_world() {

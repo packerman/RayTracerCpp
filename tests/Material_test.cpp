@@ -24,11 +24,15 @@ namespace rt {
         EXPECT_EQ(m.shininess, 200.0);
     }
 
-    class LightingTest
-            : public ::testing::TestWithParam<std::tuple<Vector, Vector, Light, Color> > {
+    struct LightingTestFixture {
     protected:
         Material m_;
         Point position_{point(0, 0, 0)};
+    };
+
+    class LightingTest
+            : public ::testing::TestWithParam<std::tuple<Vector, Vector, Light, Color> >,
+              protected LightingTestFixture {
     };
 
     TEST_P(LightingTest, Lighting) {
@@ -74,4 +78,18 @@ namespace rt {
                 color(0.1, 0.1, 0.1)
             )
         ));
+
+    class LightingInShadowTest : public ::testing::Test, protected LightingTestFixture {
+    };
+
+    TEST_F(LightingInShadowTest, LightingInShadow) {
+        constexpr auto eye_v = vector(0, 0, -1);
+        constexpr auto normal_v = vector(0, 0, -1);
+        const auto light = point_light(point(0, 0, -10), color(1, 1, 1));
+        constexpr auto in_shadow = true;
+
+        const auto result = m_.lighting(*light, position_, eye_v, normal_v, in_shadow);
+
+        EXPECT_EQ(result, color(0.1, 0.1, 0.1));
+    }
 }

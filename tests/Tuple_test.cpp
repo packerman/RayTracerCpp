@@ -28,12 +28,12 @@ namespace rt {
     }
 
     TEST(TupleTest, PointMethod) {
-        const auto p = point(4, -4, 3);
+        constexpr auto p = point(4, -4, 3);
         EXPECT_EQ(p, Tuple(4, -4, 3, 1));
     }
 
     TEST(TupleTest, VectorMethod) {
-        const auto p = vector(4, -4, 3);
+        constexpr auto p = vector(4, -4, 3);
         EXPECT_EQ(p, Tuple(4, -4, 3, 0));
     }
 
@@ -142,7 +142,7 @@ namespace rt {
     );
 
     TEST(TupleTest, NormalizingTuple) {
-        const auto v = vector(1, 20, 3);
+        constexpr auto v = vector(1, 20, 3);
         const auto norm = v.normalize();
         EXPECT_EQ(norm.magnitude(), 1.0);
     }
@@ -151,6 +151,7 @@ namespace rt {
         constexpr auto a = vector(1, 2, 3);
         constexpr auto b = vector(2, 3, 4);
         EXPECT_EQ(a.dot(b), 20.0);
+        EXPECT_EQ(dot(a, b), 20.0);
     }
 
     class TupleCrossProductTest : public ::testing::TestWithParam<std::tuple<Tuple, Tuple, Tuple> > {
@@ -159,6 +160,7 @@ namespace rt {
     TEST_P(TupleCrossProductTest, CrossProduct) {
         auto [a, b, expected] = GetParam();
         EXPECT_EQ(a.cross(b), expected);
+        EXPECT_EQ(cross(a, b), expected);
     }
 
     INSTANTIATE_TEST_SUITE_P(
@@ -173,32 +175,32 @@ namespace rt {
     );
 
     TEST(ColorTest, CreatingColor) {
-        const auto c = color(-0.5, 0.4, 1.7);
+        constexpr auto c = color(-0.5, 0.4, 1.7);
         EXPECT_EQ(c.red(), -0.5);
         EXPECT_EQ(c.green(), 0.4);
         EXPECT_EQ(c.blue(), 1.7);
     }
 
     TEST(ColorTest, AddingColors) {
-        const auto c1 = color(0.9, 0.6, 0.75);
-        const auto c2 = color(0.7, 0.1, 0.25);
+        constexpr auto c1 = color(0.9, 0.6, 0.75);
+        constexpr auto c2 = color(0.7, 0.1, 0.25);
         EXPECT_EQ(c1 + c2, color(1.6, 0.7, 1.0));
     }
 
     TEST(ColorTest, SubtractingColors) {
-        const auto c1 = color(0.9, 0.6, 0.75);
-        const auto c2 = color(0.7, 0.1, 0.25);
+        constexpr auto c1 = color(0.9, 0.6, 0.75);
+        constexpr auto c2 = color(0.7, 0.1, 0.25);
         EXPECT_TRUE(approx_equals(c1 - c2, color(0.2, 0.5, 0.5), machine_epsilon));
     }
 
     TEST(ColorTest, MultiplyingByScalar) {
-        const auto c = color(0.2, 0.3, 0.4);
+        constexpr auto c = color(0.2, 0.3, 0.4);
         EXPECT_EQ(c * 2, color(0.4, 0.6, 0.8));
     }
 
     TEST(ColorTest, MultiplyingColors) {
-        const auto c1 = color(1, 0.2, 0.4);
-        const auto c2 = color(0.9, 1, 0.1);
+        constexpr auto c1 = color(1, 0.2, 0.4);
+        constexpr auto c2 = color(0.9, 1, 0.1);
         EXPECT_TRUE(approx_equals(c1*c2, color(0.9, 0.2, 0.04), machine_epsilon));
     }
 

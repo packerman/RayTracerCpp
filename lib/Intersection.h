@@ -63,6 +63,8 @@ namespace rt {
         bool is_sorted_ = false;
     };
 
+    constexpr double shadow_epsilon = 1e-10;
+
     struct Computations {
         double t;
         Sphere *object;
@@ -70,6 +72,7 @@ namespace rt {
         Vector eye_v;
         Vector normal_v;
         bool inside;
+        Point over_point;
     };
 
     Computations prepare_computations(const Intersection &intersection, const Ray &ray);

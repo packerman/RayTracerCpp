@@ -33,18 +33,35 @@ namespace rt {
             return !(lhs == rhs);
         }
 
-        friend std::ostream & operator<<(std::ostream &os, const Intersection &obj);
+        friend std::ostream &operator<<(std::ostream &os, const Intersection &obj);
 
     private:
         double t_{};
         Sphere *object_{};
     };
 
-    inline std::vector<Intersection> intersections(const std::initializer_list<Intersection> list) {
-        return {list};
-    }
+    class Intersections {
+    public:
+        Intersections() = default;
 
-    std::optional<Intersection> hit(std::vector<Intersection> &xs);
+        Intersections(const std::initializer_list<Intersection> xs) : intersections_(xs) {
+        }
+
+        explicit Intersections(const std::vector<Intersection> &xs) : intersections_(xs) {
+        }
+
+        const std::vector<Intersection> &data();
+
+        std::optional<Intersection> hit();
+
+        void insert(const std::vector<Intersection> &xs);
+
+    private:
+        void sort();
+
+        std::vector<Intersection> intersections_{};
+        bool is_sorted_ = false;
+    };
 
     struct Computations {
         double t;
@@ -55,5 +72,5 @@ namespace rt {
         bool inside;
     };
 
-    Computations prepare_computations(const Intersection &intersection, const Ray& ray);
+    Computations prepare_computations(const Intersection &intersection, const Ray &ray);
 } // rt

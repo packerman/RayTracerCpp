@@ -3,13 +3,12 @@
 #include <algorithm>
 
 namespace rt {
-    std::vector<Intersection> World::intersect(const Ray &ray) const {
-        std::vector<Intersection> result;
+    Intersections World::intersect(const Ray &ray) const {
+        Intersections result;
         for (auto &obj: objects_) {
             auto xs = obj->intersect(ray);
-            result.insert(result.end(), xs.begin(), xs.end());
+            result.insert(xs);
         }
-        std::ranges::sort(result, [](auto a, auto b) { return a.t() < b.t(); });
         return result;
     }
 
@@ -24,7 +23,7 @@ namespace rt {
 
     Color World::color_at(const Ray &ray) const {
         auto xs = intersect(ray);
-        const auto hit = rt::hit(xs);
+        const auto hit = xs.hit();
         if (!hit) {
             return black;
         }

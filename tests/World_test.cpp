@@ -26,7 +26,7 @@ namespace rt {
         const auto w = default_world();
         constexpr Ray r{point(0, 0, -5), vector(0, 0, 1)};
 
-        const auto xs = w.intersect(r);
+        const auto xs = w.intersect(r).data();
 
         EXPECT_EQ(xs.size(), 4);
         EXPECT_EQ(xs[0].t(), 4);

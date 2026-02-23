@@ -5,21 +5,40 @@
 #include "Sphere.h"
 
 namespace rt {
-    std::optional<Intersection> hit(std::vector<Intersection> &xs) {
-        std::ranges::sort(xs, [](auto &a, auto &b) { return a.t() < b.t(); });
-        const auto it = std::ranges::find_if(xs, [](auto &x) {
+    std::ostream &operator<<(std::ostream &os, const Intersection &obj) {
+        return os
+               << "t_: " << obj.t_
+               << " object_: " << obj.object_;
+    }
+
+    const std::vector<Intersection> &Intersections::data() {
+        sort();
+        return intersections_;
+    }
+
+    std::optional<Intersection> Intersections::hit() {
+        sort();
+        const auto it = std::ranges::find_if(intersections_, [](auto &x) {
             return x.t() >= 0;
         });
-        if (it == xs.end()) {
+        if (it == intersections_.end()) {
             return {};
         }
         return *it;
     }
 
-    std::ostream &operator<<(std::ostream &os, const Intersection &obj) {
-        return os
-               << "t_: " << obj.t_
-               << " object_: " << obj.object_;
+    void Intersections::insert(const std::vector<Intersection> &xs) {
+        if (!xs.empty()) {
+            intersections_.insert(intersections_.end(), xs.begin(), xs.end());
+            is_sorted_ = false;
+        }
+    }
+
+    void Intersections::sort() {
+        if (!is_sorted_) {
+            std::ranges::sort(intersections_, [](auto &a, auto &b) { return a.t() < b.t(); });
+            is_sorted_ = true;
+        }
     }
 
     Computations prepare_computations(const Intersection &intersection, const Ray &ray) {

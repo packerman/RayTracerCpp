@@ -37,7 +37,7 @@ namespace rt {
             lights_.erase(lights_.begin() + index);
         }
 
-        [[nodiscard]] std::vector<Intersection> intersect(const Ray &ray) const;
+        [[nodiscard]] Intersections intersect(const Ray &ray) const;
 
         [[nodiscard]] Color shade_hit(const Computations &comps) const;
 

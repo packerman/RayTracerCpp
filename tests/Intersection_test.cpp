@@ -29,7 +29,7 @@ namespace rt {
         EXPECT_EQ(xs[1].t(), 2);
     }
 
-    Intersections make_intersections(Sphere* object, const std::vector<double> &ts) {
+    Intersections make_intersections(Sphere *object, const std::vector<double> &ts) {
         std::vector<Intersection> xs (ts.size());
         std::ranges::transform(ts, xs.begin(), [&](auto t) {
                 return Intersection{t, object};

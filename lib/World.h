@@ -43,6 +43,8 @@ namespace rt {
 
         [[nodiscard]] Color color_at(const Ray &ray) const;
 
+        [[nodiscard]] bool is_shadowed(const Point &point, const Light &light) const;
+
     private:
         std::vector<std::unique_ptr<Sphere> > objects_;
         std::vector<std::unique_ptr<Light> > lights_;

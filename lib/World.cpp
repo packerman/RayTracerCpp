@@ -31,6 +31,18 @@ namespace rt {
         return shade_hit(comps);
     }
 
+    bool World::is_shadowed(const Point &point, const Light &light) const {
+        const auto v = light.position - point;
+        const auto distance = v.magnitude();
+        const auto direction = v.normalize();
+
+        const Ray r{point, direction};
+        auto intersections = intersect(r);
+
+        const auto h = intersections.hit();
+        return h && h->t() < distance;
+    }
+
     World default_world() {
         auto light = std::make_unique<Light>(point(-10, 10, -10), color(1, 1, 1));
 

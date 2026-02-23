@@ -126,4 +126,12 @@ namespace rt {
     }
 
     constexpr Color black{color(0, 0, 0)};
+
+    constexpr double dot(const Tuple &a, const Tuple &b) {
+        return a.dot(b);
+    }
+
+    constexpr Vector cross(const Vector &a, const Vector &b) {
+        return a.cross(b);
+    }
 }

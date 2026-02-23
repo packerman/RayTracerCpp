@@ -8,11 +8,15 @@ namespace rt {
     }
 
     Color Material::lighting(const Light &light, const Point &point, const Vector &eye_v,
-                             const Vector &normal_v) const {
+                             const Vector &normal_v, const bool in_shadow) const {
         const auto effective_color = this->color * light.intensity;
         const auto light_v = (light.position - point).normalize();
 
         const auto ambient_color = effective_color * this->ambient;
+
+        if (in_shadow) {
+            return ambient_color;
+        }
 
         auto diffuse_color = black;
         auto specular_color = black;

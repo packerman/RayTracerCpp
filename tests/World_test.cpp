@@ -91,4 +91,26 @@ namespace rt {
 
         EXPECT_EQ(c, inner->material().color);
     }
+
+    class ShadowTest : public ::testing::TestWithParam<std::tuple<Point, bool> > {
+    };
+
+    TEST_P(ShadowTest, IsShadowed) {
+        auto [p, expected] = GetParam();
+
+        const auto w = default_world();
+        auto &light = w.light(0);
+
+        EXPECT_EQ(w.is_shadowed(p, *light), expected);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        ShadowSuite,
+        ShadowTest,
+        ::testing::Values(
+            std::make_tuple(point(0, 10, 0), false),
+            std::make_tuple(point(10, -10, 10), true),
+            std::make_tuple(point(-20, 20, -20), false),
+            std::make_tuple(point(-2, 2, -2), false)
+        ));
 }

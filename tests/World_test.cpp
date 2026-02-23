@@ -61,6 +61,23 @@ namespace rt {
         EXPECT_TRUE(approx_equals(c, color(0.90498, 0.90498, 0.90498), 1e-5));
     }
 
+    TEST(WorldTest, ShadeHitInShadow) {
+        World w{};
+        w.add_light(point_light(point(0, 0, -10), color(1, 1, 1)));
+        auto s1 = sphere();
+        w.add_object(std::move(s1));
+        auto s2 = sphere();
+        s2->set_transform(translation(0, 0, 10));
+        constexpr Ray r{point(0, 0, 5), vector(0, 0, 1)};
+        const Intersection i{4, s2.get()};
+        w.add_object(std::move(s2));
+
+        const auto comps = prepare_computations(i, r);
+        const auto c = w.shade_hit(comps);
+
+        EXPECT_EQ(c, color(0.1, 0.1, 0.1));
+    }
+
     TEST(WorldTest, ColorWhenRayMisses) {
         const auto w = default_world();
         constexpr Ray r{point(0, 0, -5), vector(0, 1, 0)};

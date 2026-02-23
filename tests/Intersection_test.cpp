@@ -30,10 +30,10 @@ namespace rt {
     }
 
     Intersections make_intersections(Sphere *object, const std::vector<double> &ts) {
-        std::vector<Intersection> xs (ts.size());
+        std::vector<Intersection> xs(ts.size());
         std::ranges::transform(ts, xs.begin(), [&](auto t) {
-                return Intersection{t, object};
-            });
+            return Intersection{t, object};
+        });
         return Intersections{xs};
     }
 
@@ -105,5 +105,17 @@ namespace rt {
         EXPECT_EQ(comps.eye_v, vector(0, 0, -1));
         EXPECT_EQ(comps.inside, true);
         EXPECT_EQ(comps.normal_v, vector(0, 0, -1));
+    }
+
+    TEST(IntersectionTest, OffsetThePoint) {
+        constexpr Ray r{point(0, 0, -5), vector(0, 0, 1)};
+        const auto shape = sphere();
+        shape->set_transform(translation(0, 0, 1));
+        const Intersection i{5, shape.get()};
+
+        const auto comps = prepare_computations(i, r);
+
+        EXPECT_LT(comps.over_point.z, -shadow_epsilon/2);
+        EXPECT_GT(comps.point.z, comps.over_point.z);
     }
 }

@@ -58,6 +58,8 @@ namespace rt {
             comps.inside = false;
         }
 
+        comps.over_point = comps.point + comps.normal_v * shadow_epsilon;
+
         return comps;
     }
 } // rt

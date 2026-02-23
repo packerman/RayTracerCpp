@@ -4,6 +4,7 @@ int main() {
     auto floor = rt::sphere();
     floor->set_transform(rt::scaling(10, 0.01, 10));
     floor->material().color = rt::color(1, 0.9, 0.9);
+    floor->material().ambient = 0.25;
     floor->material().specular = 0;
 
     auto left_wall = rt::sphere();

@@ -63,7 +63,7 @@ namespace rt {
         bool is_sorted_ = false;
     };
 
-    constexpr double shadow_epsilon = 1e-6;
+    constexpr double shadow_epsilon = 1e-10;
 
     struct Computations {
         double t;

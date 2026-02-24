@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "Sphere.h"
+#include "Shape.h"
 
 #include "Common.h"
 #include "Ray.h"
@@ -9,6 +9,78 @@
 #include "Transformation.h"
 
 namespace rt {
+    struct TestShape : Shape {
+        [[nodiscard]] std::vector<Intersection> local_intersect(const Ray &ray) override {
+            saved_ray = ray;
+            return {};
+        }
+
+        Ray saved_ray{point(0, 0, 0), vector(0, 0, 0)};
+    };
+
+    std::unique_ptr<TestShape> test_shape() {
+        return std::make_unique<TestShape>();
+    }
+
+    TEST(ShapeTest, DefaultTransformation) {
+        const auto s = test_shape();
+        EXPECT_EQ(s->transform(), Transformation::identity());
+        EXPECT_EQ(s->inversed_transform(), Transformation::identity());
+    }
+
+    TEST(ShapeTest, ChangeTransformation) {
+        const auto s = test_shape();
+        constexpr auto t = translation(2, 3, 4);
+        constexpr auto t_inv = translation(-2, -3, -4);
+
+        s->set_transform(t);
+
+        EXPECT_EQ(s->transform(), t);
+        EXPECT_EQ(s->inversed_transform(), t_inv);
+    }
+
+    TEST(ShapeTest, HasMaterial) {
+        const auto s = test_shape();
+
+        const auto m = s->material();
+
+        EXPECT_EQ(m, Material{});
+    }
+
+    TEST(ShapeTest, SetMaterial) {
+        const auto s = test_shape();
+        Material m{};
+        m.ambient = 1;
+
+        s->set_material(m);
+
+        EXPECT_EQ(s->material(), m);
+    }
+
+    class RayTransformedShapeIntersectionTest
+            : public ::testing::TestWithParam<std::tuple<Transformation, Ray > > {
+    };
+
+    TEST_P(RayTransformedShapeIntersectionTest, RayTransformedShapeIntersection) {
+        constexpr auto r = Ray{point(0, 0, -5), vector(0, 0, 1)};
+        auto [m, expected] = GetParam();
+        auto s = test_shape();
+
+        s->set_transform(m);
+        const auto xs = s->intersect(r);
+
+        EXPECT_EQ(s->saved_ray.origin(), expected.origin());
+        EXPECT_EQ(s->saved_ray.direction(), expected.direction());
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        RayTransformedShapeIntersectionSuite,
+        RayTransformedShapeIntersectionTest,
+        ::testing::Values(
+            std::make_tuple(scaling(2, 2, 2), Ray(point(0, 0, -2.5), vector(0, 0, 0.5))),
+            std::make_tuple(translation(5, 0, 0), Ray(point(-5, 0, -5), vector(0, 0, 1)))
+        ));
+
     class RaySphereIntersectionTest : public ::testing::TestWithParam<std::tuple<Ray, std::vector<double> > > {
     };
 
@@ -46,46 +118,6 @@ namespace rt {
         EXPECT_EQ(xs[0].object(), &s);
         EXPECT_EQ(xs[1].object(), &s);
     }
-
-    TEST(SphereTest, DefaultTransformation) {
-        constexpr Sphere s{};
-        EXPECT_EQ(s.transform(), Transformation::identity());
-    }
-
-    TEST(SphereTest, ChangeTransformation) {
-        Sphere s{};
-        constexpr auto t = translation(2, 3, 4);
-
-        s.set_transform(t);
-
-        EXPECT_EQ(s.transform(), t);
-    }
-
-    class RayTransformedSphereIntersectionTest
-            : public ::testing::TestWithParam<std::tuple<Transformation, std::vector<double> > > {
-    };
-
-    TEST_P(RayTransformedSphereIntersectionTest, RayTransformedSphereIntersection) {
-        constexpr auto r = Ray{point(0, 0, -5), vector(0, 0, 1)};
-        auto [m, expected] = GetParam();
-        auto s = Sphere();
-
-        s.set_transform(m);
-        const auto xs = s.intersect(r);
-
-        EXPECT_EQ(xs.size(), expected.size());
-        for (auto i = 0; i < expected.size(); ++i) {
-            EXPECT_EQ(xs[i].t(), expected[i]);
-        }
-    }
-
-    INSTANTIATE_TEST_SUITE_P(
-        RayTransformedSphereIntersectionSuite,
-        RayTransformedSphereIntersectionTest,
-        ::testing::Values(
-            std::make_tuple(scaling(2, 2, 2), std::vector<double>{3, 7}),
-            std::make_tuple(translation(5, 0, 0), std::vector<double>{})
-        ));
 
     class SphereNormalTest : public ::testing::TestWithParam<std::tuple<Point, Vector> > {
     };
@@ -150,22 +182,4 @@ namespace rt {
                 point(0, std::numbers::sqrt2 / 2, - std::numbers::sqrt2 / 2),
                 vector(0, 0.97014, -0.24254))
         ));
-
-    TEST(SphereTest, HasMaterial) {
-        constexpr Sphere s{};
-
-        const auto m = s.material();
-
-        EXPECT_EQ(m, Material{});
-    }
-
-    TEST(SphereTest, SetTransform) {
-        Sphere s{};
-        Material m{};
-        m.ambient = 1;
-
-        s.set_material(m);
-
-        EXPECT_EQ(s.material(), m);
-    }
 }

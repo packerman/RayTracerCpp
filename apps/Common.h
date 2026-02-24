@@ -5,7 +5,7 @@
 #include <Matrix.h>
 #include <Transformation.h>
 #include <Ray.h>
-#include <Sphere.h>
+#include <Shape.h>
 #include <Intersection.h>
 #include <Material.h>
 #include <World.h>

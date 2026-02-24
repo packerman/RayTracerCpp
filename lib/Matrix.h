@@ -4,6 +4,7 @@
 #include <ostream>
 #include <stdexcept>
 #include <initializer_list>
+#include <optional>
 
 #include "Tuple.h"
 
@@ -117,10 +118,10 @@ namespace rt {
             return determinant() != 0.0;
         }
 
-        [[nodiscard]] Matrix inverse() const {
+        [[nodiscard]] constexpr  std::optional<Matrix> inverse() const {
             const double det = determinant();
             if (det == 0) {
-                throw std::runtime_error("Matrix is not invertible");
+                return {};
             }
             Matrix m;
             for (std::size_t i = 0; i < N; ++i) {

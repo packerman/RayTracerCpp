@@ -13,7 +13,7 @@ namespace rt {
     }
 
     Color World::shade_hit(const Computations &comps) const {
-        Color result{color(0, 0, 0)};
+        auto result = color(0, 0, 0);
         for (auto &light: lights_) {
             const auto shadowed = is_shadowed(comps.over_point, *light);
             result += comps.object->material()

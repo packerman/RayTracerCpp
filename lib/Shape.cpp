@@ -1,9 +1,14 @@
-#include "Sphere.h"
+#include "Shape.h"
 #include "Intersection.h"
 
 #include <cmath>
 
 namespace rt {
+    std::vector<Intersection> Shape::intersect(const Ray &ray) {
+        const auto local_ray = ray.transform(inversed_transform());
+        return local_intersect(local_ray);
+    }
+
     std::vector<Intersection> Sphere::intersect(const Ray &ray) {
         const auto ray2 = ray.transform(inversed_transform());
 

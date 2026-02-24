@@ -5,7 +5,7 @@
 #include "Intersection.h"
 
 #include "Common.h"
-#include "Sphere.h"
+#include "Shape.h"
 
 namespace rt {
     TEST(IntersectionTest, CreateIntersection) {

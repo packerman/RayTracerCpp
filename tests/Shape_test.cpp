@@ -10,9 +10,13 @@
 
 namespace rt {
     struct TestShape : Shape {
-        [[nodiscard]] std::vector<Intersection> local_intersect(const Ray &ray) override {
+        std::vector<Intersection> local_intersect(const Ray &ray) override {
             saved_ray = ray;
             return {};
+        }
+
+        Vector local_normal_at(const Point &point) override {
+            return vector(point.x, point.y, point.z);
         }
 
         Ray saved_ray{point(0, 0, 0), vector(0, 0, 0)};
@@ -58,7 +62,7 @@ namespace rt {
     }
 
     class RayTransformedShapeIntersectionTest
-            : public ::testing::TestWithParam<std::tuple<Transformation, Ray > > {
+            : public ::testing::TestWithParam<std::tuple<Transformation, Ray> > {
     };
 
     TEST_P(RayTransformedShapeIntersectionTest, RayTransformedShapeIntersection) {
@@ -79,6 +83,35 @@ namespace rt {
         ::testing::Values(
             std::make_tuple(scaling(2, 2, 2), Ray(point(0, 0, -2.5), vector(0, 0, 0.5))),
             std::make_tuple(translation(5, 0, 0), Ray(point(-5, 0, -5), vector(0, 0, 1)))
+        ));
+
+    class ShapeTransformedNormalTest
+            : public ::testing::TestWithParam<std::tuple<Transformation, Point, Vector> > {
+    };
+
+    TEST_P(ShapeTransformedNormalTest, ShapeTransformedNormal) {
+        auto [transform, point, expected_normal] = GetParam();
+
+        auto s = test_shape();
+        s->set_transform(transform);
+
+        const auto n = s->normal_at(point);
+
+        EXPECT_TRUE(approx_equals(n, expected_normal, 1e-5));
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        ShapeTransformedNormalSuite,
+        ShapeTransformedNormalTest,
+        ::testing::Values(
+            std::make_tuple(
+                translation(0, 1, 0),
+                point(0, 1.70711, -0.70711),
+                vector(0, 0.70711, -0.70711)),
+            std::make_tuple(
+                scaling(1, 0.5, 1) * rotation_z(std::numbers::pi / 5),
+                point(0, std::numbers::sqrt2 / 2, - std::numbers::sqrt2 / 2),
+                vector(0, 0.97014, -0.24254))
         ));
 
     class RaySphereIntersectionTest : public ::testing::TestWithParam<std::tuple<Ray, std::vector<double> > > {
@@ -153,33 +186,4 @@ namespace rt {
 
         EXPECT_EQ(n, n.normalize());
     }
-
-    class SphereTransformedNormalTest
-            : public ::testing::TestWithParam<std::tuple<Transformation, Point, Vector> > {
-    };
-
-    TEST_P(SphereTransformedNormalTest, SphereTransformedNormal) {
-        auto [transform, point, expected_normal] = GetParam();
-
-        Sphere s{};
-        s.set_transform(transform);
-
-        const auto n = s.normal_at(point);
-
-        EXPECT_TRUE(approx_equals(n, expected_normal, 1e-5));
-    }
-
-    INSTANTIATE_TEST_SUITE_P(
-        SphereTransformedNormalSuite,
-        SphereTransformedNormalTest,
-        ::testing::Values(
-            std::make_tuple(
-                translation(0, 1, 0),
-                point(0, 1.70711, -0.70711),
-                vector(0, 0.70711, -0.70711)),
-            std::make_tuple(
-                scaling(1, 0.5, 1) * rotation_z(std::numbers::pi / 5),
-                point(0, std::numbers::sqrt2 / 2, - std::numbers::sqrt2 / 2),
-                vector(0, 0.97014, -0.24254))
-        ));
 }

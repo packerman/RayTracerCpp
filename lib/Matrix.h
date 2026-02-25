@@ -118,7 +118,7 @@ namespace rt {
             return determinant() != 0.0;
         }
 
-        [[nodiscard]] constexpr  std::optional<Matrix> inverse() const {
+        [[nodiscard]] constexpr std::optional<Matrix> inverse() const {
             const double det = determinant();
             if (det == 0) {
                 return {};

@@ -9,6 +9,14 @@ namespace rt {
         return local_intersect(local_ray);
     }
 
+    Vector Shape::normal_at(const Point &point) {
+        const auto local_point = inversed_transform() * point;
+        const auto local_normal = local_normal_at(local_point);
+        auto world_normal = inversed_transform().transpose() * local_normal;
+        world_normal.w = 0;
+        return world_normal.normalize();
+    }
+
     std::vector<Intersection> Sphere::intersect(const Ray &ray) {
         const auto ray2 = ray.transform(inversed_transform());
 

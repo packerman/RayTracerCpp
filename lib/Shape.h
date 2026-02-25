@@ -52,9 +52,13 @@ namespace rt {
             material_ = material;
         }
 
-        [[nodiscard]] std::vector<Intersection> intersect(const Ray &ray);
+        std::vector<Intersection> intersect(const Ray &ray);
 
-        [[nodiscard]] virtual std::vector<Intersection> local_intersect(const Ray &ray) = 0;
+        virtual std::vector<Intersection> local_intersect(const Ray &ray) = 0;
+
+        Vector normal_at(const Point &point);
+
+        virtual Vector local_normal_at(const Point &point) = 0;
 
     private:
         Transformation transform_ = Transformation::identity();

@@ -119,14 +119,14 @@ namespace rt {
 
     TEST_P(RaySphereIntersectionTest, RaySphereIntersection) {
         auto [ray, expected] = GetParam();
-        auto s = Sphere();
+        const auto s = sphere();
 
-        const auto xs = s.intersect(ray);
+        const auto xs = s->local_intersect(ray);
 
         EXPECT_EQ(xs.size(), expected.size());
         for (auto i = 0; i < expected.size(); ++i) {
             EXPECT_EQ(xs[i].t(), expected[i]);
-            EXPECT_EQ(xs[i].object(), &s);
+            EXPECT_EQ(xs[i].object(), s.get());
         }
     }
 
@@ -143,13 +143,13 @@ namespace rt {
 
     TEST(SphereTest, SetObjectInIntersection) {
         constexpr Ray ray{point(0, 0, -5), vector(0, 0, 1)};
-        Sphere s{};
+        const auto s = sphere();
 
-        const auto xs = s.intersect(ray);
+        const auto xs = s->local_intersect(ray);
 
         EXPECT_EQ(xs.size(), 2);
-        EXPECT_EQ(xs[0].object(), &s);
-        EXPECT_EQ(xs[1].object(), &s);
+        EXPECT_EQ(xs[0].object(), s.get());
+        EXPECT_EQ(xs[1].object(), s.get());
     }
 
     class SphereNormalTest : public ::testing::TestWithParam<std::tuple<Point, Vector> > {
@@ -158,9 +158,9 @@ namespace rt {
     TEST_P(SphereNormalTest, SphereNormal) {
         auto [input_point, expected_normal] = GetParam();
 
-        Sphere s{};
+        const auto s = sphere();
 
-        const auto n = s.normal_at(input_point);
+        const auto n = s->local_normal_at(input_point);
 
         EXPECT_EQ(n, expected_normal);
     }
@@ -179,9 +179,9 @@ namespace rt {
         ));
 
     TEST(SphereTest, NormalizedNormal) {
-        Sphere s{};
+        const auto s = sphere();
 
-        const auto n = s.normal_at(
+        const auto n = s->local_normal_at(
             point(std::numbers::sqrt3 / 3, std::numbers::sqrt3 / 3, std::numbers::sqrt3 / 3));
 
         EXPECT_EQ(n, n.normalize());

@@ -17,13 +17,11 @@ namespace rt {
         return world_normal.normalize();
     }
 
-    std::vector<Intersection> Sphere::intersect(const Ray &ray) {
-        const auto ray2 = ray.transform(inversed_transform());
+    std::vector<Intersection> Sphere::local_intersect(const Ray &ray) {
+        const Vector sphere_to_ray = ray.origin() - point(0, 0, 0);
 
-        const Vector sphere_to_ray = ray2.origin() - point(0, 0, 0);
-
-        const auto a = ray2.direction().dot( ray2.direction());
-        const auto b = 2 * ray2.direction().dot(sphere_to_ray);
+        const auto a = ray.direction().dot(ray.direction());
+        const auto b = 2 * ray.direction().dot(sphere_to_ray);
         const auto c = sphere_to_ray.dot(sphere_to_ray) - 1;
 
         const auto discriminant = b * b - 4 * a * c;
@@ -37,12 +35,8 @@ namespace rt {
         return {{t1, this}, {t2, this}};
     }
 
-    Vector Sphere::normal_at(const Point &world_point) {
-        const auto object_point = inversed_transform() * world_point;
-        const auto object_normal = object_point - point(0, 0, 0);
-        auto world_normal = inversed_transform().transpose() * object_normal;
-        world_normal.w = 0;
-        return world_normal.normalize();
+    Vector Sphere::local_normal_at(const Point &local_point) {
+        return local_point - point(0, 0, 0);
     }
 
     std::unique_ptr<Sphere> sphere() {

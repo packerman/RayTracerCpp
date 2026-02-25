@@ -272,7 +272,10 @@ namespace rt {
 
     TEST_P(MatrixInverseTest, Matrix4x4Inverse) {
         auto [a, expected] = GetParam();
-        EXPECT_TRUE(approx_equals(a.inverse(), expected, epsilon));
+
+        const auto result = a.inverse();
+        EXPECT_TRUE(result.has_value());
+        EXPECT_TRUE(approx_equals(result.value(), expected, epsilon));
     }
 
     INSTANTIATE_TEST_SUITE_P(
@@ -334,6 +337,9 @@ namespace rt {
         };
         constexpr auto c = a * b;
 
-        EXPECT_TRUE(approx_equals(c * b.inverse(), a, 1e-12));
+        constexpr auto b_inv = b.inverse();
+
+        EXPECT_TRUE(b_inv.has_value());
+        EXPECT_TRUE(approx_equals(c * b_inv.value(), a, 1e-12));
     }
 }

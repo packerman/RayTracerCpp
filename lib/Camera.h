@@ -28,7 +28,11 @@ namespace rt {
 
         void set_transform(const Transformation &transform) {
             transform_ = transform;
-            inversed_transform_ = transform.inverse();
+            if (const auto inversed = transform.inverse(); inversed) {
+                inversed_transform_ = inversed.value();
+            } else {
+                throw std::invalid_argument("Matrix is not invertible.");
+            }
         }
 
         [[nodiscard]] const Transformation &inversed_transform() const {

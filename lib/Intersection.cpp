@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include "Sphere.h"
+#include "Shape.h"
 
 namespace rt {
     std::ostream &operator<<(std::ostream &os, const Intersection &obj) {

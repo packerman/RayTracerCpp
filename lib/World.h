@@ -2,7 +2,7 @@
 #include <memory>
 #include <vector>
 
-#include "Sphere.h"
+#include "Shape.h"
 
 namespace rt {
     class World {

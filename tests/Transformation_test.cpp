@@ -14,10 +14,11 @@ namespace rt {
 
     TEST(TransformationTest, TranslationInverse) {
         constexpr auto transform = translation(5, -3, 2);
-        const auto inv = transform.inverse();
+        constexpr auto inv = transform.inverse();
         constexpr auto p = point(-3, 4, 5);
 
-        EXPECT_EQ(inv * p, point(-8, 7, 3));
+        EXPECT_TRUE(inv.has_value());
+        EXPECT_EQ(inv.value() * p, point(-8, 7, 3));
     }
 
     TEST(TransformationTest, VectorTranslation) {
@@ -43,10 +44,11 @@ namespace rt {
 
     TEST(TransformationTest, ScalingInverse) {
         constexpr auto transform = scaling(2, 3, 4);
-        const auto inv = transform.inverse();
+        constexpr auto inv = transform.inverse();
         constexpr auto v = vector(-4, 6, 8);
 
-        EXPECT_EQ(inv * v, vector(-2, 2, 2));
+        EXPECT_TRUE(inv.has_value());
+        EXPECT_EQ(inv.value() * v, vector(-2, 2, 2));
     }
 
     TEST(TransformationTest, Reflection) {
@@ -70,7 +72,8 @@ namespace rt {
         const auto half_quarter = rotation_x(std::numbers::pi / 4);
         const auto inv = half_quarter.inverse();
 
-        EXPECT_TRUE(approx_equals(inv * p, point(0, std::numbers::sqrt2 / 2, - std::numbers::sqrt2 / 2)));
+        EXPECT_TRUE(inv.has_value());
+        EXPECT_TRUE(approx_equals(inv.value() * p, point(0, std::numbers::sqrt2 / 2, - std::numbers::sqrt2 / 2)));
     }
 
     TEST(TransformationTest, RotationY) {

@@ -19,7 +19,7 @@ target_sources(test_lib
         Matrix_test.cpp
         Transformation_test.cpp
         Ray_test.cpp
-        Sphere_test.cpp
+        Shape_test.cpp
         Intersection_test.cpp
         Material_test.cpp
         World_test.cpp

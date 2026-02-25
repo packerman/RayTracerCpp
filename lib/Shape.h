@@ -58,7 +58,7 @@ namespace rt {
 
         Vector normal_at(const Point &point);
 
-        virtual Vector local_normal_at(const Point &point) = 0;
+        virtual Vector local_normal_at(const Point &local_point) = 0;
 
     private:
         Transformation transform_ = Transformation::identity();
@@ -80,8 +80,17 @@ namespace rt {
 
         std::vector<Intersection> local_intersect(const Ray &ray) override;
 
-        Vector local_normal_at(const Point &point) override;
+        Vector local_normal_at(const Point &local_point) override;
     };
 
     std::unique_ptr<Sphere> sphere();
+
+    class Plane : public Shape {
+    public:
+        std::vector<Intersection> local_intersect(const Ray &ray) override;
+
+        Vector local_normal_at(const Point &point) override;
+    };
+
+    std::unique_ptr<Plane> plane();
 }

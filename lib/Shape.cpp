@@ -42,4 +42,20 @@ namespace rt {
     std::unique_ptr<Sphere> sphere() {
         return std::make_unique<Sphere>();
     }
+
+    std::vector<Intersection> Plane::local_intersect(const Ray &ray) {
+        if (std::abs(ray.direction().y) < std::numeric_limits<double>::epsilon()) {
+            return {};
+        }
+        auto t = -ray.origin().y / ray.direction().y;
+        return {{t, this}};
+    }
+
+    Vector Plane::local_normal_at(const Point &point) {
+        return vector(0, 1, 0);
+    }
+
+    std::unique_ptr<Plane> plane() {
+        return std::make_unique<Plane>();
+    }
 }

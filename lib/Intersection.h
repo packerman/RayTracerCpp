@@ -8,20 +8,20 @@
 #include "Tuple.h"
 
 namespace rt {
-    class Sphere;
+    class Shape;
 
     class Intersection {
     public:
         Intersection() = default;
 
-        Intersection(const double t, Sphere *object) : t_{t}, object_{object} {
+        Intersection(const double t, Shape *object) : t_{t}, object_{object} {
         }
 
         [[nodiscard]] double t() const {
             return t_;
         }
 
-        [[nodiscard]] Sphere *object() const {
+        [[nodiscard]] Shape *object() const {
             return object_;
         }
 
@@ -37,7 +37,7 @@ namespace rt {
 
     private:
         double t_{};
-        Sphere *object_{};
+        Shape *object_{};
     };
 
     class Intersections {
@@ -67,7 +67,7 @@ namespace rt {
 
     struct Computations {
         double t;
-        Sphere *object;
+        Shape *object;
         Point point;
         Vector eye_v;
         Vector normal_v;

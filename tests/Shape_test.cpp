@@ -123,7 +123,7 @@ namespace rt {
 
         const auto xs = s->local_intersect(ray);
 
-        EXPECT_EQ(xs.size(), expected.size());
+        ASSERT_EQ(xs.size(), expected.size());
         for (auto i = 0; i < expected.size(); ++i) {
             EXPECT_EQ(xs[i].t(), expected[i]);
             EXPECT_EQ(xs[i].object(), s.get());
@@ -186,4 +186,42 @@ namespace rt {
 
         EXPECT_EQ(n, n.normalize());
     }
+
+    TEST(PlaneTest, PlaneNormalIsConstant) {
+        auto p = plane();
+
+        const auto n1 = p->local_normal_at(point(0, 0, 0));
+        const auto n2 = p->local_normal_at(point(10, 0, -10));
+        const auto n3 = p->local_normal_at(point(-5, 0, 150));
+
+        EXPECT_EQ(n1, vector(0, 1, 0));
+        EXPECT_EQ(n2, vector(0, 1, 0));
+        EXPECT_EQ(n3, vector(0, 1, 0));
+    }
+
+    class RayPlaneIntersectionTest : public ::testing::TestWithParam<std::tuple<Ray, std::vector<double> > > {
+    };
+
+    TEST_P(RayPlaneIntersectionTest, RaySphereIntersection) {
+        auto [ray, expected] = GetParam();
+        const auto p = plane();
+
+        const auto xs = p->local_intersect(ray);
+
+        ASSERT_EQ(xs.size(), expected.size());
+        for (auto i = 0; i < expected.size(); ++i) {
+            EXPECT_EQ(xs[i].t(), expected[i]);
+            EXPECT_EQ(xs[i].object(), p.get());
+        }
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        RayPlaneIntersectionSuite,
+        RayPlaneIntersectionTest,
+        ::testing::Values(
+            std::make_tuple(Ray(point(0, 10, 0), vector(0, 0, 1)), std::vector<double>{}),
+            std::make_tuple(Ray(point(0, 0, 0), vector(0, 0, 1)), std::vector<double>{}),
+            std::make_tuple(Ray(point(0, 1, 0), vector(0, -1, 0)), std::vector{1.0}),
+            std::make_tuple(Ray(point(0, -1, 0), vector(0, 1, 0)), std::vector{1.0})
+        ));
 }

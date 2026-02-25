@@ -27,8 +27,8 @@ int main() {
 
             Ray ray{ray_origin, (position - ray_origin).normalize()};
 
-            auto xs = shape.intersect(ray);
-            if (auto hit = rt::hit(xs)) {
+            auto xs = Intersections(shape.intersect(ray));
+            if (auto hit = xs.hit()) {
                 auto point = ray.position(hit->t());
                 auto normal = hit->object()->normal_at(point);
                 auto eye = -ray.direction();

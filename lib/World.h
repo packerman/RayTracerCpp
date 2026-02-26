@@ -9,7 +9,7 @@ namespace rt {
     public:
         [[nodiscard]] World() = default;
 
-        [[nodiscard]] const std::vector<std::unique_ptr<Sphere> > &objects() const {
+        [[nodiscard]] const std::vector<std::unique_ptr<Shape> > &objects() const {
             return objects_;
         }
 
@@ -17,7 +17,7 @@ namespace rt {
             return lights_;
         }
 
-        [[nodiscard]] const std::unique_ptr<Sphere> &object(const std::size_t index) const {
+        [[nodiscard]] const std::unique_ptr<Shape> &object(const std::size_t index) const {
             return objects_[index];
         }
 
@@ -25,7 +25,7 @@ namespace rt {
             return lights_[index];
         }
 
-        void add_object(std::unique_ptr<Sphere> object) {
+        void add_object(std::unique_ptr<Shape> object) {
             objects_.emplace_back(std::move(object));
         }
 
@@ -46,7 +46,7 @@ namespace rt {
         [[nodiscard]] bool is_shadowed(const Point &point, const Light &light) const;
 
     private:
-        std::vector<std::unique_ptr<Sphere> > objects_;
+        std::vector<std::unique_ptr<Shape> > objects_;
         std::vector<std::unique_ptr<Light> > lights_;
     };
 

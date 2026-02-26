@@ -37,3 +37,13 @@ target_link_libraries(scene
         PRIVATE
         ray_tracer
 )
+
+add_executable(planes)
+target_sources(planes
+        PRIVATE
+        Common.h
+        Planes.cpp)
+target_link_libraries(planes
+        PRIVATE
+        ray_tracer
+)

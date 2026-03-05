@@ -5,7 +5,6 @@
 #include "Shape.h"
 
 namespace rt {
-
     class TestPattern : public Pattern {
     public:
         [[nodiscard]] Color at(const Point &p) const override {

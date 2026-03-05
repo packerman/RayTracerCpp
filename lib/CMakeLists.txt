@@ -12,8 +12,8 @@ target_sources(ray_tracer
         Shape.cpp
         Intersection.h
         Intersection.cpp
-        Material.h
-        Material.cpp
+        Lighting.h
+        Lighting.cpp
         World.h
         World.cpp
         Camera.h

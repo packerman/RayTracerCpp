@@ -1,4 +1,4 @@
-#include <Material.h>
+#include <Lighting.h>
 #include <gtest/gtest.h>
 
 #include "Common.h"

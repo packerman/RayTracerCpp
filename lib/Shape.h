@@ -6,7 +6,7 @@
 #include "Ray.h"
 #include "Intersection.h"
 #include "Transformation.h"
-#include "Material.h"
+#include "Lighting.h"
 
 namespace rt {
     class Shape {

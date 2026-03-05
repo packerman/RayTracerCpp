@@ -24,6 +24,7 @@ target_sources(test_lib
         Material_test.cpp
         World_test.cpp
         Camera_test.cpp
+        Pattern_test.cpp
 )
 
 target_link_libraries(test_lib

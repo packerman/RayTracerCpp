@@ -8,6 +8,7 @@ namespace rt {
     using Point = Tuple;
     using Vector = Tuple;
     using Color = Tuple;
+
     constexpr Vector vector(double x, double y, double z);
 
     struct Tuple {
@@ -126,6 +127,7 @@ namespace rt {
     }
 
     constexpr Color black{color(0, 0, 0)};
+    constexpr Color white{color(1, 1, 1)};
 
     constexpr double dot(const Tuple &a, const Tuple &b) {
         return a.dot(b);

@@ -18,6 +18,8 @@ target_sources(ray_tracer
         World.cpp
         Camera.h
         Camera.cpp
+        Pattern.h
+        Pattern.cpp
 )
 
 target_include_directories(ray_tracer

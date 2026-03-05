@@ -47,3 +47,13 @@ target_link_libraries(planes
         PRIVATE
         ray_tracer
 )
+
+add_executable(hexagon)
+target_sources(hexagon
+        PRIVATE
+        Common.h
+        Hexagon.cpp)
+target_link_libraries(hexagon
+        PRIVATE
+        ray_tracer
+)

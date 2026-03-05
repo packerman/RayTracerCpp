@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 
+#include "Pattern.h"
 #include "Tuple.h"
 
 namespace rt {
@@ -25,8 +26,9 @@ namespace rt {
         double diffuse{0.9};
         double specular{0.9};
         double shininess{200.0};
+        std::shared_ptr<Pattern> pattern{nullptr};
 
-        [[nodiscard]] Color lighting(const Light &light, const Point &point, const Vector &eye_v,
+        [[nodiscard]] Color lighting(const Shape &shape, const Light &light, const Point &point, const Vector &eye_v,
                                      const Vector &normal_v, bool in_shadow = false) const;;
 
         friend bool operator==(const Material &lhs, const Material &rhs) {

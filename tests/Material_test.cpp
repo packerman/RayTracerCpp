@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "Common.h"
+#include "Shape.h"
 
 namespace rt {
     TEST(LightTest, CreateLight) {
@@ -15,7 +16,7 @@ namespace rt {
     }
 
     TEST(MaterialTest, CreateMaterial) {
-        constexpr Material m{};
+        const Material m{};
 
         EXPECT_EQ(m.color, color(1, 1, 1));
         EXPECT_EQ(m.ambient, 0.1);
@@ -38,7 +39,9 @@ namespace rt {
     TEST_P(LightingTest, Lighting) {
         auto [eye_v, normal_v, light, expected] = GetParam();
 
-        const auto result = m_.lighting(light, position_, eye_v, normal_v);
+        const auto shape = sphere();
+
+        const auto result = m_.lighting(*shape, light, position_, eye_v, normal_v);
 
         EXPECT_TRUE(approx_equals(result, expected, 1e-5));
     }
@@ -87,9 +90,30 @@ namespace rt {
         constexpr auto normal_v = vector(0, 0, -1);
         const auto light = point_light(point(0, 0, -10), color(1, 1, 1));
         constexpr auto in_shadow = true;
+        const auto shape = sphere();
 
-        const auto result = m_.lighting(*light, position_, eye_v, normal_v, in_shadow);
+        const auto result = m_.lighting(*shape, *light, position_, eye_v, normal_v, in_shadow);
 
         EXPECT_EQ(result, color(0.1, 0.1, 0.1));
+    }
+
+    class LightingWithPatternTest : public ::testing::Test, public LightingTestFixture {
+    };
+
+    TEST_F(LightingWithPatternTest, LightingWithPattern) {
+        m_.pattern = stripe_pattern(white, black);
+        m_.ambient = 1;
+        m_.diffuse = 0;
+        m_.specular = 0;
+        constexpr auto eye_v = vector(0, 0, -1);
+        constexpr auto normal_v = vector(0, 0, -1);
+        const auto light = point_light(point(0, 0, -10), white);
+        const auto shape = sphere();
+
+        const auto c1 = m_.lighting(*shape, *light, point(0.9, 0, 0), eye_v, normal_v, false);
+        const auto c2 = m_.lighting(*shape, *light, point(1.1, 0, 0), eye_v, normal_v, false);
+
+        EXPECT_EQ(c1, white);
+        EXPECT_EQ(c2, black);
     }
 }

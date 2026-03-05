@@ -7,9 +7,10 @@ namespace rt {
         return std::make_unique<Light>(position, intensity);
     }
 
-    Color Material::lighting(const Light &light, const Point &point, const Vector &eye_v,
+    Color Material::lighting(const Shape &shape, const Light &light, const Point &point, const Vector &eye_v,
                              const Vector &normal_v, const bool in_shadow) const {
-        const auto effective_color = this->color * light.intensity;
+        const auto effective_color = (this->pattern ? this->pattern->at_shape(shape, point) : this->color)
+                                     * light.intensity;
         const auto light_v = (light.position - point).normalize();
 
         const auto ambient_color = effective_color * this->ambient;

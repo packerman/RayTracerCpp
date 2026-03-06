@@ -140,5 +140,5 @@ namespace rt {
             std::make_tuple(point(1, 0, 0), black),
             std::make_tuple(point(0, 0, 1), black),
             std::make_tuple(point(0.708, 0, 0.708), black)
-            ));
+        ));
 }

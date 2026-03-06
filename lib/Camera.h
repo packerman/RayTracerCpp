@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ostream>
+
 #include "Canvas.h"
 #include "Transformation.h"
 #include "Ray.h"
@@ -54,6 +56,8 @@ namespace rt {
         [[nodiscard]] Ray ray_for_pixel(std::size_t px, std::size_t py) const;
 
         [[nodiscard]] Canvas render(const World &world) const;
+
+        friend std::ostream &operator<<(std::ostream &os, const Camera &obj);
 
     private:
         std::size_t h_size_;

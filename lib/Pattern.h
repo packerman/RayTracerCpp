@@ -11,7 +11,7 @@ namespace rt {
     public:
         virtual ~Pattern() = default;
 
-        [[nodiscard]] virtual Color at(const Point &p) const = 0;
+        [[nodiscard]] virtual Color at(const Point &point) const = 0;
 
         [[nodiscard]] Color at_shape(const Shape &shape, const Point &world_point) const;
 
@@ -38,21 +38,36 @@ namespace rt {
     };
 
     struct StripePattern : Pattern {
-        constexpr StripePattern(const Color &a, const Color &b)
+        StripePattern(const Color &a, const Color &b)
             : a(a), b(b) {
         }
 
-        [[nodiscard]] Color at(const Point &p) const override {
-            return std::fmod(std::floor(p.x), 2) == 0 ? a : b;
+        [[nodiscard]] Color at(const Point &point) const override {
+            return std::fmod(std::floor(point.x), 2) == 0 ? a : b;
         }
 
         Color a;
         Color b;
-
-    private:
-        Transformation transform_{Transformation::identity()};
-        Transformation inversed_transform_{Transformation::identity()};
     };
 
     std::unique_ptr<StripePattern> stripe_pattern(const Color &a, const Color &b);
+
+    class GradientPattern : public Pattern {
+    public:
+        GradientPattern(const Color &c_a, const Color &c_b)
+            : c_a(c_a), c_b(c_b) {
+        }
+
+        [[nodiscard]] Color at(const Point &point) const override {
+            const auto distance = c_b - c_a;
+            const auto fraction = point.x - std::floor(point.x);
+            return c_a + distance * fraction;
+        }
+
+    private:
+        Color c_a;
+        Color c_b;
+    };
+
+    std::unique_ptr<GradientPattern> gradient_pattern(const Color &c_a, const Color &c_b);
 }

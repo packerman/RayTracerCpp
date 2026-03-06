@@ -13,4 +13,8 @@ namespace rt {
     std::unique_ptr<StripePattern> stripe_pattern(const Color &a, const Color &b) {
         return std::make_unique<StripePattern>(a, b);
     }
+
+    std::unique_ptr<GradientPattern> gradient_pattern(const Color &c_a, const Color &c_b) {
+        return std::make_unique<GradientPattern>(c_a, c_b);
+    }
 }

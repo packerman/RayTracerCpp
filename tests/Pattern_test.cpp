@@ -69,10 +69,10 @@ namespace rt {
         EXPECT_EQ(pattern->b, black);
     }
 
-    class PatternTestWithParam : public ::testing::TestWithParam<std::tuple<Point, Color> > {
+    class StripePatternTestWithParam : public testing::TestWithParam<std::tuple<Point, Color> > {
     };
 
-    TEST_P(PatternTestWithParam, StripePattern) {
+    TEST_P(StripePatternTestWithParam, StripePattern) {
         auto [p, c] = GetParam();
 
         const auto pattern = stripe_pattern(white, black);
@@ -82,7 +82,7 @@ namespace rt {
 
     INSTANTIATE_TEST_SUITE_P(
         StripePatternSuite,
-        PatternTestWithParam,
+        StripePatternTestWithParam,
         ::testing::Values(
             std::make_tuple(point(0, 0, 0), white),
             std::make_tuple(point(0, 1, 0), white),
@@ -98,5 +98,26 @@ namespace rt {
             std::make_tuple(point(-0.1, 0, 0), black),
             std::make_tuple(point(-1, 0, 0), black),
             std::make_tuple(point(-1.1, 0, 0), white)
+        ));
+
+    class GradientPatternTestWithParam : public testing::TestWithParam<std::tuple<Point, Color> > {
+    };
+
+    TEST_P(GradientPatternTestWithParam, GradientPattern) {
+        auto [p, c] = GetParam();
+
+        const auto pattern = gradient_pattern(white, black);
+
+        EXPECT_EQ(pattern->at(p), c);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        GradientPatternSuite,
+        GradientPatternTestWithParam,
+        ::testing::Values(
+            std::make_tuple(point(0, 0, 0), white),
+            std::make_tuple(point(0.25, 0, 0), color(0.75, 0.75, 0.75)),
+            std::make_tuple(point(0.5, 0, 0), color(0.5, 0.5, 0.5)),
+            std::make_tuple(point(0.75, 0, 0), color(0.25, 0.25, 0.25))
         ));
 }

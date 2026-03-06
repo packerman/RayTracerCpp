@@ -141,4 +141,32 @@ namespace rt {
             std::make_tuple(point(0, 0, 1), black),
             std::make_tuple(point(0.708, 0, 0.708), black)
         ));
+
+    class CheckersPatternTestWithParam : public testing::TestWithParam<std::tuple<Point, Color> > {
+    };
+
+    TEST_P(CheckersPatternTestWithParam, RingPattern) {
+        auto [p, c] = GetParam();
+
+        const auto pattern = checkers_pattern(white, black);
+
+        EXPECT_EQ(pattern->at(p), c);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        CheckersPatternSuite,
+        CheckersPatternTestWithParam,
+        ::testing::Values(
+            std::make_tuple(point(0, 0, 0), white),
+            std::make_tuple(point(0.99, 0, 0), white),
+            std::make_tuple(point(1.01, 0, 0), black),
+
+            std::make_tuple(point(0, 0, 0), white),
+            std::make_tuple(point(0, 0.99, 0), white),
+            std::make_tuple(point(0, 1.01, 0), black),
+
+            std::make_tuple(point(0, 0, 0), white),
+            std::make_tuple(point(0, 0, 0.99), white),
+            std::make_tuple(point(0, 0, 1.01), black)
+        ));
 }

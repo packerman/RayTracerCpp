@@ -21,4 +21,8 @@ namespace rt {
     std::unique_ptr<RingPattern> ring_pattern(const Color &c_a, const Color &c_b) {
         return std::make_unique<RingPattern>(c_a, c_b);
     }
+
+    std::unique_ptr<CheckersPattern> checkers_pattern(const Color &c_a, const Color &c_b) {
+        return std::make_unique<CheckersPattern>(c_a, c_b);
+    }
 }

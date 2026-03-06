@@ -87,4 +87,20 @@ namespace rt {
     };
 
     std::unique_ptr<RingPattern> ring_pattern(const Color &c_a, const Color &c_b);
+
+    class CheckersPattern : public Pattern {
+    public:
+        CheckersPattern(const Color &c_a, const Color &c_b) : c_a(c_a), c_b(c_b) {
+        }
+
+        [[nodiscard]] Color at(const Point &point) const override {
+            return std::fmod(std::floor(point.x) + std::floor(point.y) + std::floor(point.z), 2) == 0 ? c_a : c_b;
+        }
+
+    private:
+        Color c_a;
+        Color c_b;
+    };
+
+    std::unique_ptr<CheckersPattern> checkers_pattern(const Color &c_a, const Color &c_b);
 }

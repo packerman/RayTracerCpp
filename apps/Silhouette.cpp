@@ -32,7 +32,7 @@ int main() {
                 auto point = ray.position(hit->t());
                 auto normal = hit->object()->normal_at(point);
                 auto eye = -ray.direction();
-                auto color = hit->object()->material().lighting(light, point, eye, normal);
+                auto color = hit->object()->material().lighting(shape, light, point, eye, normal);
                 canvas.write_pixel(x, y, color);
             }
         }

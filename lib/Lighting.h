@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <ostream>
 
 #include "Pattern.h"
 #include "Tuple.h"
@@ -15,6 +16,12 @@ namespace rt {
 
         friend bool operator!=(const Light &lhs, const Light &rhs) {
             return !(lhs == rhs);
+        }
+
+        friend std::ostream &operator<<(std::ostream &os, const Light &obj) {
+            return os
+                   << "position: " << obj.position
+                   << " intensity: " << obj.intensity;
         }
     };
 

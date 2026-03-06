@@ -40,6 +40,7 @@ namespace rt {
                << " ambient: " << obj.ambient
                << " diffuse: " << obj.diffuse
                << " specular: " << obj.specular
-               << " shininess: " << obj.shininess;
+               << " shininess: " << obj.shininess
+               << " pattern: " << obj.pattern;
     }
 }

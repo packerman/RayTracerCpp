@@ -93,12 +93,26 @@ namespace rt {
         }
 
         friend std::ostream &operator<<(std::ostream &os, const Tuple &obj) {
-            return os
-                   << "(" << obj.x
-                   << ", " << obj.y
-                   << ", " << obj.z
-                   << ", " << obj.w
-                   << ")";
+            char start = '[';
+            char end = ']';
+            bool print_w = true;
+            if (obj.is_point()) {
+                start = '(';
+                end = ')';
+                print_w = false;
+            } else if (obj.is_vector()) {
+                start = '<';
+                end = '>';
+                print_w = false;
+            }
+
+            os << start << obj.x
+                    << ", " << obj.y
+                    << ", " << obj.z;
+            if (print_w) {
+                os << ", " << obj.w;
+            }
+            return os << end;
         }
 
         [[nodiscard]] constexpr double red() const {

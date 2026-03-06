@@ -80,6 +80,19 @@ namespace rt {
         EXPECT_TRUE(a != b);
     }
 
+    TEST(MatrixTest, PrintMatrix) {
+        const Matrix<3> a = {
+            1, 2, 3,
+            4, 5, 6,
+            7, 8, 9
+        };
+
+        std::ostringstream oss;
+        oss << a;
+
+        EXPECT_EQ(oss.str(), "[[1, 2, 3], [4, 5, 6], [7, 8, 9]]");
+    }
+
     TEST(MatrixTest, MultiplyMatrix) {
         const Matrix<4> a = {
             1, 2, 3, 4,

@@ -134,13 +134,21 @@ namespace rt {
         }
 
         friend std::ostream &operator<<(std::ostream &os, const Matrix &obj) {
-            os << "|";
+            os << "[";
             for (std::size_t i = 0; i < N; ++i) {
-                for (std::size_t j = 0; j < N; ++j) {
-                    os << " " << obj.data_[i * N + j];
+                if (i > 0) {
+                    os << ", ";
                 }
-                os << " |";
+                os << "[";
+                for (std::size_t j = 0; j < N; ++j) {
+                    if (j > 0) {
+                        os << ", ";
+                    }
+                    os << obj.data_[i * N + j];
+                }
+                os << "]";
             }
+            os << "]";
             return os;
         }
 

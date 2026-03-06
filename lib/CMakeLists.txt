@@ -12,12 +12,14 @@ target_sources(ray_tracer
         Shape.cpp
         Intersection.h
         Intersection.cpp
-        Material.h
-        Material.cpp
+        Lighting.h
+        Lighting.cpp
         World.h
         World.cpp
         Camera.h
         Camera.cpp
+        Pattern.h
+        Pattern.cpp
 )
 
 target_include_directories(ray_tracer

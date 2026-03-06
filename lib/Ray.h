@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ostream>
+
 #include "Tuple.h"
 #include "Transformation.h"
 
@@ -32,7 +34,13 @@ namespace rt {
         }
 
         [[nodiscard]] constexpr Ray transform(const Transformation &m) const {
-            return { m * origin_, m * direction_ };
+            return {m * origin_, m * direction_};
+        }
+
+        friend std::ostream &operator<<(std::ostream &os, const Ray &obj) {
+            return os
+                   << "origin: " << obj.origin_
+                   << " direction: " << obj.direction_;
         }
 
     private:

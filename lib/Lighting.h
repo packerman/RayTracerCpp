@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
+#include <ostream>
 
+#include "Pattern.h"
 #include "Tuple.h"
 
 namespace rt {
@@ -15,6 +17,12 @@ namespace rt {
         friend bool operator!=(const Light &lhs, const Light &rhs) {
             return !(lhs == rhs);
         }
+
+        friend std::ostream &operator<<(std::ostream &os, const Light &obj) {
+            return os
+                   << "position: " << obj.position
+                   << " intensity: " << obj.intensity;
+        }
     };
 
     std::unique_ptr<Light> point_light(const Point &position, const Color &intensity);
@@ -25,8 +33,9 @@ namespace rt {
         double diffuse{0.9};
         double specular{0.9};
         double shininess{200.0};
+        std::shared_ptr<Pattern> pattern{nullptr};
 
-        [[nodiscard]] Color lighting(const Light &light, const Point &point, const Vector &eye_v,
+        [[nodiscard]] Color lighting(const Shape &shape, const Light &light, const Point &point, const Vector &eye_v,
                                      const Vector &normal_v, bool in_shadow = false) const;;
 
         friend bool operator==(const Material &lhs, const Material &rhs) {

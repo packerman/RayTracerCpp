@@ -21,9 +21,10 @@ target_sources(test_lib
         Ray_test.cpp
         Shape_test.cpp
         Intersection_test.cpp
-        Material_test.cpp
+        Lighting_test.cpp
         World_test.cpp
         Camera_test.cpp
+        Pattern_test.cpp
 )
 
 target_link_libraries(test_lib

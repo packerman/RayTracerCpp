@@ -6,7 +6,7 @@
 #include "Ray.h"
 #include "Intersection.h"
 #include "Transformation.h"
-#include "Material.h"
+#include "Lighting.h"
 
 namespace rt {
     class Shape {
@@ -61,8 +61,8 @@ namespace rt {
         virtual Vector local_normal_at(const Point &local_point) = 0;
 
     private:
-        Transformation transform_ = Transformation::identity();
-        Transformation inversed_transform_ = Transformation::identity();
+        Transformation transform_{Transformation::identity()};
+        Transformation inversed_transform_{Transformation::identity()};
         Material material_{};
     };
 

@@ -7,7 +7,7 @@ namespace rt {
           v_size_(v_size),
           field_of_view_(field_of_view) {
         const auto half_view = std::tan(field_of_view_ / 2);
-        if (auto aspect = static_cast<double>(h_size) / static_cast<double>(v_size); aspect >= 1) {
+        if (const auto aspect = static_cast<double>(h_size) / static_cast<double>(v_size); aspect >= 1) {
             half_width_ = half_view;
             half_height_ = half_view / aspect;
         } else {
@@ -15,7 +15,7 @@ namespace rt {
             half_height_ = half_view;
         }
 
-        pixel_size_ = (half_width_ * 2) / static_cast<double>(h_size_);
+        pixel_size_ = half_width_ * 2 / static_cast<double>(h_size_);
     }
 
     Ray Camera::ray_for_pixel(const std::size_t px, const std::size_t py) const {
@@ -45,5 +45,13 @@ namespace rt {
         }
 
         return image;
+    }
+
+    std::ostream &operator<<(std::ostream &os, const Camera &obj) {
+        return os
+               << "h_size_: " << obj.h_size_
+               << " v_size_: " << obj.v_size_
+               << " field_of_view_: " << obj.field_of_view_
+               << " transform_: " << obj.transform_;
     }
 }

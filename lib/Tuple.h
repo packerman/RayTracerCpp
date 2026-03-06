@@ -8,6 +8,7 @@ namespace rt {
     using Point = Tuple;
     using Vector = Tuple;
     using Color = Tuple;
+
     constexpr Vector vector(double x, double y, double z);
 
     struct Tuple {
@@ -92,12 +93,26 @@ namespace rt {
         }
 
         friend std::ostream &operator<<(std::ostream &os, const Tuple &obj) {
-            return os
-                   << "(" << obj.x
-                   << ", " << obj.y
-                   << ", " << obj.z
-                   << ", " << obj.w
-                   << ")";
+            char start = '[';
+            char end = ']';
+            bool print_w = true;
+            if (obj.is_point()) {
+                start = '(';
+                end = ')';
+                print_w = false;
+            } else if (obj.is_vector()) {
+                start = '<';
+                end = '>';
+                print_w = false;
+            }
+
+            os << start << obj.x
+                    << ", " << obj.y
+                    << ", " << obj.z;
+            if (print_w) {
+                os << ", " << obj.w;
+            }
+            return os << end;
         }
 
         [[nodiscard]] constexpr double red() const {
@@ -126,6 +141,7 @@ namespace rt {
     }
 
     constexpr Color black{color(0, 0, 0)};
+    constexpr Color white{color(1, 1, 1)};
 
     constexpr double dot(const Tuple &a, const Tuple &b) {
         return a.dot(b);

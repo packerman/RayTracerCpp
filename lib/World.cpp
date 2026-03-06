@@ -17,7 +17,7 @@ namespace rt {
         for (auto &light: lights_) {
             const auto shadowed = is_shadowed(comps.over_point, *light);
             result += comps.object->material()
-                    .lighting(*light, comps.over_point, comps.eye_v, comps.normal_v, shadowed);
+                    .lighting(*comps.object, *light, comps.over_point, comps.eye_v, comps.normal_v, shadowed);
         }
         return result;
     }

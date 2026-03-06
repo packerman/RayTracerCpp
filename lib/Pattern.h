@@ -70,4 +70,21 @@ namespace rt {
     };
 
     std::unique_ptr<GradientPattern> gradient_pattern(const Color &c_a, const Color &c_b);
+
+    class RingPattern : public Pattern {
+    public:
+        RingPattern(const Color &c_a, const Color &c_b)
+            : c_a(c_a), c_b(c_b) {
+        }
+
+        [[nodiscard]] Color at(const Point &point) const override {
+            return std::fmod(std::floor(std::hypot(point.x, point.z)), 2) == 0 ? c_a : c_b;
+        }
+
+    private:
+        Color c_a;
+        Color c_b;
+    };
+
+    std::unique_ptr<RingPattern> ring_pattern(const Color &c_a, const Color &c_b);
 }

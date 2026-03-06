@@ -120,4 +120,25 @@ namespace rt {
             std::make_tuple(point(0.5, 0, 0), color(0.5, 0.5, 0.5)),
             std::make_tuple(point(0.75, 0, 0), color(0.25, 0.25, 0.25))
         ));
+
+    class RingPatternTestWithParam : public testing::TestWithParam<std::tuple<Point, Color> > {
+    };
+
+    TEST_P(RingPatternTestWithParam, RingPattern) {
+        auto [p, c] = GetParam();
+
+        const auto pattern = ring_pattern(white, black);
+
+        EXPECT_EQ(pattern->at(p), c);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        RingPatternSuite,
+        RingPatternTestWithParam,
+        ::testing::Values(
+            std::make_tuple(point(0, 0, 0), white),
+            std::make_tuple(point(1, 0, 0), black),
+            std::make_tuple(point(0, 0, 1), black),
+            std::make_tuple(point(0.708, 0, 0.708), black)
+            ));
 }

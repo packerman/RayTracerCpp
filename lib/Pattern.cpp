@@ -17,4 +17,8 @@ namespace rt {
     std::unique_ptr<GradientPattern> gradient_pattern(const Color &c_a, const Color &c_b) {
         return std::make_unique<GradientPattern>(c_a, c_b);
     }
+
+    std::unique_ptr<RingPattern> ring_pattern(const Color &c_a, const Color &c_b) {
+        return std::make_unique<RingPattern>(c_a, c_b);
+    }
 }

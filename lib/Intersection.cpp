@@ -60,6 +60,8 @@ namespace rt {
 
         comps.over_point = comps.point + comps.normal_v * shadow_epsilon;
 
+        comps.reflect_v = ray.direction().reflect(comps.normal_v);
+
         return comps;
     }
 } // rt

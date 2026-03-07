@@ -25,6 +25,12 @@ namespace rt {
         EXPECT_EQ(m.shininess, 200.0);
     }
 
+    TEST(MaterialTest, DefaultReflectivity) {
+        const Material m{};
+
+        EXPECT_EQ(m.reflective, 0);
+    }
+
     struct LightingTestFixture {
     protected:
         Material m_;

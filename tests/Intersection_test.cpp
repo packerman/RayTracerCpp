@@ -118,4 +118,16 @@ namespace rt {
         EXPECT_LT(comps.over_point.z, -shadow_epsilon/2);
         EXPECT_GT(comps.point.z, comps.over_point.z);
     }
+
+    TEST(IntersectionTest, PrecomputeReflectionVector) {
+        const auto shape = plane();
+        constexpr Ray r{point(0, 1, -1), vector(0, -std::numbers::sqrt2 / 2, std::numbers::sqrt2 / 2)};
+        const Intersection i{std::numbers::sqrt2, shape.get()};
+
+        const auto comps = prepare_computations(i, r);
+
+        EXPECT_EQ(comps.reflect_v, vector(0, std::numbers::sqrt2/2, std::numbers::sqrt2/2));
+
+        EXPECT_TRUE(approx_equals(comps.reflect_v, vector(0, std::numbers::sqrt2/2, std::numbers::sqrt2/2)));
+    }
 }

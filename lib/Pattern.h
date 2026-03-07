@@ -37,6 +37,21 @@ namespace rt {
         Transformation inversed_transform_{Transformation::identity()};
     };
 
+    class SolidPattern : public Pattern {
+    public:
+        explicit SolidPattern(const Color &c): c(c) {
+        }
+
+        Color at(const Point &point) const override {
+            return c;
+        }
+
+    private:
+        Color c;
+    };
+
+    std::unique_ptr<SolidPattern> solid_pattern(const Color &c);
+
     struct StripePattern : Pattern {
         StripePattern(const Color &a, const Color &b)
             : a(a), b(b) {

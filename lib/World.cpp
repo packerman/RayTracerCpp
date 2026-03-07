@@ -44,6 +44,16 @@ namespace rt {
         return h && h->t() < distance;
     }
 
+    Color World::reflected_color(const Computations &comps) const {
+        if (comps.object->material().reflective == 0) {
+            return black;
+        }
+        const Ray reflect_ray{comps.over_point, comps.reflect_v};
+        const auto color = color_at(reflect_ray);
+
+        return color * comps.object->material().reflective;
+    }
+
     World default_world() {
         auto light = std::make_unique<Light>(point(-10, 10, -10), color(1, 1, 1));
 

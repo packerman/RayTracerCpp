@@ -34,6 +34,7 @@ namespace rt {
         double specular{0.9};
         double shininess{200.0};
         std::shared_ptr<Pattern> pattern{nullptr};
+        double reflective{};
 
         [[nodiscard]] Color lighting(const Shape &shape, const Light &light, const Point &point, const Vector &eye_v,
                                      const Vector &normal_v, bool in_shadow = false) const;;

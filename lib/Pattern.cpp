@@ -10,6 +10,10 @@ namespace rt {
         return at(pattern_point);
     }
 
+    std::unique_ptr<SolidPattern> solid_pattern(const Color &c) {
+        return std::make_unique<SolidPattern>(c);
+    }
+
     std::unique_ptr<StripePattern> stripe_pattern(const Color &a, const Color &b) {
         return std::make_unique<StripePattern>(a, b);
     }

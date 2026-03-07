@@ -130,4 +130,35 @@ namespace rt {
             std::make_tuple(point(-20, 20, -20), false),
             std::make_tuple(point(-2, 2, -2), false)
         ));
+
+    TEST(WorldTest, ReflectedColorForNonreflectiveMaterial) {
+        const auto w = default_world();
+        constexpr Ray r{point(0, 0, 0), vector(0, 0, 1)};
+        auto &shape = w.object(1);
+        shape->material().ambient = 1;
+        const Intersection i{1, shape.get()};
+
+        const auto comps = prepare_computations(i, r);
+        const auto color = w.reflected_color(comps);
+
+        EXPECT_EQ(color, black);
+    }
+
+    TEST(WorldTest, ReflectedColorReflectiveMaterial) {
+        auto w = default_world();
+        auto shape = plane();
+        shape->material().reflective = 0.5;
+        shape->set_transform(translation(0, -1, 0));
+        const Intersection i{std::numbers::sqrt2, shape.get()};
+        w.add_object(std::move(shape));
+        constexpr Ray r{
+            point(0, 0, -3),
+            vector(0, -std::numbers::sqrt2 / 2, std::numbers::sqrt2 / 2)
+        };
+
+        const auto comps = prepare_computations(i, r);
+        const auto color = w.reflected_color(comps);
+
+        EXPECT_TRUE(approx_equals(color, rt::color(0.19032, 0.2379, 0.14274), 1e-4));
+    }
 }

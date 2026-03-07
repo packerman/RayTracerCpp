@@ -45,6 +45,8 @@ namespace rt {
 
         [[nodiscard]] bool is_shadowed(const Point &point, const Light &light) const;
 
+        [[nodiscard]] Color reflected_color(const Computations &comps) const;
+
     private:
         std::vector<std::unique_ptr<Shape> > objects_;
         std::vector<std::unique_ptr<Light> > lights_;

@@ -39,7 +39,7 @@ namespace rt {
 
     class SolidPattern : public Pattern {
     public:
-        explicit SolidPattern(const Color &c): c(c) {
+        explicit SolidPattern(const Color &c) : c(c) {
         }
 
         Color at(const Point &point) const override {

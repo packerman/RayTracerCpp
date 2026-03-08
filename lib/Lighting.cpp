@@ -34,7 +34,7 @@ namespace rt {
         return ambient_color + diffuse_color + specular_color;
     }
 
-    std::ostream & operator<<(std::ostream &os, const Material &obj) {
+    std::ostream &operator<<(std::ostream &os, const Material &obj) {
         return os
                << "color: " << obj.color
                << " ambient: " << obj.ambient

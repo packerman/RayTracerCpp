@@ -3,6 +3,6 @@
 
 #include "Shape.h"
 
-namespace  rt {
+namespace rt {
     std::unique_ptr<Sphere> glass_sphere();
 }

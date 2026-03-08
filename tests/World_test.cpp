@@ -301,4 +301,26 @@ namespace rt {
 
         EXPECT_TRUE(approx_equals(color, rt::color(0.93642, 0.68642, 0.68642), 1e-5));
     }
+
+    TEST(WorldTest, Shade_hit_with_a_reflective_transparent_material) {
+        auto w = default_world();
+        auto floor = plane();
+        floor->set_transform(translation(0, -1, 0));
+        floor->material().reflective = 0.5;
+        floor->material().transparency = 0.5;
+        floor->material().refractive_index = 1.5;
+        auto ball = sphere();
+        ball->material().color = color(1, 0, 0);
+        ball->material().ambient = 0.5;
+        ball->set_transform(translation(0, -3.5, -0.5));
+        w.add_object(std::move(ball));
+        constexpr Ray r{point(0, 0, -3), vector(0, -std::numbers::sqrt2 / 2, std::numbers::sqrt2 / 2)};
+        Intersections xs{{std::numbers::sqrt2, floor.get()}};
+        w.add_object(std::move(floor));
+
+        const auto comps = prepare_computations(xs.data()[0], r, xs);
+        const auto color = w.shade_hit(comps, 5);
+
+        EXPECT_TRUE(approx_equals(color, rt::color(0.93391, 0.69643, 0.69243), 1e-5));
+    }
 }

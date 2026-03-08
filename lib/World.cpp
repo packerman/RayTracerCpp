@@ -20,7 +20,13 @@ namespace rt {
                     .lighting(*comps.object, *light, comps.over_point, comps.eye_v, comps.normal_v, shadowed);
             auto reflected = reflected_color(comps, remaining);
             auto refracted = refracted_color(comps, remaining);
-            result += surface + reflected + refracted;
+
+            if (const auto &material = comps.object->material(); material.reflective > 0 && material.transparency > 0) {
+                const auto reflectance = schlick(comps);
+                result += surface + reflected * reflectance + refracted * (1 - reflectance);
+            } else {
+                result += surface + reflected + refracted;
+            }
         }
         return result;
     }

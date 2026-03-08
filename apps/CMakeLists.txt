@@ -57,3 +57,13 @@ target_link_libraries(hexagon
         PRIVATE
         ray_tracer
 )
+
+add_executable(reflection)
+target_sources(reflection
+        PRIVATE
+        Common.h
+        Reflection.cpp)
+target_link_libraries(reflection
+        PRIVATE
+        ray_tracer
+)

@@ -31,6 +31,13 @@ namespace rt {
         EXPECT_EQ(m.reflective, 0);
     }
 
+    TEST(MaterialTest, DefaultTransparencyAndRefractiveIndex) {
+        const Material m{};
+
+        EXPECT_EQ(m.transparency, 0);
+        EXPECT_EQ(m.refractive_index, 1);
+    }
+
     struct LightingTestFixture {
     protected:
         Material m_;

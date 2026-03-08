@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "Shape.h"
+#include "Shape_test.h"
 
 #include "Common.h"
 #include "Ray.h"
@@ -224,4 +224,11 @@ namespace rt {
             std::make_tuple(Ray(point(0, 1, 0), vector(0, -1, 0)), std::vector{1.0}),
             std::make_tuple(Ray(point(0, -1, 0), vector(0, 1, 0)), std::vector{1.0})
         ));
+
+    std::unique_ptr<Sphere> glass_sphere() {
+        auto s = sphere();
+        s->material().transparency = 1;
+        s->material().refractive_index = 1.5;
+        return s;
+    }
 }

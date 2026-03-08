@@ -5,7 +5,7 @@
 #include "Intersection.h"
 
 #include "Common.h"
-#include "Shape.h"
+#include "Shape_test.h"
 
 namespace rt {
     TEST(IntersectionTest, CreateIntersection) {
@@ -130,4 +130,47 @@ namespace rt {
 
         EXPECT_TRUE(approx_equals(comps.reflect_v, vector(0, std::numbers::sqrt2/2, std::numbers::sqrt2/2)));
     }
+
+    class RefractiveTest : public ::testing::TestWithParam<std::tuple<std::size_t, double, double> > {
+    };
+
+    TEST_P(RefractiveTest, Finding_n1_and_n2_at_various_intersections) {
+        auto [index, n1, n2] = GetParam();
+
+        const auto a = glass_sphere();
+        a->set_transform(scaling(2, 2, 2));
+        a->material().refractive_index = 1.5;
+        const auto b = glass_sphere();
+        b->set_transform(translation(0, 0, -0.25));
+        b->material().refractive_index = 2;
+        const auto c = glass_sphere();
+        c->set_transform(translation(0, 0, 0.25));
+        c->material().refractive_index = 2.5;
+        constexpr Ray r{point(0, 0, -4), vector(0, 0, 1)};
+        auto xs = Intersections({
+            {2, a.get()},
+            {2.75, b.get()},
+            {3.25, c.get()},
+            {4.75, b.get()},
+            {5.25, c.get()},
+            {6, a.get()}
+        });
+
+        const auto comps = prepare_computations(xs.data()[index], r);
+
+        EXPECT_EQ(comps.n1, n1);
+        EXPECT_EQ(comps.n2, n2);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        RefractiveTestSuite,
+        RefractiveTest,
+        ::testing::Values(
+            std::make_tuple(0, 1, 1.5),
+            std::make_tuple(1, 1.5, 2),
+            std::make_tuple(2, 2, 2.5),
+            std::make_tuple(3, 2.5, 2.5),
+            std::make_tuple(4, 2.5, 1.5),
+            std::make_tuple(5, 1.5, 1)
+        ));
 }

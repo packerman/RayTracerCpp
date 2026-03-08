@@ -74,6 +74,8 @@ namespace rt {
         bool inside;
         Point over_point;
         Vector reflect_v;
+        double n1;
+        double n2;
     };
 
     Computations prepare_computations(const Intersection &intersection, const Ray &ray);

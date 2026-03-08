@@ -78,5 +78,7 @@ namespace rt {
         double n2;
     };
 
+    Computations prepare_computations(const Intersection &intersection, const Ray &ray, Intersections& xs);
+
     Computations prepare_computations(const Intersection &intersection, const Ray &ray);
-} // rt
+}

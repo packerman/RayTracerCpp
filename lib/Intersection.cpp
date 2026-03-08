@@ -1,6 +1,7 @@
 #include "Intersection.h"
 
 #include <algorithm>
+#include <list>
 
 #include "Shape.h"
 
@@ -42,6 +43,13 @@ namespace rt {
     }
 
     Computations prepare_computations(const Intersection &intersection, const Ray &ray) {
+        Intersections xs{intersection};
+        return prepare_computations(intersection, ray, xs);
+    }
+
+    void compute_refractive_indices(const Intersection &hit, Computations &comps, const std::vector<Intersection> &xs);
+
+    Computations prepare_computations(const Intersection &intersection, const Ray &ray, Intersections &xs) {
         Computations comps{};
 
         comps.t = intersection.t();
@@ -62,6 +70,38 @@ namespace rt {
 
         comps.reflect_v = ray.direction().reflect(comps.normal_v);
 
+        compute_refractive_indices(intersection, comps, xs.data());
+
         return comps;
     }
-} // rt
+
+    void compute_refractive_indices(const Intersection &hit, Computations &comps,
+                                    const std::vector<Intersection> &xs) {
+        std::list<Shape *> containers{};
+
+        for (auto &i : xs) {
+            if (i == hit) {
+                if (containers.empty()) {
+                    comps.n1 = 1;
+                } else {
+                    comps.n1 = containers.back()->material().refractive_index;
+                }
+            }
+
+            if (auto it = std::ranges::find(containers, i.object()); it != containers.end()) {
+                containers.erase(it);
+            } else {
+                containers.push_back(i.object());
+            }
+
+            if (i == hit) {
+                if (containers.empty()) {
+                    comps.n2 = 1;
+                } else {
+                    comps.n2 = containers.back()->material().refractive_index;
+                }
+                break;
+            }
+        }
+    }
+}

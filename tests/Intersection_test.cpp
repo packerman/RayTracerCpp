@@ -156,7 +156,7 @@ namespace rt {
             {6, a.get()}
         });
 
-        const auto comps = prepare_computations(xs.data()[index], r);
+        const auto comps = prepare_computations(xs.data()[index], r, xs);
 
         EXPECT_EQ(comps.n1, n1);
         EXPECT_EQ(comps.n2, n2);

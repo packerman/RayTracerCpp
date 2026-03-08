@@ -186,4 +186,37 @@ namespace rt {
         EXPECT_GT(comps.under_point.z, shadow_epsilon / 2);
         EXPECT_LT(comps.point.z, comps.under_point.z);
     }
+
+    TEST(IntersectionTest, The_Schlick_approximation_under_total_internal_reflection) {
+        const auto shape = glass_sphere();
+        constexpr Ray r{point(0, 0, std::numbers::sqrt2 / 2), vector(0, 1, 0)};
+        Intersections xs{{-std::numbers::sqrt2 / 2, shape.get()}, {std::numbers::sqrt2 / 2, shape.get()}};
+
+        const auto comps = prepare_computations(xs.data()[1], r, xs);
+        const auto reflectance = schlick(comps);
+
+        EXPECT_EQ(reflectance, 1.0);
+    }
+
+    TEST(IntersectionTest, The_Schlick_approximation_with_a_perpendicular_viewing_angle) {
+        const auto shape = glass_sphere();
+        constexpr Ray r{point(0, 0, 0), vector(0, 1, 0)};
+        Intersections xs{{-1, shape.get()}, {1, shape.get()}};
+
+        const auto comps = prepare_computations(xs.data()[1], r, xs);
+        const auto reflectance = schlick(comps);
+
+        EXPECT_TRUE(approx_equals(reflectance, 0.04));
+    }
+
+    TEST(IntersectionTest, The_Schlick_approximation_with_small_angle_and_n2_gt_n1) {
+        const auto shape = glass_sphere();
+        constexpr Ray r{point(0, 0.99, -2), vector(0, 0, 1)};
+        Intersections xs{{1.8589, shape.get()}};
+
+        const auto comps = prepare_computations(xs.data()[0], r, xs);
+        const auto reflectance = schlick(comps);
+
+        EXPECT_TRUE(approx_equals(reflectance, 0.48873, 1e-6));
+    }
 }

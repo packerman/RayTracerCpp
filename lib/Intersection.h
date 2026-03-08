@@ -82,4 +82,6 @@ namespace rt {
     Computations prepare_computations(const Intersection &intersection, const Ray &ray, Intersections &xs);
 
     Computations prepare_computations(const Intersection &intersection, const Ray &ray);
+
+    double schlick(const Computations &comps);
 }

@@ -47,6 +47,21 @@ namespace rt {
         return prepare_computations(intersection, ray, xs);
     }
 
+    double schlick(const Computations &comps) {
+        auto cos = dot(comps.eye_v, comps.normal_v);
+        if (comps.n1 > comps.n2) {
+            const auto n = comps.n1 / comps.n2;
+            const auto sin2_t = n * n * (1 - cos * cos);
+            if (sin2_t > 1) {
+                return 1;
+            }
+            const auto cos_t = std::sqrt(1 - sin2_t);
+            cos = cos_t;
+        }
+        const auto r0 = std::pow((comps.n1 - comps.n2) / (comps.n1 + comps.n2), 2);
+        return r0 + (1 - r0) * std::pow(1 - cos, 5);
+    }
+
     void compute_refractive_indices(const Intersection &hit, Computations &comps, const std::vector<Intersection> &xs);
 
     Computations prepare_computations(const Intersection &intersection, const Ray &ray, Intersections &xs) {

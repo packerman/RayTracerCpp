@@ -19,7 +19,8 @@ namespace rt {
             auto surface = comps.object->material()
                     .lighting(*comps.object, *light, comps.over_point, comps.eye_v, comps.normal_v, shadowed);
             auto reflected = reflected_color(comps, remaining);
-            result += surface + reflected;
+            auto refracted = refracted_color(comps, remaining);
+            result += surface + reflected + refracted;
         }
         return result;
     }
@@ -59,6 +60,26 @@ namespace rt {
         return color * comps.object->material().reflective;
     }
 
+    Color World::refracted_color(const Computations &comps, int remaining) const {
+        if (remaining <= 0) {
+            return black;
+        }
+        if (comps.object->material().transparency == 0) {
+            return black;
+        }
+        const auto n_ratio = comps.n1 / comps.n2;
+        const auto cos_i = dot(comps.eye_v, comps.normal_v);
+        const auto sin2_t = n_ratio * n_ratio * (1 - cos_i * cos_i);
+        if (sin2_t > 1) {
+            return black;
+        }
+        const auto cos_t = std::sqrt(1 - sin2_t);
+        const auto direction = comps.normal_v * (n_ratio * cos_i - cos_t) - comps.eye_v * n_ratio;
+        const Ray refract_ray{comps.under_point, direction};
+        const auto color = color_at(refract_ray, remaining - 1) * comps.object->material().transparency;
+        return color;
+    }
+
     World default_world() {
         auto light = std::make_unique<Light>(point(-10, 10, -10), color(1, 1, 1));
 
@@ -77,4 +98,4 @@ namespace rt {
 
         return world;
     }
-} // rt
+}

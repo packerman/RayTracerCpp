@@ -48,6 +48,9 @@ namespace rt {
         [[nodiscard]] Color reflected_color(const Computations &comps,
                                             int remaining = default_max_recursion_depth) const;
 
+        [[nodiscard]] Color refracted_color(const Computations &comps,
+                                            int remaining = default_max_recursion_depth) const;
+
     private:
         std::vector<std::unique_ptr<Shape> > objects_;
         std::vector<std::unique_ptr<Light> > lights_;

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <Pattern.h>
+#include "Pattern_test.h"
 
 #include "Shape.h"
 
@@ -12,7 +12,7 @@ namespace rt {
         }
     };
 
-    std::unique_ptr<TestPattern> test_pattern() {
+    std::unique_ptr<Pattern> test_pattern() {
         return std::make_unique<TestPattern>();
     }
 

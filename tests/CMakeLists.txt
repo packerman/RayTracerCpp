@@ -25,6 +25,7 @@ target_sources(test_lib
         Lighting_test.cpp
         World_test.cpp
         Camera_test.cpp
+        Pattern_test.h
         Pattern_test.cpp
 )
 

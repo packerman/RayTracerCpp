@@ -173,4 +173,17 @@ namespace rt {
             std::make_tuple(4, 2.5, 1.5),
             std::make_tuple(5, 1.5, 1)
         ));
+
+    TEST(IntersectionTest, UnderPoint) {
+        constexpr Ray r{point(0, 0, -5), vector(0, 0, 1)};
+        const auto shape = glass_sphere();
+        shape->set_transform(translation(0, 0, 1));
+        const Intersection i{5, shape.get()};
+        Intersections xs{i};
+
+        const auto comps = prepare_computations(i, r, xs);
+
+        EXPECT_GT(comps.under_point.z, shadow_epsilon / 2);
+        EXPECT_LT(comps.point.z, comps.under_point.z);
+    }
 }

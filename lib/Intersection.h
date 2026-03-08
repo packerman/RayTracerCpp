@@ -73,6 +73,7 @@ namespace rt {
         Vector normal_v;
         bool inside;
         Point over_point;
+        Point under_point;
         Vector reflect_v;
         double n1;
         double n2;

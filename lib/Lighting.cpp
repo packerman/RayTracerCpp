@@ -41,6 +41,9 @@ namespace rt {
                << " diffuse: " << obj.diffuse
                << " specular: " << obj.specular
                << " shininess: " << obj.shininess
-               << " pattern: " << obj.pattern;
+               << " pattern: " << obj.pattern
+               << " reflective: " << obj.reflective
+               << " transparency: " << obj.transparency
+               << " refractive_index: " << obj.refractive_index;
     }
 }

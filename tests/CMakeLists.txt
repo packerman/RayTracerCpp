@@ -19,11 +19,13 @@ target_sources(test_lib
         Matrix_test.cpp
         Transformation_test.cpp
         Ray_test.cpp
+        Shape_test.h
         Shape_test.cpp
         Intersection_test.cpp
         Lighting_test.cpp
         World_test.cpp
         Camera_test.cpp
+        Pattern_test.h
         Pattern_test.cpp
 )
 

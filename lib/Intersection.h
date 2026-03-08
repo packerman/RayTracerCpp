@@ -73,7 +73,15 @@ namespace rt {
         Vector normal_v;
         bool inside;
         Point over_point;
+        Point under_point;
+        Vector reflect_v;
+        double n1;
+        double n2;
     };
 
+    Computations prepare_computations(const Intersection &intersection, const Ray &ray, Intersections &xs);
+
     Computations prepare_computations(const Intersection &intersection, const Ray &ray);
-} // rt
+
+    double schlick(const Computations &comps);
+}

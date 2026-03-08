@@ -2,6 +2,7 @@
 #include "World.h"
 
 #include "Common.h"
+#include "Pattern_test.h"
 
 namespace rt {
     TEST(WorldTest, CreateWorld) {
@@ -130,4 +131,196 @@ namespace rt {
             std::make_tuple(point(-20, 20, -20), false),
             std::make_tuple(point(-2, 2, -2), false)
         ));
+
+    TEST(WorldTest, ReflectedColorForNonreflectiveMaterial) {
+        const auto w = default_world();
+        constexpr Ray r{point(0, 0, 0), vector(0, 0, 1)};
+        auto &shape = w.object(1);
+        shape->material().ambient = 1;
+        const Intersection i{1, shape.get()};
+
+        const auto comps = prepare_computations(i, r);
+        const auto color = w.reflected_color(comps);
+
+        EXPECT_EQ(color, black);
+    }
+
+    TEST(WorldTest, ReflectedColorReflectiveMaterial) {
+        auto w = default_world();
+        auto shape = plane();
+        shape->material().reflective = 0.5;
+        shape->set_transform(translation(0, -1, 0));
+        const Intersection i{std::numbers::sqrt2, shape.get()};
+        w.add_object(std::move(shape));
+        constexpr Ray r{
+            point(0, 0, -3),
+            vector(0, -std::numbers::sqrt2 / 2, std::numbers::sqrt2 / 2)
+        };
+
+        const auto comps = prepare_computations(i, r);
+        const auto color = w.reflected_color(comps);
+
+        EXPECT_TRUE(approx_equals(color, rt::color(0.19032, 0.2379, 0.14274), 1e-4));
+    }
+
+    TEST(WorldTest, ShadeHitReflectiveMaterial) {
+        auto w = default_world();
+        auto shape = plane();
+        shape->material().reflective = 0.5;
+        shape->set_transform(translation(0, -1, 0));
+        const Intersection i{std::numbers::sqrt2, shape.get()};
+        w.add_object(std::move(shape));
+        constexpr Ray r{
+            point(0, 0, -3),
+            vector(0, -std::numbers::sqrt2 / 2, std::numbers::sqrt2 / 2)
+        };
+
+        const auto comps = prepare_computations(i, r);
+        const auto color = w.shade_hit(comps);
+
+        EXPECT_TRUE(approx_equals(color, rt::color(0.87677, 0.92436, 0.82918), 1e-4));
+    }
+
+    TEST(WorldTest, ColorAtWithMutuallyReflectiveSurfaces) {
+        World w{};
+        w.add_light(point_light(point(0, 0, 0), color(1, 1, 1)));
+        auto lower = plane();
+        lower->material().reflective = 1;
+        lower->set_transform(translation(0, -1, 0));
+        w.add_object(std::move(lower));
+        auto upper = plane();
+        upper->material().reflective = 1;
+        upper->set_transform(translation(0, 1, 0));
+        w.add_object(std::move(upper));
+        constexpr Ray r{point(0, 0, 0), vector(0, 1, 0)};
+
+        // ReSharper disable once CppDFAUnreadVariable
+        Color c;
+        EXPECT_NO_FATAL_FAILURE({
+            c = w.color_at(r);
+            });
+    }
+
+    TEST(WorldTest, ReflectedColorAtTheMaximumRecursiveDepth) {
+        auto w = default_world();
+        auto shape = plane();
+        shape->material().reflective = 0.5;
+        shape->set_transform(translation(0, -1, 0));
+        const Intersection i{std::numbers::sqrt2, shape.get()};
+        w.add_object(std::move(shape));
+        constexpr Ray r{
+            point(0, 0, -3),
+            vector(0, -std::numbers::sqrt2 / 2, std::numbers::sqrt2 / 2)
+        };
+
+        const auto comps = prepare_computations(i, r);
+        const auto color = w.reflected_color(comps, 0);
+
+        EXPECT_EQ(color, black);
+    }
+
+    TEST(WorldTest, The_refracted_color_with_an_opaque_surface) {
+        const auto w = default_world();
+        auto &shape = w.object(0);
+        constexpr Ray r{point(0, 0, -5), vector(0, 0, 1)};
+        Intersections xs{{4, shape.get()}, {6, shape.get()}};
+
+        const auto comps = prepare_computations(xs.data()[0], r, xs);
+        const auto c = w.refracted_color(comps, 5);
+
+        EXPECT_EQ(c, black);
+    }
+
+    TEST(WorldTest, The_refracted_color_at_the_maximum_recursive_depth) {
+        const auto w = default_world();
+        auto &shape = w.object(0);
+        shape->material().transparency = 1;
+        shape->material().refractive_index = 1.5;
+        constexpr Ray r{point(0, 0, -5), vector(0, 0, 1)};
+        Intersections xs{{4, shape.get()}, {6, shape.get()}};
+
+        const auto comps = prepare_computations(xs.data()[0], r, xs);
+        const auto c = w.refracted_color(comps, 0);
+
+        EXPECT_EQ(c, black);
+    }
+
+    TEST(WorldTest, The_refracted_color_under_total_internal_reflection) {
+        const auto w = default_world();
+        auto &shape = w.object(0);
+        shape->material().transparency = 1;
+        shape->material().refractive_index = 1.5;
+        constexpr Ray r{point(0, 0, std::numbers::sqrt2 / 2), vector(0, 1, 0)};
+        Intersections xs{{-std::numbers::sqrt2 / 2, shape.get()}, {std::numbers::sqrt2 / 2, shape.get()}};
+
+        const auto comps = prepare_computations(xs.data()[1], r, xs);
+        const auto c = w.refracted_color(comps, 5);
+
+        EXPECT_EQ(c, black);
+    }
+
+    TEST(WorldTest, The_refracted_color_with_a_refracted_ray) {
+        const auto w = default_world();
+        auto &a = w.object(0);
+        a->material().ambient = 1;
+        a->material().pattern = test_pattern();
+        auto &b = w.object(1);
+        b->material().transparency = 1;
+        b->material().refractive_index = 1.5;
+        constexpr Ray r{point(0, 0, 0.1), vector(0, 1, 0)};
+        Intersections xs{
+            {-0.9899, a.get()},
+            {-0.4899, b.get()},
+            {0.4899, b.get()},
+            {0.9899, a.get()}
+        };
+
+        const auto comps = prepare_computations(xs.data()[2], r, xs);
+        const auto c = w.refracted_color(comps, 5);
+
+        EXPECT_TRUE(approx_equals(c, color(0, 0.99888, 0.04725), 1e-4));
+    }
+
+    TEST(WorldTest, Shade_hit_with_a_transparent_material) {
+        auto w = default_world();
+        auto floor = plane();
+        floor->set_transform(translation(0, -1, 0));
+        floor->material().transparency = 0.5;
+        floor->material().refractive_index = 1.5;
+        auto ball = sphere();
+        ball->material().color = color(1, 0, 0);
+        ball->material().ambient = 0.5;
+        ball->set_transform(translation(0, -3.5, -0.5));
+        w.add_object(std::move(ball));
+        constexpr Ray r{point(0, 0, -3), vector(0, -std::numbers::sqrt2 / 2, std::numbers::sqrt2 / 2)};
+        Intersections xs{{std::numbers::sqrt2, floor.get()}};
+        w.add_object(std::move(floor));
+
+        const auto comps = prepare_computations(xs.data()[0], r, xs);
+        const auto color = w.shade_hit(comps, 5);
+
+        EXPECT_TRUE(approx_equals(color, rt::color(0.93642, 0.68642, 0.68642), 1e-5));
+    }
+
+    TEST(WorldTest, Shade_hit_with_a_reflective_transparent_material) {
+        auto w = default_world();
+        auto floor = plane();
+        floor->set_transform(translation(0, -1, 0));
+        floor->material().reflective = 0.5;
+        floor->material().transparency = 0.5;
+        floor->material().refractive_index = 1.5;
+        auto ball = sphere();
+        ball->material().color = color(1, 0, 0);
+        ball->material().ambient = 0.5;
+        ball->set_transform(translation(0, -3.5, -0.5));
+        w.add_object(std::move(ball));
+        constexpr Ray r{point(0, 0, -3), vector(0, -std::numbers::sqrt2 / 2, std::numbers::sqrt2 / 2)};
+        Intersections xs{{std::numbers::sqrt2, floor.get()}};
+        w.add_object(std::move(floor));
+
+        const auto comps = prepare_computations(xs.data()[0], r, xs);
+        const auto color = w.shade_hit(comps, 5);
+
+        EXPECT_TRUE(approx_equals(color, rt::color(0.93391, 0.69643, 0.69243), 1e-5));
+    }
 }

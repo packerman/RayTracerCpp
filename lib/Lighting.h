@@ -34,6 +34,9 @@ namespace rt {
         double specular{0.9};
         double shininess{200.0};
         std::shared_ptr<Pattern> pattern{nullptr};
+        double reflective{0};
+        double transparency{0};
+        double refractive_index{1};
 
         [[nodiscard]] Color lighting(const Shape &shape, const Light &light, const Point &point, const Vector &eye_v,
                                      const Vector &normal_v, bool in_shadow = false) const;;
@@ -49,4 +52,10 @@ namespace rt {
 
         friend std::ostream &operator<<(std::ostream &os, const Material &obj);
     };
+
+    constexpr double vacuum_refractive_index{1};
+    constexpr double air_refractive_index{1.00029};
+    constexpr double water_refractive_index{1.333};
+    constexpr double glass_refractive_index{1.52};
+    constexpr double diamond_refractive_index{2.417};
 }

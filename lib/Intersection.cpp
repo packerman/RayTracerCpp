@@ -1,6 +1,7 @@
 #include "Intersection.h"
 
 #include <algorithm>
+#include <list>
 
 #include "Shape.h"
 
@@ -42,6 +43,28 @@ namespace rt {
     }
 
     Computations prepare_computations(const Intersection &intersection, const Ray &ray) {
+        Intersections xs{intersection};
+        return prepare_computations(intersection, ray, xs);
+    }
+
+    double schlick(const Computations &comps) {
+        auto cos = dot(comps.eye_v, comps.normal_v);
+        if (comps.n1 > comps.n2) {
+            const auto n = comps.n1 / comps.n2;
+            const auto sin2_t = n * n * (1 - cos * cos);
+            if (sin2_t > 1) {
+                return 1;
+            }
+            const auto cos_t = std::sqrt(1 - sin2_t);
+            cos = cos_t;
+        }
+        const auto r0 = std::pow((comps.n1 - comps.n2) / (comps.n1 + comps.n2), 2);
+        return r0 + (1 - r0) * std::pow(1 - cos, 5);
+    }
+
+    void compute_refractive_indices(const Intersection &hit, Computations &comps, const std::vector<Intersection> &xs);
+
+    Computations prepare_computations(const Intersection &intersection, const Ray &ray, Intersections &xs) {
         Computations comps{};
 
         comps.t = intersection.t();
@@ -59,7 +82,42 @@ namespace rt {
         }
 
         comps.over_point = comps.point + comps.normal_v * shadow_epsilon;
+        comps.under_point = comps.point - comps.normal_v * shadow_epsilon;
+
+        comps.reflect_v = ray.direction().reflect(comps.normal_v);
+
+        compute_refractive_indices(intersection, comps, xs.data());
 
         return comps;
     }
-} // rt
+
+    void compute_refractive_indices(const Intersection &hit, Computations &comps,
+                                    const std::vector<Intersection> &xs) {
+        std::list<Shape *> containers{};
+
+        for (auto &i: xs) {
+            if (i == hit) {
+                if (containers.empty()) {
+                    comps.n1 = 1;
+                } else {
+                    comps.n1 = containers.back()->material().refractive_index;
+                }
+            }
+
+            if (auto it = std::ranges::find(containers, i.object()); it != containers.end()) {
+                containers.erase(it);
+            } else {
+                containers.push_back(i.object());
+            }
+
+            if (i == hit) {
+                if (containers.empty()) {
+                    comps.n2 = 1;
+                } else {
+                    comps.n2 = containers.back()->material().refractive_index;
+                }
+                break;
+            }
+        }
+    }
+}

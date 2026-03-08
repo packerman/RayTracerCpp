@@ -5,7 +5,7 @@
 #include "Intersection.h"
 
 #include "Common.h"
-#include "Shape.h"
+#include "Shape_test.h"
 
 namespace rt {
     TEST(IntersectionTest, CreateIntersection) {
@@ -117,5 +117,106 @@ namespace rt {
 
         EXPECT_LT(comps.over_point.z, -shadow_epsilon/2);
         EXPECT_GT(comps.point.z, comps.over_point.z);
+    }
+
+    TEST(IntersectionTest, PrecomputeReflectionVector) {
+        const auto shape = plane();
+        constexpr Ray r{point(0, 1, -1), vector(0, -std::numbers::sqrt2 / 2, std::numbers::sqrt2 / 2)};
+        const Intersection i{std::numbers::sqrt2, shape.get()};
+
+        const auto comps = prepare_computations(i, r);
+
+        EXPECT_EQ(comps.reflect_v, vector(0, std::numbers::sqrt2/2, std::numbers::sqrt2/2));
+
+        EXPECT_TRUE(approx_equals(comps.reflect_v, vector(0, std::numbers::sqrt2/2, std::numbers::sqrt2/2)));
+    }
+
+    class RefractiveTest : public ::testing::TestWithParam<std::tuple<std::size_t, double, double> > {
+    };
+
+    TEST_P(RefractiveTest, Finding_n1_and_n2_at_various_intersections) {
+        auto [index, n1, n2] = GetParam();
+
+        const auto a = glass_sphere();
+        a->set_transform(scaling(2, 2, 2));
+        a->material().refractive_index = 1.5;
+        const auto b = glass_sphere();
+        b->set_transform(translation(0, 0, -0.25));
+        b->material().refractive_index = 2;
+        const auto c = glass_sphere();
+        c->set_transform(translation(0, 0, 0.25));
+        c->material().refractive_index = 2.5;
+        constexpr Ray r{point(0, 0, -4), vector(0, 0, 1)};
+        auto xs = Intersections({
+            {2, a.get()},
+            {2.75, b.get()},
+            {3.25, c.get()},
+            {4.75, b.get()},
+            {5.25, c.get()},
+            {6, a.get()}
+        });
+
+        const auto comps = prepare_computations(xs.data()[index], r, xs);
+
+        EXPECT_EQ(comps.n1, n1);
+        EXPECT_EQ(comps.n2, n2);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        RefractiveTestSuite,
+        RefractiveTest,
+        ::testing::Values(
+            std::make_tuple(0, 1, 1.5),
+            std::make_tuple(1, 1.5, 2),
+            std::make_tuple(2, 2, 2.5),
+            std::make_tuple(3, 2.5, 2.5),
+            std::make_tuple(4, 2.5, 1.5),
+            std::make_tuple(5, 1.5, 1)
+        ));
+
+    TEST(IntersectionTest, UnderPoint) {
+        constexpr Ray r{point(0, 0, -5), vector(0, 0, 1)};
+        const auto shape = glass_sphere();
+        shape->set_transform(translation(0, 0, 1));
+        const Intersection i{5, shape.get()};
+        Intersections xs{i};
+
+        const auto comps = prepare_computations(i, r, xs);
+
+        EXPECT_GT(comps.under_point.z, shadow_epsilon / 2);
+        EXPECT_LT(comps.point.z, comps.under_point.z);
+    }
+
+    TEST(IntersectionTest, The_Schlick_approximation_under_total_internal_reflection) {
+        const auto shape = glass_sphere();
+        constexpr Ray r{point(0, 0, std::numbers::sqrt2 / 2), vector(0, 1, 0)};
+        Intersections xs{{-std::numbers::sqrt2 / 2, shape.get()}, {std::numbers::sqrt2 / 2, shape.get()}};
+
+        const auto comps = prepare_computations(xs.data()[1], r, xs);
+        const auto reflectance = schlick(comps);
+
+        EXPECT_EQ(reflectance, 1.0);
+    }
+
+    TEST(IntersectionTest, The_Schlick_approximation_with_a_perpendicular_viewing_angle) {
+        const auto shape = glass_sphere();
+        constexpr Ray r{point(0, 0, 0), vector(0, 1, 0)};
+        Intersections xs{{-1, shape.get()}, {1, shape.get()}};
+
+        const auto comps = prepare_computations(xs.data()[1], r, xs);
+        const auto reflectance = schlick(comps);
+
+        EXPECT_TRUE(approx_equals(reflectance, 0.04));
+    }
+
+    TEST(IntersectionTest, The_Schlick_approximation_with_small_angle_and_n2_gt_n1) {
+        const auto shape = glass_sphere();
+        constexpr Ray r{point(0, 0.99, -2), vector(0, 0, 1)};
+        Intersections xs{{1.8589, shape.get()}};
+
+        const auto comps = prepare_computations(xs.data()[0], r, xs);
+        const auto reflectance = schlick(comps);
+
+        EXPECT_TRUE(approx_equals(reflectance, 0.48873, 1e-6));
     }
 }

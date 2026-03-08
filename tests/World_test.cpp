@@ -197,7 +197,7 @@ namespace rt {
         Color c;
         EXPECT_NO_FATAL_FAILURE({
             c = w.color_at(r);
-        });
+            });
     }
 
     TEST(WorldTest, ReflectedColorAtTheMaximumRecursiveDepth) {

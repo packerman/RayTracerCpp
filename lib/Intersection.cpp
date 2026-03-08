@@ -79,7 +79,7 @@ namespace rt {
                                     const std::vector<Intersection> &xs) {
         std::list<Shape *> containers{};
 
-        for (auto &i : xs) {
+        for (auto &i: xs) {
             if (i == hit) {
                 if (containers.empty()) {
                     comps.n1 = 1;

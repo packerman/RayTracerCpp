@@ -161,4 +161,61 @@ namespace rt {
 
         EXPECT_TRUE(approx_equals(color, rt::color(0.19032, 0.2379, 0.14274), 1e-4));
     }
+
+    TEST(WorldTest, ShadeHitReflectiveMaterial) {
+        auto w = default_world();
+        auto shape = plane();
+        shape->material().reflective = 0.5;
+        shape->set_transform(translation(0, -1, 0));
+        const Intersection i{std::numbers::sqrt2, shape.get()};
+        w.add_object(std::move(shape));
+        constexpr Ray r{
+            point(0, 0, -3),
+            vector(0, -std::numbers::sqrt2 / 2, std::numbers::sqrt2 / 2)
+        };
+
+        const auto comps = prepare_computations(i, r);
+        const auto color = w.shade_hit(comps);
+
+        EXPECT_TRUE(approx_equals(color, rt::color(0.87677, 0.92436, 0.82918), 1e-4));
+    }
+
+    TEST(WorldTest, ColorAtWithMutuallyReflectiveSurfaces) {
+        World w{};
+        w.add_light(point_light(point(0, 0, 0), color(1, 1, 1)));
+        auto lower = plane();
+        lower->material().reflective = 1;
+        lower->set_transform(translation(0, -1, 0));
+        w.add_object(std::move(lower));
+        auto upper = plane();
+        upper->material().reflective = 1;
+        upper->set_transform(translation(0, 1, 0));
+        w.add_object(std::move(upper));
+        constexpr Ray r{point(0, 0, 0), vector(0, 1, 0)};
+
+        // ReSharper disable once CppDFAUnreadVariable
+        Color c;
+        EXPECT_NO_FATAL_FAILURE({
+            c = w.color_at(r);
+        });
+    }
+
+    TEST(WorldTest, ReflectedColorAtTheMaximumRecursiveDepth) {
+        auto w = default_world();
+        auto shape = plane();
+        shape->material().reflective = 0.5;
+        shape->set_transform(translation(0, -1, 0));
+        const Intersection i{std::numbers::sqrt2, shape.get()};
+        w.add_object(std::move(shape));
+        constexpr Ray r{
+            point(0, 0, -3),
+            vector(0, -std::numbers::sqrt2 / 2, std::numbers::sqrt2 / 2)
+        };
+
+        const auto comps = prepare_computations(i, r);
+        const auto color = w.reflected_color(comps, 0);
+
+        EXPECT_EQ(color, black);
+    }
 }
+

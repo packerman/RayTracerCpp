@@ -39,17 +39,19 @@ namespace rt {
 
         [[nodiscard]] Intersections intersect(const Ray &ray) const;
 
-        [[nodiscard]] Color shade_hit(const Computations &comps) const;
+        [[nodiscard]] Color shade_hit(const Computations &comps, int remaining = default_max_recursion_depth) const;
 
-        [[nodiscard]] Color color_at(const Ray &ray) const;
+        [[nodiscard]] Color color_at(const Ray &ray, int remaining = default_max_recursion_depth) const;
 
         [[nodiscard]] bool is_shadowed(const Point &point, const Light &light) const;
 
-        [[nodiscard]] Color reflected_color(const Computations &comps) const;
+        [[nodiscard]] Color reflected_color(const Computations &comps,
+                                            int remaining = default_max_recursion_depth) const;
 
     private:
         std::vector<std::unique_ptr<Shape> > objects_;
         std::vector<std::unique_ptr<Light> > lights_;
+        static constexpr int default_max_recursion_depth = 5;
     };
 
     World default_world();

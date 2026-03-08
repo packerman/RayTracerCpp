@@ -12,24 +12,26 @@ namespace rt {
         return result;
     }
 
-    Color World::shade_hit(const Computations &comps) const {
+    Color World::shade_hit(const Computations &comps, const int remaining) const {
         auto result = color(0, 0, 0);
         for (auto &light: lights_) {
             const auto shadowed = is_shadowed(comps.over_point, *light);
-            result += comps.object->material()
+            auto surface = comps.object->material()
                     .lighting(*comps.object, *light, comps.over_point, comps.eye_v, comps.normal_v, shadowed);
+            auto reflected = reflected_color(comps, remaining);
+            result += surface + reflected;
         }
         return result;
     }
 
-    Color World::color_at(const Ray &ray) const {
+    Color World::color_at(const Ray &ray, const int remaining) const {
         auto xs = intersect(ray);
         const auto hit = xs.hit();
         if (!hit) {
             return black;
         }
         const auto comps = prepare_computations(hit.value(), ray);
-        return shade_hit(comps);
+        return shade_hit(comps, remaining);
     }
 
     bool World::is_shadowed(const Point &point, const Light &light) const {
@@ -44,12 +46,15 @@ namespace rt {
         return h && h->t() < distance;
     }
 
-    Color World::reflected_color(const Computations &comps) const {
+    Color World::reflected_color(const Computations &comps, const int remaining) const {
+        if (remaining <= 0) {
+            return black;
+        }
         if (comps.object->material().reflective == 0) {
             return black;
         }
         const Ray reflect_ray{comps.over_point, comps.reflect_v};
-        const auto color = color_at(reflect_ray);
+        const auto color = color_at(reflect_ray, remaining - 1);
 
         return color * comps.object->material().reflective;
     }

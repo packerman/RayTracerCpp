@@ -76,7 +76,15 @@ namespace rt {
     }
 
     Vector Cube::local_normal_at(const Point &local_point) const {
-        return {};
+        const auto max_c = std::max({std::abs(local_point.x), std::abs(local_point.y), std::abs(local_point.z)});
+
+        if (max_c == std::abs(local_point.x)) {
+            return vector(local_point.x, 0, 0);
+        }
+        if (max_c == std::abs(local_point.y)) {
+            return vector(0, local_point.y, 0);
+        }
+        return vector(0, 0, local_point.z);
     }
 
     std::pair<double, double> Cube::check_axis(const double origin, const double direction) {

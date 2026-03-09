@@ -15,7 +15,7 @@ namespace rt {
             return {};
         }
 
-        Vector local_normal_at(const Point &point) override {
+        [[nodiscard]] Vector local_normal_at(const Point &point) const override {
             return vector(point.x, point.y, point.z);
         }
 
@@ -231,4 +231,33 @@ namespace rt {
         s->material().refractive_index = 1.5;
         return s;
     }
+
+    class RayCubeIntersectionTest : public testing::TestWithParam<std::tuple<Point, Vector, double, double> > {
+    };
+
+    TEST_P(RayCubeIntersectionTest, RayCubeIntersection) {
+        auto [origin, direction, t1, t2] = GetParam();
+
+        const auto c = cube();
+        const Ray r{origin, direction};
+
+        const auto xs = c->local_intersect(r);
+
+        ASSERT_EQ(xs.size(), 2);
+        EXPECT_EQ(xs[0].t(), t1);
+        EXPECT_EQ(xs[1].t(), t2);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        RayCubeIntersectionTestSuite,
+        RayCubeIntersectionTest,
+        ::testing::Values(
+            std::make_tuple(point(5, 0.5, 0), vector(-1, 0, 0), 4, 6),
+            std::make_tuple(point(-5, 0.5, 0), vector(1, 0, 0), 4, 6),
+            std::make_tuple(point(0.5, 5, 0), vector(0, -1, 0), 4, 6),
+            std::make_tuple(point(0.5, -5, 0), vector(0, 1, 0), 4, 6),
+            std::make_tuple(point(0.5, 0, 5), vector(0, 0, -1), 4, 6),
+            std::make_tuple(point(0.5, 0, -5), vector(0, 0, 1), 4, 6),
+            std::make_tuple(point(0, 0.5, 0), vector(0, 0, 1), -1, 1)
+        ));
 }

@@ -2,6 +2,7 @@
 #include "Intersection.h"
 
 #include <cmath>
+#include <algorithm>
 
 namespace rt {
     std::vector<Intersection> Shape::intersect(const Ray &ray) {
@@ -35,7 +36,7 @@ namespace rt {
         return {{t1, this}, {t2, this}};
     }
 
-    Vector Sphere::local_normal_at(const Point &local_point) {
+    Vector Sphere::local_normal_at(const Point &local_point) const {
         return local_point - point(0, 0, 0);
     }
 
@@ -51,11 +52,44 @@ namespace rt {
         return {{t, this}};
     }
 
-    Vector Plane::local_normal_at(const Point &point) {
+    Vector Plane::local_normal_at(const Point &point) const {
         return vector(0, 1, 0);
     }
 
     std::unique_ptr<Plane> plane() {
         return std::make_unique<Plane>();
+    }
+
+    std::vector<Intersection> Cube::local_intersect(const Ray &ray) {
+        auto [xt_min, xt_max] = check_axis(ray.origin().x, ray.direction().x);
+        auto [yt_min, yt_max] = check_axis(ray.origin().y, ray.direction().y);
+        auto [zt_min, zt_max] = check_axis(ray.origin().z, ray.direction().z);
+
+        auto t_min = std::max({xt_min, yt_min, zt_min});
+        auto t_max = std::min({xt_max, yt_max, zt_max});
+
+        return {{t_min, this}, {t_max, this}};
+    }
+
+    Vector Cube::local_normal_at(const Point &local_point) const {
+        return {};
+    }
+
+    std::pair<double, double> Cube::check_axis(const double origin, const double direction) {
+        const auto t_min_numerator = -1 - origin;
+        const auto t_max_numerator = 1 - origin;
+
+        auto t_min = t_min_numerator / direction;
+        auto t_max = t_max_numerator / direction;
+
+        if (t_min > t_max) {
+            std::swap(t_min, t_max);
+        }
+
+        return {t_min, t_max};
+    }
+
+    std::unique_ptr<Cube> cube() {
+        return std::make_unique<Cube>();
     }
 }

@@ -10,7 +10,7 @@ namespace rt {
         return local_intersect(local_ray);
     }
 
-    Vector Shape::normal_at(const Point &point) {
+    Vector Shape::normal_at(const Point &point) const {
         const auto local_point = inversed_transform() * point;
         const auto local_normal = local_normal_at(local_point);
         auto world_normal = inversed_transform().transpose() * local_normal;

@@ -56,7 +56,7 @@ namespace rt {
 
         virtual std::vector<Intersection> local_intersect(const Ray &ray) = 0;
 
-        Vector normal_at(const Point &point);
+        [[nodiscard]] Vector normal_at(const Point &point) const;
 
         [[nodiscard]] virtual Vector local_normal_at(const Point &local_point) const = 0;
 

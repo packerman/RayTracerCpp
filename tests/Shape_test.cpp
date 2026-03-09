@@ -260,4 +260,30 @@ namespace rt {
             std::make_tuple(point(0.5, 0, -5), vector(0, 0, 1), 4, 6),
             std::make_tuple(point(0, 0.5, 0), vector(0, 0, 1), -1, 1)
         ));
+
+    class RayMissesCubeTest : public testing::TestWithParam<std::tuple<Point, Vector> > {
+    };
+
+    TEST_P(RayMissesCubeTest, RayMissesCube) {
+        auto [origin, direction] = GetParam();
+
+        const auto c = cube();
+        const Ray r{origin, direction};
+
+        const auto xs = c->local_intersect(r);
+
+        ASSERT_EQ(xs.size(), 0);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        RayMissesCubeTestSuite,
+        RayMissesCubeTest,
+        ::testing::Values(
+            std::make_tuple(point(-2, 0, 0), vector(0.2673, 0.5345, 0.8018)),
+            std::make_tuple(point(0, -2, 0), vector(0.8018, 0.2673, 0.5345)),
+            std::make_tuple(point(0, 0, -2), vector(0.5345, 0.8018, 0.2673)),
+            std::make_tuple(point(2, 0, 2), vector(0, 0, -1)),
+            std::make_tuple(point(0, 2, 2), vector(0, -1, 0)),
+            std::make_tuple(point(2, 2, 0), vector(-1, 0, 0))
+        ));
 }

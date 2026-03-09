@@ -68,6 +68,10 @@ namespace rt {
         auto t_min = std::max({xt_min, yt_min, zt_min});
         auto t_max = std::min({xt_max, yt_max, zt_max});
 
+        if (t_min > t_max) {
+            return {};
+        }
+
         return {{t_min, this}, {t_max, this}};
     }
 

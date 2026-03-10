@@ -56,9 +56,9 @@ namespace rt {
 
         virtual std::vector<Intersection> local_intersect(const Ray &ray) = 0;
 
-        Vector normal_at(const Point &point);
+        [[nodiscard]] Vector normal_at(const Point &point) const;
 
-        virtual Vector local_normal_at(const Point &local_point) = 0;
+        [[nodiscard]] virtual Vector local_normal_at(const Point &local_point) const = 0;
 
     private:
         Transformation transform_{Transformation::identity()};
@@ -80,7 +80,7 @@ namespace rt {
 
         std::vector<Intersection> local_intersect(const Ray &ray) override;
 
-        Vector local_normal_at(const Point &local_point) override;
+        [[nodiscard]] Vector local_normal_at(const Point &local_point) const override;
     };
 
     std::unique_ptr<Sphere> sphere();
@@ -89,8 +89,20 @@ namespace rt {
     public:
         std::vector<Intersection> local_intersect(const Ray &ray) override;
 
-        Vector local_normal_at(const Point &point) override;
+        [[nodiscard]] Vector local_normal_at(const Point &point) const override;
     };
 
     std::unique_ptr<Plane> plane();
+
+    class Cube : public Shape {
+    public:
+        std::vector<Intersection> local_intersect(const Ray &ray) override;
+
+        [[nodiscard]] Vector local_normal_at(const Point &local_point) const override;
+
+    private:
+        static std::pair<double, double> check_axis(double origin, double direction);
+    };
+
+    std::unique_ptr<Cube> cube();
 }

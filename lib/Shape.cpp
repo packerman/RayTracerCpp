@@ -2,6 +2,7 @@
 #include "Intersection.h"
 
 #include <cmath>
+#include <algorithm>
 
 namespace rt {
     std::vector<Intersection> Shape::intersect(const Ray &ray) {
@@ -9,7 +10,7 @@ namespace rt {
         return local_intersect(local_ray);
     }
 
-    Vector Shape::normal_at(const Point &point) {
+    Vector Shape::normal_at(const Point &point) const {
         const auto local_point = inversed_transform() * point;
         const auto local_normal = local_normal_at(local_point);
         auto world_normal = inversed_transform().transpose() * local_normal;
@@ -35,7 +36,7 @@ namespace rt {
         return {{t1, this}, {t2, this}};
     }
 
-    Vector Sphere::local_normal_at(const Point &local_point) {
+    Vector Sphere::local_normal_at(const Point &local_point) const {
         return local_point - point(0, 0, 0);
     }
 
@@ -51,11 +52,56 @@ namespace rt {
         return {{t, this}};
     }
 
-    Vector Plane::local_normal_at(const Point &point) {
+    Vector Plane::local_normal_at(const Point &point) const {
         return vector(0, 1, 0);
     }
 
     std::unique_ptr<Plane> plane() {
         return std::make_unique<Plane>();
+    }
+
+    std::vector<Intersection> Cube::local_intersect(const Ray &ray) {
+        auto [xt_min, xt_max] = check_axis(ray.origin().x, ray.direction().x);
+        auto [yt_min, yt_max] = check_axis(ray.origin().y, ray.direction().y);
+        auto [zt_min, zt_max] = check_axis(ray.origin().z, ray.direction().z);
+
+        auto t_min = std::max({xt_min, yt_min, zt_min});
+        auto t_max = std::min({xt_max, yt_max, zt_max});
+
+        if (t_min > t_max) {
+            return {};
+        }
+
+        return {{t_min, this}, {t_max, this}};
+    }
+
+    Vector Cube::local_normal_at(const Point &local_point) const {
+        const auto max_c = std::max({std::abs(local_point.x), std::abs(local_point.y), std::abs(local_point.z)});
+
+        if (max_c == std::abs(local_point.x)) {
+            return vector(local_point.x, 0, 0);
+        }
+        if (max_c == std::abs(local_point.y)) {
+            return vector(0, local_point.y, 0);
+        }
+        return vector(0, 0, local_point.z);
+    }
+
+    std::pair<double, double> Cube::check_axis(const double origin, const double direction) {
+        const auto t_min_numerator = -1 - origin;
+        const auto t_max_numerator = 1 - origin;
+
+        auto t_min = t_min_numerator / direction;
+        auto t_max = t_max_numerator / direction;
+
+        if (t_min > t_max) {
+            std::swap(t_min, t_max);
+        }
+
+        return {t_min, t_max};
+    }
+
+    std::unique_ptr<Cube> cube() {
+        return std::make_unique<Cube>();
     }
 }

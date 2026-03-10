@@ -50,6 +50,12 @@ namespace rt {
         explicit Intersections(const std::vector<Intersection> &xs) : intersections_(xs) {
         }
 
+        std::size_t size() const {
+            return intersections_.size();
+        }
+
+        const Intersection &operator[](std::size_t i);
+
         const std::vector<Intersection> &data();
 
         std::optional<Intersection> hit();
@@ -57,7 +63,7 @@ namespace rt {
         void insert(const std::vector<Intersection> &xs);
 
     private:
-        void sort();
+        void ensure_sorted();
 
         std::vector<Intersection> intersections_{};
         bool is_sorted_ = false;

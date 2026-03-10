@@ -12,13 +12,18 @@ namespace rt {
                << " object_: " << obj.object_;
     }
 
+    const Intersection &Intersections::operator[](const std::size_t i) {
+        ensure_sorted();
+        return intersections_[i];
+    }
+
     const std::vector<Intersection> &Intersections::data() {
-        sort();
+        ensure_sorted();
         return intersections_;
     }
 
     std::optional<Intersection> Intersections::hit() {
-        sort();
+        ensure_sorted();
         const auto it = std::ranges::find_if(intersections_, [](auto &x) {
             return x.t() >= 0;
         });
@@ -35,7 +40,7 @@ namespace rt {
         }
     }
 
-    void Intersections::sort() {
+    void Intersections::ensure_sorted() {
         if (!is_sorted_) {
             std::ranges::sort(intersections_, [](auto &a, auto &b) { return a.t() < b.t(); });
             is_sorted_ = true;

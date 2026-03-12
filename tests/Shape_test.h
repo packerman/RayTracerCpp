@@ -4,5 +4,5 @@
 #include "Shape.h"
 
 namespace rt {
-    std::unique_ptr<Sphere> glass_sphere();
+    std::unique_ptr<Shape> glass_sphere();
 }

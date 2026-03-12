@@ -83,7 +83,7 @@ namespace rt {
         [[nodiscard]] Vector local_normal_at(const Point &local_point) const override;
     };
 
-    std::unique_ptr<Sphere> sphere();
+    std::unique_ptr<Shape> sphere();
 
     class Plane : public Shape {
     public:
@@ -92,7 +92,7 @@ namespace rt {
         [[nodiscard]] Vector local_normal_at(const Point &point) const override;
     };
 
-    std::unique_ptr<Plane> plane();
+    std::unique_ptr<Shape> plane();
 
     class Cube : public Shape {
     public:
@@ -104,5 +104,14 @@ namespace rt {
         static std::pair<double, double> check_axis(double origin, double direction);
     };
 
-    std::unique_ptr<Cube> cube();
+    std::unique_ptr<Shape> cube();
+
+    class Cylinder : public Shape {
+    public:
+        std::vector<Intersection> local_intersect(const Ray &ray) override;
+
+        [[nodiscard]] Vector local_normal_at(const Point &local_point) const override;
+    };
+
+    std::unique_ptr<Shape> cylinder();
 }

@@ -40,7 +40,7 @@ namespace rt {
         return local_point - point(0, 0, 0);
     }
 
-    std::unique_ptr<Sphere> sphere() {
+    std::unique_ptr<Shape> sphere() {
         return std::make_unique<Sphere>();
     }
 
@@ -56,7 +56,7 @@ namespace rt {
         return vector(0, 1, 0);
     }
 
-    std::unique_ptr<Plane> plane() {
+    std::unique_ptr<Shape> plane() {
         return std::make_unique<Plane>();
     }
 
@@ -101,7 +101,32 @@ namespace rt {
         return {t_min, t_max};
     }
 
-    std::unique_ptr<Cube> cube() {
+    std::unique_ptr<Shape> cube() {
         return std::make_unique<Cube>();
+    }
+
+    std::vector<Intersection> Cylinder::local_intersect(const Ray &ray) {
+        const auto a = std::pow(ray.direction().x, 2) + std::pow(ray.direction().z, 2);
+        if (a < std::numeric_limits<double>::epsilon()) {
+            return {};
+        }
+        const auto b = 2 * ray.origin().x * ray.direction().x +
+                       2 * ray.origin().z * ray.direction().z;
+        const auto c = std::pow(ray.origin().x, 2) + std::pow(ray.origin().z, 2) - 1;
+        const auto disc = std::pow(b, 2) - 4 * a * c;
+        if (disc < 0) {
+            return {};
+        }
+        auto t0 = (-b - std::sqrt(disc)) / (2 * a);
+        auto t1 = (-b + std::sqrt(disc)) / (2 * a);
+        return {{t0, this}, {t1, this}};
+    }
+
+    Vector Cylinder::local_normal_at(const Point &local_point) const {
+        return {};
+    }
+
+    std::unique_ptr<Shape> cylinder() {
+        return std::make_unique<Cylinder>();
     }
 }

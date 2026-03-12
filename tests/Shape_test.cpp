@@ -225,7 +225,7 @@ namespace rt {
             std::make_tuple(Ray(point(0, -1, 0), vector(0, 1, 0)), std::vector{1.0})
         ));
 
-    std::unique_ptr<Sphere> glass_sphere() {
+    std::unique_ptr<Shape> glass_sphere() {
         auto s = sphere();
         s->material().transparency = 1;
         s->material().refractive_index = 1.5;
@@ -313,4 +313,54 @@ namespace rt {
             std::make_tuple(point(1, 1, 1), vector(1, 0, 0)),
             std::make_tuple(point(-1, -1, -1), vector(-1, 0, 0))
         ));
+
+    class RayMissesCylinderTest: public testing::TestWithParam<std::tuple<Point, Vector>> {
+    };
+
+    TEST_P(RayMissesCylinderTest, Ray_misses_cylinder) {
+        auto [origin, direction] = GetParam();
+
+        const auto cyl = cylinder();
+        direction = direction.normalize();
+        const Ray r{origin, direction};
+
+        const auto xs = cyl->local_intersect(r);
+
+        EXPECT_EQ(xs.size(), 0);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        RayMissesCylinderTestSuite,
+        RayMissesCylinderTest,
+        ::testing::Values(
+            std::make_tuple(point(1, 0, 0), vector(0, 1, 0)),
+            std::make_tuple(point(0, 0, 0), vector(0, 1, 0)),
+            std::make_tuple(point(0, 0, -5), vector(1, 1, 1))
+            ));
+
+    class RayStrikesCylinderTest: public testing::TestWithParam<std::tuple<Point, Vector, double, double>> {
+    };
+
+    TEST_P(RayStrikesCylinderTest, A_ray_strikes_a_cylinder) {
+        auto [origin, direction, t0, t1] = GetParam();
+
+        const auto cyl = cylinder();
+        direction = direction.normalize();
+        const Ray r{origin, direction};
+
+        const auto xs = cyl->local_intersect(r);
+
+        ASSERT_EQ(xs.size(), 2);
+        EXPECT_TRUE(approx_equals(xs[0].t(), t0, 1e-5));
+        EXPECT_TRUE(approx_equals(xs[1].t(), t1, 1e-5));
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        RayStrikesCylinderTestSuite,
+        RayStrikesCylinderTest,
+        ::testing::Values(
+            std::make_tuple(point(1, 0, -5), vector(0, 0, 1), 5, 5),
+            std::make_tuple(point(0, 0, -5), vector(0, 0, 1), 4, 6),
+            std::make_tuple(point(0.5, 0, -5), vector(0.1, 1, 1), 6.80798, 7.08872)
+            ));
 }

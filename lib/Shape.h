@@ -106,12 +106,14 @@ namespace rt {
 
     std::unique_ptr<Shape> cube();
 
-    class Cylinder : public Shape {
-    public:
+    struct Cylinder : Shape {
         std::vector<Intersection> local_intersect(const Ray &ray) override;
 
         [[nodiscard]] Vector local_normal_at(const Point &local_point) const override;
+
+        double minimum{-std::numeric_limits<double>::infinity()};
+        double maximum{std::numeric_limits<double>::infinity()};
     };
 
-    std::unique_ptr<Shape> cylinder();
+    std::unique_ptr<Cylinder> cylinder();
 }

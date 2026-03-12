@@ -386,4 +386,40 @@ namespace rt {
             std::make_tuple(point(0, -2, 1), vector(0, 0, 1)),
             std::make_tuple(point(-1, 1, 0), vector(-1, 0, 0))
         ));
+
+    TEST(CylinderTest, The_default_minimum_and_maximum_for_a_cylinder) {
+        const auto cyl = cylinder();
+
+        EXPECT_EQ(cyl->minimum, -std::numeric_limits<double>::infinity());
+        EXPECT_EQ(cyl->maximum, std::numeric_limits<double>::infinity());
+    }
+
+    class TruncatedCylinderTest : public testing::TestWithParam<std::tuple<Point, Vector, int> > {
+    };
+
+    TEST_P(TruncatedCylinderTest, Intersecting_a_constrained_cylinder) {
+        auto [point, direction, count] = GetParam();
+
+        const auto cyl = cylinder();
+        cyl->minimum = 1;
+        cyl->maximum = 2;
+        direction = direction.normalize();
+        const Ray r{point, direction};
+
+        const auto xs = cyl->local_intersect(r);
+
+        EXPECT_EQ(xs.size(), count);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        TruncatedCylinderTestSuite,
+        TruncatedCylinderTest,
+        ::testing::Values(
+            std::make_tuple(point(0, 1.5, 0), vector(0.1, 1, 0), 0),
+            std::make_tuple(point(0, 3, -5), vector(0.0, 0, 1), 0),
+            std::make_tuple(point(0, 0, -5), vector(0, 0, 1), 0),
+            std::make_tuple(point(0, 2, -5), vector(0, 0, 1), 0),
+            std::make_tuple(point(0, 1, -5), vector(0, 0, 1), 0),
+            std::make_tuple(point(0, 1.5, -2), vector(0, 0, 1), 2)
+        ));
 }

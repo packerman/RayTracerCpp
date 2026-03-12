@@ -119,14 +119,28 @@ namespace rt {
         }
         auto t0 = (-b - std::sqrt(disc)) / (2 * a);
         auto t1 = (-b + std::sqrt(disc)) / (2 * a);
-        return {{t0, this}, {t1, this}};
+        if (t0 > t1) {
+            std::swap(t0, t1);
+        }
+
+        std::vector<Intersection> xs;
+
+        if (const auto y0 = ray.origin().y + t0 * ray.direction().y; minimum < y0 && y0 < maximum) {
+            xs.emplace_back(t0, this);
+        }
+
+        if (const auto y1 = ray.origin().y + t1 * ray.direction().y; minimum < y1 && y1 < maximum) {
+            xs.emplace_back(t1, this);
+        }
+
+        return xs;
     }
 
     Vector Cylinder::local_normal_at(const Point &local_point) const {
         return vector(local_point.x, 0, local_point.z);
     }
 
-    std::unique_ptr<Shape> cylinder() {
+    std::unique_ptr<Cylinder> cylinder() {
         return std::make_unique<Cylinder>();
     }
 }

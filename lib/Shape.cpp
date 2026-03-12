@@ -123,7 +123,7 @@ namespace rt {
     }
 
     Vector Cylinder::local_normal_at(const Point &local_point) const {
-        return {};
+        return vector(local_point.x, 0, local_point.z);
     }
 
     std::unique_ptr<Shape> cylinder() {

@@ -314,7 +314,7 @@ namespace rt {
             std::make_tuple(point(-1, -1, -1), vector(-1, 0, 0))
         ));
 
-    class RayMissesCylinderTest: public testing::TestWithParam<std::tuple<Point, Vector>> {
+    class RayMissesCylinderTest : public testing::TestWithParam<std::tuple<Point, Vector> > {
     };
 
     TEST_P(RayMissesCylinderTest, Ray_misses_cylinder) {
@@ -336,9 +336,9 @@ namespace rt {
             std::make_tuple(point(1, 0, 0), vector(0, 1, 0)),
             std::make_tuple(point(0, 0, 0), vector(0, 1, 0)),
             std::make_tuple(point(0, 0, -5), vector(1, 1, 1))
-            ));
+        ));
 
-    class RayStrikesCylinderTest: public testing::TestWithParam<std::tuple<Point, Vector, double, double>> {
+    class RayStrikesCylinderTest : public testing::TestWithParam<std::tuple<Point, Vector, double, double> > {
     };
 
     TEST_P(RayStrikesCylinderTest, A_ray_strikes_a_cylinder) {
@@ -362,5 +362,28 @@ namespace rt {
             std::make_tuple(point(1, 0, -5), vector(0, 0, 1), 5, 5),
             std::make_tuple(point(0, 0, -5), vector(0, 0, 1), 4, 6),
             std::make_tuple(point(0.5, 0, -5), vector(0.1, 1, 1), 6.80798, 7.08872)
-            ));
+        ));
+
+    class NormalVectorOnCylinderTest : public testing::TestWithParam<std::tuple<Point, Vector> > {
+    };
+
+    TEST_P(NormalVectorOnCylinderTest, Normal_vector_on_a_cylinder) {
+        auto [point, normal] = GetParam();
+
+        const auto cyl = cylinder();
+
+        const auto n = cyl->local_normal_at(point);
+
+        EXPECT_EQ(n, normal);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        NormalVectorOnCylinderTestSuite,
+        NormalVectorOnCylinderTest,
+        ::testing::Values(
+            std::make_tuple(point(1, 0, 0), vector(1, 0, 0)),
+            std::make_tuple(point(0, 5, -1), vector(0, 0, -1)),
+            std::make_tuple(point(0, -2, 1), vector(0, 0, 1)),
+            std::make_tuple(point(-1, 1, 0), vector(-1, 0, 0))
+        ));
 }

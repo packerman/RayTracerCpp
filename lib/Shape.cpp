@@ -125,11 +125,11 @@ namespace rt {
 
         std::vector<Intersection> xs;
 
-        if (const auto y0 = ray.origin().y + t0 * ray.direction().y; minimum < y0 && y0 < maximum) {
+        if (const auto y0 = ray.origin().y + t0 * ray.direction().y; minimum_ < y0 && y0 < maximum_) {
             xs.emplace_back(t0, this);
         }
 
-        if (const auto y1 = ray.origin().y + t1 * ray.direction().y; minimum < y1 && y1 < maximum) {
+        if (const auto y1 = ray.origin().y + t1 * ray.direction().y; minimum_ < y1 && y1 < maximum_) {
             xs.emplace_back(t1, this);
         }
 
@@ -140,7 +140,7 @@ namespace rt {
         return vector(local_point.x, 0, local_point.z);
     }
 
-    std::unique_ptr<Cylinder> cylinder() {
-        return std::make_unique<Cylinder>();
+    std::unique_ptr<Shape> cylinder(const double minimum, const double maximum) {
+        return std::make_unique<Cylinder>(minimum, maximum);
     }
 }

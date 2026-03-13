@@ -390,8 +390,8 @@ namespace rt {
     TEST(CylinderTest, The_default_minimum_and_maximum_for_a_cylinder) {
         const auto cyl = cylinder();
 
-        EXPECT_EQ(cyl->minimum, -std::numeric_limits<double>::infinity());
-        EXPECT_EQ(cyl->maximum, std::numeric_limits<double>::infinity());
+        EXPECT_EQ(dynamic_cast<Cylinder*>(cyl.get())->minimum(), -std::numeric_limits<double>::infinity());
+        EXPECT_EQ(dynamic_cast<Cylinder*>(cyl.get())->maximum(), std::numeric_limits<double>::infinity());
     }
 
     class TruncatedCylinderTest : public testing::TestWithParam<std::tuple<Point, Vector, int> > {
@@ -400,9 +400,7 @@ namespace rt {
     TEST_P(TruncatedCylinderTest, Intersecting_a_constrained_cylinder) {
         auto [point, direction, count] = GetParam();
 
-        const auto cyl = cylinder();
-        cyl->minimum = 1;
-        cyl->maximum = 2;
+        const auto cyl = cylinder(1, 2);
         direction = direction.normalize();
         const Ray r{point, direction};
 

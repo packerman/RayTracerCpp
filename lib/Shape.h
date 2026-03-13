@@ -131,5 +131,5 @@ namespace rt {
     };
 
     std::unique_ptr<Shape> cylinder(double minimum = -std::numeric_limits<double>::infinity(),
-                                       double maximum = std::numeric_limits<double>::infinity());
+                                    double maximum = std::numeric_limits<double>::infinity());
 }

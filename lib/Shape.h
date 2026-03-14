@@ -143,4 +143,30 @@ namespace rt {
     std::unique_ptr<Shape> cylinder(double minimum = -std::numeric_limits<double>::infinity(),
                                     double maximum = std::numeric_limits<double>::infinity(),
                                     bool closed = false);
+
+    class Cone : public Shape {
+    public:
+        Cone(const double minimum, const double maximum, const bool closed)
+            : minimum_(minimum),
+              maximum_(maximum),
+              closed_(closed) {
+        }
+
+        std::vector<Intersection> local_intersect(const Ray& ray) override;
+
+        [[nodiscard]] Vector local_normal_at(const Point& local_point) const override;
+
+    private:
+        double minimum_;
+        double maximum_;
+        bool closed_;
+
+        void intersect_caps(const Ray& ray, std::vector<Intersection>& xs);
+
+        static bool check_cap(const Ray& ray, double t, double y);
+    };
+
+    std::unique_ptr<Shape> cone(double minimum = -std::numeric_limits<double>::infinity(),
+                                double maximum = std::numeric_limits<double>::infinity(),
+                                bool closed = false);
 }

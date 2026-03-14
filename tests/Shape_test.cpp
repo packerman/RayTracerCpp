@@ -27,7 +27,7 @@ namespace rt {
         Ray saved_ray{point(0, 0, 0), vector(0, 0, 0)};
     };
 
-    unique_ptr<TestShape> test_shape() {
+    std::unique_ptr<TestShape> test_shape() {
         return make_unique<TestShape>();
     }
 
@@ -67,7 +67,7 @@ namespace rt {
     }
 
     class RayTransformedShapeIntersectionTest
-            : public testing::TestWithParam<tuple<Transformation, Ray> > {
+            : public testing::TestWithParam<std::tuple<Transformation, Ray> > {
     };
 
     TEST_P(RayTransformedShapeIntersectionTest, RayTransformedShapeIntersection) {
@@ -91,7 +91,7 @@ namespace rt {
         ));
 
     class ShapeTransformedNormalTest
-            : public testing::TestWithParam<tuple<Transformation, Point, Vector> > {
+            : public testing::TestWithParam<std::tuple<Transformation, Point, Vector> > {
     };
 
     TEST_P(ShapeTransformedNormalTest, ShapeTransformedNormal) {
@@ -119,7 +119,7 @@ namespace rt {
                 vector(0, 0.97014, -0.24254))
         ));
 
-    class RaySphereIntersectionTest : public testing::TestWithParam<tuple<Ray, std::vector<double> > > {
+    class RaySphereIntersectionTest : public testing::TestWithParam<std::tuple<Ray, std::vector<double> > > {
     };
 
     TEST_P(RaySphereIntersectionTest, RaySphereIntersection) {
@@ -157,7 +157,7 @@ namespace rt {
         EXPECT_EQ(xs[1].object(), s.get());
     }
 
-    class SphereNormalTest : public testing::TestWithParam<tuple<Point, Vector> > {
+    class SphereNormalTest : public testing::TestWithParam<std::tuple<Point, Vector> > {
     };
 
     TEST_P(SphereNormalTest, SphereNormal) {
@@ -204,7 +204,7 @@ namespace rt {
         EXPECT_EQ(n3, vector(0, 1, 0));
     }
 
-    class RayPlaneIntersectionTest : public testing::TestWithParam<tuple<Ray, std::vector<double> > > {
+    class RayPlaneIntersectionTest : public testing::TestWithParam<std::tuple<Ray, std::vector<double> > > {
     };
 
     TEST_P(RayPlaneIntersectionTest, RaySphereIntersection) {
@@ -237,7 +237,7 @@ namespace rt {
         return s;
     }
 
-    class RayCubeIntersectionTest : public testing::TestWithParam<tuple<Point, Vector, double, double> > {
+    class RayCubeIntersectionTest : public testing::TestWithParam<std::tuple<Point, Vector, double, double> > {
     };
 
     TEST_P(RayCubeIntersectionTest, RayCubeIntersection) {
@@ -266,7 +266,7 @@ namespace rt {
             make_tuple(point(0, 0.5, 0), vector(0, 0, 1), -1, 1)
         ));
 
-    class RayMissesCubeTest : public testing::TestWithParam<tuple<Point, Vector> > {
+    class RayMissesCubeTest : public testing::TestWithParam<std::tuple<Point, Vector> > {
     };
 
     TEST_P(RayMissesCubeTest, RayMissesCube) {
@@ -292,7 +292,7 @@ namespace rt {
             make_tuple(point(2, 2, 0), vector(-1, 0, 0))
         ));
 
-    class CubeNormalTest : public testing::TestWithParam<tuple<Point, Vector> > {
+    class CubeNormalTest : public testing::TestWithParam<std::tuple<Point, Vector> > {
     };
 
     TEST_P(CubeNormalTest, CubeNormal) {
@@ -319,7 +319,7 @@ namespace rt {
             make_tuple(point(-1, -1, -1), vector(-1, 0, 0))
         ));
 
-    class RayMissesCylinderTest : public testing::TestWithParam<tuple<Point, Vector> > {
+    class RayMissesCylinderTest : public testing::TestWithParam<std::tuple<Point, Vector> > {
     };
 
     TEST_P(RayMissesCylinderTest, Ray_misses_cylinder) {
@@ -343,7 +343,7 @@ namespace rt {
             make_tuple(point(0, 0, -5), vector(1, 1, 1))
         ));
 
-    class RayStrikesCylinderTest : public testing::TestWithParam<tuple<Point, Vector, double, double> > {
+    class RayStrikesCylinderTest : public testing::TestWithParam<std::tuple<Point, Vector, double, double> > {
     };
 
     TEST_P(RayStrikesCylinderTest, A_ray_strikes_a_cylinder) {
@@ -369,7 +369,7 @@ namespace rt {
             make_tuple(point(0.5, 0, -5), vector(0.1, 1, 1), 6.80798, 7.08872)
         ));
 
-    class NormalVectorOnCylinderTest : public testing::TestWithParam<tuple<Point, Vector> > {
+    class NormalVectorOnCylinderTest : public testing::TestWithParam<std::tuple<Point, Vector> > {
     };
 
     TEST_P(NormalVectorOnCylinderTest, Normal_vector_on_a_cylinder) {
@@ -399,7 +399,7 @@ namespace rt {
         EXPECT_EQ(dynamic_cast<Cylinder*>(cyl.get())->maximum(), numeric_limits<double>::infinity());
     }
 
-    class TruncatedCylinderTest : public testing::TestWithParam<tuple<Point, Vector, int> > {
+    class TruncatedCylinderTest : public testing::TestWithParam<std::tuple<Point, Vector, int> > {
     };
 
     TEST_P(TruncatedCylinderTest, Intersecting_a_constrained_cylinder) {
@@ -432,7 +432,7 @@ namespace rt {
         EXPECT_FALSE(dynamic_cast<Cylinder*>(cyl.get())->closed());
     }
 
-    class ClosedCylinderTest : public testing::TestWithParam<tuple<Point, Vector, int> > {
+    class ClosedCylinderTest : public testing::TestWithParam<std::tuple<Point, Vector, int> > {
     };
 
     TEST_P(ClosedCylinderTest, Intersecting_the_caps_of_a_closed_cylinder) {
@@ -458,7 +458,7 @@ namespace rt {
             make_tuple(point(0, -1, -2), vector(0, 1, 1), 2)
         ));
 
-    class ClosedCylinderNormalTest : public testing::TestWithParam<tuple<Point, Vector> > {
+    class ClosedCylinderNormalTest : public testing::TestWithParam<std::tuple<Point, Vector> > {
     };
 
     TEST_P(ClosedCylinderNormalTest, The_normal_vector_on_a_cylinder_end_caps) {
@@ -481,5 +481,66 @@ namespace rt {
             make_tuple(point(0, 2, 0), vector(0, 1, 0)),
             make_tuple(point(0.5, 2, 0), vector(0, 1, 0)),
             make_tuple(point(0, 2, 0.5), vector(0, 1, 0))
+        ));
+
+    class ConeIntersectionTest : public testing::TestWithParam<std::tuple<Point, Vector, double, double> > {
+    };
+
+    TEST_P(ConeIntersectionTest, Intersecting_cone_with_a_ray) {
+        auto [origin, direction, t0, t1] = GetParam();
+
+        const auto shape = cone();
+        direction = direction.normalize();
+        const Ray r{origin, direction};
+
+        const auto xs = shape->local_intersect(r);
+
+        ASSERT_EQ(xs.size(), 2);
+        EXPECT_TRUE(approx_equals(xs[0].t(), t0, 1e-5));
+        EXPECT_TRUE(approx_equals(xs[1].t(), t1, 1e-5));
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        ConeIntersectionTestSuite,
+        ConeIntersectionTest,
+        ::testing::Values(
+            make_tuple(point(0, 0, -5), vector(0, 0, 1), 5, 5),
+            make_tuple(point(0, 0, -5), vector(1, 1, 1), 8.66025, 8.66025),
+            make_tuple(point(1, 1, -5), vector(-0.5, -1, 1), 4.55006, 49.44994)
+        ));
+
+    TEST(ConeTest, Intersecting_a_cone_with_a_ray_parallel_to_one_of_its_halves) {
+        const auto shape = cone();
+        const auto direction = vector(0, 1, 1).normalize();
+        const Ray r{point(0, 0, -1), direction};
+
+        const auto xs = shape->local_intersect(r);
+
+        ASSERT_EQ(xs.size(), 1);
+        EXPECT_TRUE(approx_equals(xs[0].t(), 0.35355, 1e-5));
+    }
+
+    class ConeCapIntersectionTest : public testing::TestWithParam<std::tuple<Point, Vector, int> > {
+    };
+
+    TEST_P(ConeCapIntersectionTest, Intersecting_a_cone_end_caps) {
+        auto [origin, direction, count] = GetParam();
+
+        const auto shape = cone(-0.5, 0.5, true);
+        direction = direction.normalize();
+        const Ray r{origin, direction};
+
+        const auto xs = shape->local_intersect(r);
+
+        ASSERT_EQ(xs.size(), count);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        ConeCapIntersectionTestSuite,
+        ConeCapIntersectionTest,
+        ::testing::Values(
+            make_tuple(point(0, 0, -5), vector(0, 1, 0), 0),
+            make_tuple(point(0, 0, -0.25), vector(0, 1, 1), 2),
+            make_tuple(point(0, 0, -0.25), vector(0, 1, 0), 4)
         ));
 }

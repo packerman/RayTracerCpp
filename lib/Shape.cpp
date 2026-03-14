@@ -5,12 +5,12 @@
 #include <algorithm>
 
 namespace rt {
-    std::vector<Intersection> Shape::intersect(const Ray &ray) {
+    std::vector<Intersection> Shape::intersect(const Ray& ray) {
         const auto local_ray = ray.transform(inversed_transform());
         return local_intersect(local_ray);
     }
 
-    Vector Shape::normal_at(const Point &point) const {
+    Vector Shape::normal_at(const Point& point) const {
         const auto local_point = inversed_transform() * point;
         const auto local_normal = local_normal_at(local_point);
         auto world_normal = inversed_transform().transpose() * local_normal;
@@ -18,7 +18,7 @@ namespace rt {
         return world_normal.normalize();
     }
 
-    std::vector<Intersection> Sphere::local_intersect(const Ray &ray) {
+    std::vector<Intersection> Sphere::local_intersect(const Ray& ray) {
         const Vector sphere_to_ray = ray.origin() - point(0, 0, 0);
 
         const auto a = ray.direction().dot(ray.direction());
@@ -36,7 +36,7 @@ namespace rt {
         return {{t1, this}, {t2, this}};
     }
 
-    Vector Sphere::local_normal_at(const Point &local_point) const {
+    Vector Sphere::local_normal_at(const Point& local_point) const {
         return local_point - point(0, 0, 0);
     }
 
@@ -44,7 +44,7 @@ namespace rt {
         return std::make_unique<Sphere>();
     }
 
-    std::vector<Intersection> Plane::local_intersect(const Ray &ray) {
+    std::vector<Intersection> Plane::local_intersect(const Ray& ray) {
         if (std::abs(ray.direction().y) < std::numeric_limits<double>::epsilon()) {
             return {};
         }
@@ -52,7 +52,7 @@ namespace rt {
         return {{t, this}};
     }
 
-    Vector Plane::local_normal_at(const Point &point) const {
+    Vector Plane::local_normal_at(const Point& point) const {
         return vector(0, 1, 0);
     }
 
@@ -60,7 +60,7 @@ namespace rt {
         return std::make_unique<Plane>();
     }
 
-    std::vector<Intersection> Cube::local_intersect(const Ray &ray) {
+    std::vector<Intersection> Cube::local_intersect(const Ray& ray) {
         auto [xt_min, xt_max] = check_axis(ray.origin().x, ray.direction().x);
         auto [yt_min, yt_max] = check_axis(ray.origin().y, ray.direction().y);
         auto [zt_min, zt_max] = check_axis(ray.origin().z, ray.direction().z);
@@ -75,7 +75,7 @@ namespace rt {
         return {{t_min, this}, {t_max, this}};
     }
 
-    Vector Cube::local_normal_at(const Point &local_point) const {
+    Vector Cube::local_normal_at(const Point& local_point) const {
         const auto max_c = std::max({std::abs(local_point.x), std::abs(local_point.y), std::abs(local_point.z)});
 
         if (max_c == std::abs(local_point.x)) {
@@ -105,42 +105,64 @@ namespace rt {
         return std::make_unique<Cube>();
     }
 
-    std::vector<Intersection> Cylinder::local_intersect(const Ray &ray) {
-        const auto a = std::pow(ray.direction().x, 2) + std::pow(ray.direction().z, 2);
-        if (a < std::numeric_limits<double>::epsilon()) {
-            return {};
-        }
-        const auto b = 2 * ray.origin().x * ray.direction().x +
-                       2 * ray.origin().z * ray.direction().z;
-        const auto c = std::pow(ray.origin().x, 2) + std::pow(ray.origin().z, 2) - 1;
-        const auto disc = std::pow(b, 2) - 4 * a * c;
-        if (disc < 0) {
-            return {};
-        }
-        auto t0 = (-b - std::sqrt(disc)) / (2 * a);
-        auto t1 = (-b + std::sqrt(disc)) / (2 * a);
-        if (t0 > t1) {
-            std::swap(t0, t1);
-        }
-
+    std::vector<Intersection> Cylinder::local_intersect(const Ray& ray) {
         std::vector<Intersection> xs;
+        const auto a = std::pow(ray.direction().x, 2) + std::pow(ray.direction().z, 2);
+        if (a > std::numeric_limits<double>::epsilon()) {
+            const auto b = 2 * ray.origin().x * ray.direction().x +
+                           2 * ray.origin().z * ray.direction().z;
+            const auto c = std::pow(ray.origin().x, 2) + std::pow(ray.origin().z, 2) - 1;
+            const auto disc = std::pow(b, 2) - 4 * a * c;
+            if (disc < 0) {
+                return {};
+            }
+            auto t0 = (-b - std::sqrt(disc)) / (2 * a);
+            auto t1 = (-b + std::sqrt(disc)) / (2 * a);
+            if (t0 > t1) {
+                std::swap(t0, t1);
+            }
 
-        if (const auto y0 = ray.origin().y + t0 * ray.direction().y; minimum_ < y0 && y0 < maximum_) {
-            xs.emplace_back(t0, this);
+            if (const auto y0 = ray.origin().y + t0 * ray.direction().y; minimum_ < y0 && y0 < maximum_) {
+                xs.emplace_back(t0, this);
+            }
+
+            if (const auto y1 = ray.origin().y + t1 * ray.direction().y; minimum_ < y1 && y1 < maximum_) {
+                xs.emplace_back(t1, this);
+            }
         }
 
-        if (const auto y1 = ray.origin().y + t1 * ray.direction().y; minimum_ < y1 && y1 < maximum_) {
-            xs.emplace_back(t1, this);
-        }
+        intersect_caps(ray, xs);
 
         return xs;
     }
 
-    Vector Cylinder::local_normal_at(const Point &local_point) const {
+    Vector Cylinder::local_normal_at(const Point& local_point) const {
         return vector(local_point.x, 0, local_point.z);
     }
 
-    std::unique_ptr<Shape> cylinder(const double minimum, const double maximum) {
-        return std::make_unique<Cylinder>(minimum, maximum);
+    void Cylinder::intersect_caps(const Ray& ray, std::vector<Intersection>& xs) {
+        if (!closed_ || std::abs(ray.direction().y) <= std::numeric_limits<double>::epsilon()) {
+            return;
+        }
+        auto t = (minimum_ - ray.origin().y) / ray.direction().y;
+        if (check_cap(ray, t)) {
+            xs.emplace_back(t, this);
+        }
+
+        t = (maximum_ - ray.origin().y) / ray.direction().y;
+        if (check_cap(ray, t)) {
+            xs.emplace_back(t, this);
+        }
+    }
+
+    bool Cylinder::check_cap(const Ray& ray, double t) {
+        const auto x = ray.origin().x + t * ray.direction().x;
+        const auto z = ray.origin().z + t * ray.direction().z;
+
+        return x * x + z * z <= 1;
+    }
+
+    std::unique_ptr<Shape> cylinder(double minimum, double maximum, bool closed) {
+        return std::make_unique<Cylinder>(minimum, maximum, closed);
     }
 }

@@ -136,6 +136,7 @@ namespace rt {
         bool closed_;
 
         void intersect_caps(const Ray& ray, std::vector<Intersection>& xs);
+
         static bool check_cap(const Ray& ray, double t);
     };
 

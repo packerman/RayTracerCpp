@@ -192,7 +192,6 @@ namespace rt {
                     xs.emplace_back(t1, this);
                 }
             }
-
         } else {
             auto t = -c / (2 * b);
             xs.emplace_back(t, this);

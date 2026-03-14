@@ -369,7 +369,7 @@ namespace rt {
             make_tuple(point(0.5, 0, -5), vector(0.1, 1, 1), 6.80798, 7.08872)
         ));
 
-    class NormalVectorOnCylinderTest : public testing::TestWithParam<std::tuple<Point, Vector> > {
+    class NormalVectorOnCylinderTest : public testing::TestWithParam<tuple<Point, Vector> > {
     };
 
     TEST_P(NormalVectorOnCylinderTest, Normal_vector_on_a_cylinder) {
@@ -399,7 +399,7 @@ namespace rt {
         EXPECT_EQ(dynamic_cast<Cylinder*>(cyl.get())->maximum(), numeric_limits<double>::infinity());
     }
 
-    class TruncatedCylinderTest : public testing::TestWithParam<std::tuple<Point, Vector, int> > {
+    class TruncatedCylinderTest : public testing::TestWithParam<tuple<Point, Vector, int> > {
     };
 
     TEST_P(TruncatedCylinderTest, Intersecting_a_constrained_cylinder) {
@@ -432,7 +432,7 @@ namespace rt {
         EXPECT_FALSE(dynamic_cast<Cylinder*>(cyl.get())->closed());
     }
 
-    class ClosedCylinderTest : public testing::TestWithParam<std::tuple<Point, Vector, int> > {
+    class ClosedCylinderTest : public testing::TestWithParam<tuple<Point, Vector, int> > {
     };
 
     TEST_P(ClosedCylinderTest, Intersecting_the_caps_of_a_closed_cylinder) {
@@ -456,5 +456,30 @@ namespace rt {
             make_tuple(point(0, 4, -2), vector(0, -1, 1), 2),
             make_tuple(point(0, 0, -2), vector(0, 1, 2), 2),
             make_tuple(point(0, -1, -2), vector(0, 1, 1), 2)
+        ));
+
+    class ClosedCylinderNormalTest : public testing::TestWithParam<tuple<Point, Vector> > {
+    };
+
+    TEST_P(ClosedCylinderNormalTest, The_normal_vector_on_a_cylinder_end_caps) {
+        auto [point, normal] = GetParam();
+
+        const auto cyl = cylinder(1, 2, true);
+
+        const auto n = cyl->local_normal_at(point);
+
+        EXPECT_EQ(n, normal);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        ClosedCylinderNormalTestSuite,
+        ClosedCylinderNormalTest,
+        ::testing::Values(
+            make_tuple(point(0, 1, 0), vector(0, -1, 0)),
+            make_tuple(point(0.5, 1, 0), vector(0, -1, 0)),
+            make_tuple(point(0, 1, 0.5), vector(0, -1, 0)),
+            make_tuple(point(0, 2, 0), vector(0, 1, 0)),
+            make_tuple(point(0.5, 2, 0), vector(0, 1, 0)),
+            make_tuple(point(0, 2, 0.5), vector(0, 1, 0))
         ));
 }

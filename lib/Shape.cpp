@@ -113,19 +113,17 @@ namespace rt {
             a > numeric_limits<double>::epsilon()) {
             const auto b = 2 * ray.origin().x * ray.direction().x + 2 * ray.origin().z * ray.direction().z;
             const auto c = pow(ray.origin().x, 2) + pow(ray.origin().z, 2) - 1;
-            const auto disc = b * b - 4 * a * c;
-            if (disc < 0) {
-                return {};
-            }
-            auto t0 = (-b - sqrt(disc)) / (2 * a);
-            auto t1 = (-b + sqrt(disc)) / (2 * a);
+            if (const auto disc = b * b - 4 * a * c; disc >= 0) {
+                auto t0 = (-b - sqrt(disc)) / (2 * a);
+                auto t1 = (-b + sqrt(disc)) / (2 * a);
 
-            if (const auto y0 = ray.origin().y + t0 * ray.direction().y; minimum_ < y0 && y0 < maximum_) {
-                xs.emplace_back(t0, this);
-            }
+                if (const auto y0 = ray.origin().y + t0 * ray.direction().y; minimum_ < y0 && y0 < maximum_) {
+                    xs.emplace_back(t0, this);
+                }
 
-            if (const auto y1 = ray.origin().y + t1 * ray.direction().y; minimum_ < y1 && y1 < maximum_) {
-                xs.emplace_back(t1, this);
+                if (const auto y1 = ray.origin().y + t1 * ray.direction().y; minimum_ < y1 && y1 < maximum_) {
+                    xs.emplace_back(t1, this);
+                }
             }
         }
 

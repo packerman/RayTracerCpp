@@ -27,6 +27,7 @@ target_sources(test_lib
         Camera_test.cpp
         Pattern_test.h
         Pattern_test.cpp
+        Group_test.cpp
 )
 
 target_link_libraries(test_lib

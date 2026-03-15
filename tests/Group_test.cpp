@@ -3,7 +3,6 @@
 #include <Group.h>
 
 namespace rt {
-
     TEST(GroupTest, Creating_a_new_group) {
         auto g = group();
 

@@ -62,6 +62,8 @@ namespace rt {
 
         [[nodiscard]] virtual Vector local_normal_at(const Point& local_point) const = 0;
 
+        [[nodiscard]] Point world_to_object(const Point& world_point) const;
+
         [[nodiscard]] Group* parent() const {
             return parent_;
         }

@@ -1,11 +1,15 @@
 #include <gtest/gtest.h>
 
 #include <Group.h>
+
+#include "Common.h"
 #include "Shape_test.h"
+
+using namespace std;
 
 namespace rt {
     TEST(GroupTest, Creating_a_new_group) {
-        auto g = group();
+        const auto g = group();
 
         EXPECT_EQ(g->transform(), Transformation::identity());
         EXPECT_TRUE(g->empty());
@@ -26,7 +30,7 @@ namespace rt {
     }
 
     TEST(GroupTest, Intersecting_a_ray_with_an_empty_group) {
-        auto g = group();
+        const auto g = group();
         const auto r = ray(point(0, 0, 0), vector(0, 0, 1));
 
         const auto xs = g->local_intersect(r);
@@ -35,7 +39,7 @@ namespace rt {
     }
 
     TEST(GroupTest, Intersecting_a_ray_with_a_nonempty_group) {
-        auto g = group();
+        const auto g = group();
         auto s1 = sphere();
         const auto s1_ptr = s1.get();
         auto s2 = sphere();
@@ -68,5 +72,21 @@ namespace rt {
         const auto xs = g->intersect(r);
 
         ASSERT_EQ(xs.size(), 2);
+    }
+
+    TEST(GroupTest, Converting_a_point_from_world_to_object_space) {
+        const auto g1 = group();
+        g1->set_transform(rotation_y(numbers::pi / 2));
+        auto g2 = group();
+        g2->set_transform(scaling(2, 2, 2));
+        auto s = sphere();
+        const auto s_ptr = s.get();
+        s->set_transform(translation(5, 0, 0));
+        g2->add_child(std::move(s));
+        g1->add_child(std::move(g2));
+
+        const auto p = s_ptr->world_to_object(point(-2, 0, -10));
+
+        EXPECT_TRUE(approx_equals(p, point(0, 0, -1), 1e-15));
     }
 }

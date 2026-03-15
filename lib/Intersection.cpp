@@ -20,6 +20,10 @@ namespace rt {
                << " object_: " << obj.object_;
     }
 
+    bool operator<(const Intersection& lhs, const Intersection& rhs) {
+        return lhs.t_ < rhs.t_;
+    }
+
     auto Intersection::operator<=>(const Intersection& other) const {
         return t_ <=> other.t_;
     }

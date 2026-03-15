@@ -33,6 +33,8 @@ namespace rt {
 
         auto operator<=>(const Intersection& other) const;
 
+        friend bool operator<(const Intersection& lhs, const Intersection& rhs);
+
     private:
         double t_{};
         Shape* object_{};

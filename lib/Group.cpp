@@ -6,7 +6,13 @@ using namespace std;
 
 namespace rt {
     std::vector<Intersection> Group::local_intersect(const Ray& ray) {
-        return {};
+        std::vector<Intersection> result;
+        for (const auto& child: children_) {
+            auto xs = child->intersect(ray);
+            result.insert(result.end(), xs.begin(), xs.end());
+        }
+        std::sort(result.begin(), result.end());
+        return result;
     }
 
     Vector Group::local_normal_at(const Point& local_point) const {

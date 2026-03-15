@@ -64,6 +64,8 @@ namespace rt {
 
         [[nodiscard]] Point world_to_object(const Point& world_point) const;
 
+        [[nodiscard]] Vector normal_to_world(const Vector& normal) const;
+
         [[nodiscard]] Group* parent() const {
             return parent_;
         }

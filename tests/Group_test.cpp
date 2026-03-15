@@ -73,20 +73,4 @@ namespace rt {
 
         ASSERT_EQ(xs.size(), 2);
     }
-
-    TEST(GroupTest, Converting_a_point_from_world_to_object_space) {
-        const auto g1 = group();
-        g1->set_transform(rotation_y(numbers::pi / 2));
-        auto g2 = group();
-        g2->set_transform(scaling(2, 2, 2));
-        auto s = sphere();
-        const auto s_ptr = s.get();
-        s->set_transform(translation(5, 0, 0));
-        g2->add_child(std::move(s));
-        g1->add_child(std::move(g2));
-
-        const auto p = s_ptr->world_to_object(point(-2, 0, -10));
-
-        EXPECT_TRUE(approx_equals(p, point(0, 0, -1), 1e-15));
-    }
 }

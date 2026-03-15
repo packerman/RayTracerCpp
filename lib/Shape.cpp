@@ -30,6 +30,18 @@ namespace rt {
         return inversed_transform() * object_point;
     }
 
+    Vector Shape::normal_to_world(const Vector& normal) const {
+        auto world_normal = inversed_transform().transpose() * normal;
+        world_normal.w = 0;
+        world_normal = world_normal.normalize();
+
+        if (parent_) {
+            world_normal = parent_->normal_to_world(world_normal);
+        }
+
+        return world_normal;
+    }
+
     std::vector<Intersection> Sphere::local_intersect(const Ray& ray) {
         const Vector sphere_to_ray = ray.origin() - point(0, 0, 0);
 

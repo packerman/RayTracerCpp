@@ -16,7 +16,7 @@ namespace rt {
     }
 
     Vector Group::local_normal_at(const Point& local_point) const {
-        return {};
+        throw std::runtime_error("Group::local_normal_at not implemented");
     }
 
     void Group::add_child(std::unique_ptr<Shape> shape) {

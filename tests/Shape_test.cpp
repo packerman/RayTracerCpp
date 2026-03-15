@@ -146,6 +146,22 @@ namespace rt {
         EXPECT_TRUE(approx_equals(n, vector(0.2857, 0.4286, -0.8571), 1e-4));
     }
 
+    TEST(ShapeTest, Finding_the_normal_on_a_child_object) {
+        const auto g1 = group();
+        g1->set_transform(rotation_y(numbers::pi / 2));
+        auto g2 = group();
+        g2->set_transform(scaling(1, 2, 3));
+        auto s = sphere();
+        const auto s_ptr = s.get();
+        s->set_transform(translation(5, 0, 0));
+        g2->add_child(std::move(s));
+        g1->add_child(std::move(g2));
+
+        const auto n = s_ptr->normal_at(point(1.7321, 1.1547, -5.5774));
+
+        EXPECT_EQ(n, vector(0.2857, 0.4286, -0.8571));
+    }
+
     class RaySphereIntersectionTest : public testing::TestWithParam<std::tuple<Ray, std::vector<double> > > {
     };
 

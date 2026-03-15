@@ -15,11 +15,9 @@ namespace rt {
     }
 
     Vector Shape::normal_at(const Point& point) const {
-        const auto local_point = inversed_transform() * point;
+        const auto local_point = world_to_object(point);
         const auto local_normal = local_normal_at(local_point);
-        auto world_normal = inversed_transform().transpose() * local_normal;
-        world_normal.w = 0;
-        return world_normal.normalize();
+        return normal_to_world(local_normal);
     }
 
     Point Shape::world_to_object(const Point& world_point) const {

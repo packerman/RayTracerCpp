@@ -9,6 +9,10 @@ namespace rt {
 
         [[nodiscard]] Vector local_normal_at(const Point& local_point) const override;
 
+        void add_child(std::unique_ptr<Shape> shape);
+
+        bool includes(Shape* shape) const;
+
         [[nodiscard]] bool empty() const {
             return children_.empty();
         }

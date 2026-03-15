@@ -9,6 +9,8 @@
 #include "Lighting.h"
 
 namespace rt {
+    class Group;
+
     class Shape {
     public:
         Shape() = default;
@@ -60,10 +62,17 @@ namespace rt {
 
         [[nodiscard]] virtual Vector local_normal_at(const Point& local_point) const = 0;
 
+        [[nodiscard]] Group* parent() const {
+            return parent_;
+        }
+
     private:
         Transformation transform_{Transformation::identity()};
         Transformation inversed_transform_{Transformation::identity()};
         Material material_{};
+        Group* parent_{};
+
+        friend class Group;
     };
 
     class Sphere : public Shape {

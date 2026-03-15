@@ -14,18 +14,6 @@
 using namespace std;
 
 namespace rt {
-    struct TestShape : Shape {
-        std::vector<Intersection> local_intersect(const Ray& ray) override {
-            saved_ray = ray;
-            return {};
-        }
-
-        [[nodiscard]] Vector local_normal_at(const Point& point) const override {
-            return vector(point.x, point.y, point.z);
-        }
-
-        Ray saved_ray{point(0, 0, 0), vector(0, 0, 0)};
-    };
 
     std::unique_ptr<TestShape> test_shape() {
         return make_unique<TestShape>();
@@ -118,6 +106,12 @@ namespace rt {
                 point(0, numbers::sqrt2 / 2, - numbers::sqrt2 / 2),
                 vector(0, 0.97014, -0.24254))
         ));
+
+    TEST(ShapeTest, A_shape_has_a_parent_attribute) {
+        const auto s = test_shape();
+
+        EXPECT_FALSE(s->parent());
+    }
 
     class RaySphereIntersectionTest : public testing::TestWithParam<std::tuple<Ray, std::vector<double> > > {
     };

@@ -141,7 +141,7 @@ namespace rt {
         g2->add_child(std::move(s));
         g1->add_child(std::move(g2));
 
-        const auto n = s_ptr->normal_to_world(vector(numbers::sqrt3/3, numbers::sqrt3/3, numbers::sqrt3/3));
+        const auto n = s_ptr->normal_to_world(vector(numbers::sqrt3 / 3, numbers::sqrt3 / 3, numbers::sqrt3 / 3));
 
         EXPECT_TRUE(approx_equals(n, vector(0.2857, 0.4286, -0.8571), 1e-4));
     }

@@ -8,6 +8,7 @@ target_sources(ray_tracer
         Matrix.h
         Transformation.h
         Ray.h
+        Ray.cpp
         Shape.h
         Shape.cpp
         Intersection.h

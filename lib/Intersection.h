@@ -14,30 +14,28 @@ namespace rt {
     public:
         Intersection() = default;
 
-        Intersection(const double t, Shape *object) : t_{t}, object_{object} {
+        Intersection(const double t, Shape* object) : t_{t}, object_{object} {
         }
 
         [[nodiscard]] double t() const {
             return t_;
         }
 
-        [[nodiscard]] Shape *object() const {
+        [[nodiscard]] Shape* object() const {
             return object_;
         }
 
-        friend bool operator==(const Intersection &lhs, const Intersection &rhs) {
-            return std::tie(lhs.t_, lhs.object_) == std::tie(rhs.t_, rhs.object_);
-        }
+        friend bool operator==(const Intersection& lhs, const Intersection& rhs);
 
-        friend bool operator!=(const Intersection &lhs, const Intersection &rhs) {
-            return !(lhs == rhs);
-        }
+        friend bool operator!=(const Intersection& lhs, const Intersection& rhs);
 
-        friend std::ostream &operator<<(std::ostream &os, const Intersection &obj);
+        friend std::ostream& operator<<(std::ostream& os, const Intersection& obj);
+
+        auto operator<=>(const Intersection& other) const;
 
     private:
         double t_{};
-        Shape *object_{};
+        Shape* object_{};
     };
 
     class Intersections {
@@ -47,20 +45,20 @@ namespace rt {
         Intersections(const std::initializer_list<Intersection> xs) : intersections_(xs) {
         }
 
-        explicit Intersections(const std::vector<Intersection> &xs) : intersections_(xs) {
+        explicit Intersections(const std::vector<Intersection>& xs) : intersections_(xs) {
         }
 
-        std::size_t size() const {
+        [[nodiscard]] std::size_t size() const {
             return intersections_.size();
         }
 
-        const Intersection &operator[](std::size_t i);
+        const Intersection& operator[](std::size_t i);
 
-        const std::vector<Intersection> &data();
+        const std::vector<Intersection>& data();
 
         std::optional<Intersection> hit();
 
-        void insert(const std::vector<Intersection> &xs);
+        void insert(const std::vector<Intersection>& xs);
 
     private:
         void ensure_sorted();
@@ -73,7 +71,7 @@ namespace rt {
 
     struct Computations {
         double t;
-        Shape *object;
+        Shape* object;
         Point point;
         Vector eye_v;
         Vector normal_v;
@@ -85,9 +83,9 @@ namespace rt {
         double n2;
     };
 
-    Computations prepare_computations(const Intersection &intersection, const Ray &ray, Intersections &xs);
+    Computations prepare_computations(const Intersection& intersection, const Ray& ray, Intersections& xs);
 
-    Computations prepare_computations(const Intersection &intersection, const Ray &ray);
+    Computations prepare_computations(const Intersection& intersection, const Ray& ray);
 
-    double schlick(const Computations &comps);
+    double schlick(const Computations& comps);
 }

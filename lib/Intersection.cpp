@@ -6,25 +6,37 @@
 #include "Shape.h"
 
 namespace rt {
-    std::ostream &operator<<(std::ostream &os, const Intersection &obj) {
+    bool operator==(const Intersection& lhs, const Intersection& rhs) {
+        return std::tie(lhs.t_, lhs.object_) == std::tie(rhs.t_, rhs.object_);
+    }
+
+    bool operator!=(const Intersection& lhs, const Intersection& rhs) {
+        return !(lhs == rhs);
+    }
+
+    std::ostream& operator<<(std::ostream& os, const Intersection& obj) {
         return os
                << "t_: " << obj.t_
                << " object_: " << obj.object_;
     }
 
-    const Intersection &Intersections::operator[](const std::size_t i) {
+    auto Intersection::operator<=>(const Intersection& other) const {
+        return t_ <=> other.t_;
+    }
+
+    const Intersection& Intersections::operator[](const std::size_t i) {
         ensure_sorted();
         return intersections_[i];
     }
 
-    const std::vector<Intersection> &Intersections::data() {
+    const std::vector<Intersection>& Intersections::data() {
         ensure_sorted();
         return intersections_;
     }
 
     std::optional<Intersection> Intersections::hit() {
         ensure_sorted();
-        const auto it = std::ranges::find_if(intersections_, [](auto &x) {
+        const auto it = std::ranges::find_if(intersections_, [](auto& x) {
             return x.t() >= 0;
         });
         if (it == intersections_.end()) {
@@ -33,7 +45,7 @@ namespace rt {
         return *it;
     }
 
-    void Intersections::insert(const std::vector<Intersection> &xs) {
+    void Intersections::insert(const std::vector<Intersection>& xs) {
         if (!xs.empty()) {
             intersections_.insert(intersections_.end(), xs.begin(), xs.end());
             is_sorted_ = false;
@@ -42,17 +54,17 @@ namespace rt {
 
     void Intersections::ensure_sorted() {
         if (!is_sorted_) {
-            std::ranges::sort(intersections_, [](auto &a, auto &b) { return a.t() < b.t(); });
+            std::ranges::sort(intersections_);
             is_sorted_ = true;
         }
     }
 
-    Computations prepare_computations(const Intersection &intersection, const Ray &ray) {
+    Computations prepare_computations(const Intersection& intersection, const Ray& ray) {
         Intersections xs{intersection};
         return prepare_computations(intersection, ray, xs);
     }
 
-    double schlick(const Computations &comps) {
+    double schlick(const Computations& comps) {
         auto cos = dot(comps.eye_v, comps.normal_v);
         if (comps.n1 > comps.n2) {
             const auto n = comps.n1 / comps.n2;
@@ -67,9 +79,9 @@ namespace rt {
         return r0 + (1 - r0) * std::pow(1 - cos, 5);
     }
 
-    void compute_refractive_indices(const Intersection &hit, Computations &comps, const std::vector<Intersection> &xs);
+    void compute_refractive_indices(const Intersection& hit, Computations& comps, const std::vector<Intersection>& xs);
 
-    Computations prepare_computations(const Intersection &intersection, const Ray &ray, Intersections &xs) {
+    Computations prepare_computations(const Intersection& intersection, const Ray& ray, Intersections& xs) {
         Computations comps{};
 
         comps.t = intersection.t();
@@ -96,11 +108,11 @@ namespace rt {
         return comps;
     }
 
-    void compute_refractive_indices(const Intersection &hit, Computations &comps,
-                                    const std::vector<Intersection> &xs) {
+    void compute_refractive_indices(const Intersection& hit, Computations& comps,
+                                    const std::vector<Intersection>& xs) {
         std::list<Shape *> containers{};
 
-        for (auto &i: xs) {
+        for (auto& i: xs) {
             if (i == hit) {
                 if (containers.empty()) {
                     comps.n1 = 1;

@@ -11,3 +11,4 @@
 #include <World.h>
 #include <Camera.h>
 #include <Pattern.h>
+#include <Group.h>

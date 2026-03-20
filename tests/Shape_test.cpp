@@ -10,22 +10,11 @@
 #include "Tuple.h"
 #include "Intersection.h"
 #include "Transformation.h"
+#include "Group.h"
 
 using namespace std;
 
 namespace rt {
-    struct TestShape : Shape {
-        std::vector<Intersection> local_intersect(const Ray& ray) override {
-            saved_ray = ray;
-            return {};
-        }
-
-        [[nodiscard]] Vector local_normal_at(const Point& point) const override {
-            return vector(point.x, point.y, point.z);
-        }
-
-        Ray saved_ray{point(0, 0, 0), vector(0, 0, 0)};
-    };
 
     std::unique_ptr<TestShape> test_shape() {
         return make_unique<TestShape>();
@@ -119,6 +108,60 @@ namespace rt {
                 vector(0, 0.97014, -0.24254))
         ));
 
+    TEST(ShapeTest, A_shape_has_a_parent_attribute) {
+        const auto s = test_shape();
+
+        EXPECT_FALSE(s->parent());
+    }
+
+    TEST(ShapeTest, Converting_a_point_from_world_to_object_space) {
+        const auto g1 = group();
+        g1->set_transform(rotation_y(numbers::pi / 2));
+        auto g2 = group();
+        g2->set_transform(scaling(2, 2, 2));
+        auto s = sphere();
+        const auto s_ptr = s.get();
+        s->set_transform(translation(5, 0, 0));
+        g2->add_child(std::move(s));
+        g1->add_child(std::move(g2));
+
+        const auto p = s_ptr->world_to_object(point(-2, 0, -10));
+
+        EXPECT_TRUE(approx_equals(p, point(0, 0, -1), 1e-15));
+    }
+
+    TEST(ShapeTest, Converting_a_normal_from_object_to_world_space) {
+        const auto g1 = group();
+        g1->set_transform(rotation_y(numbers::pi / 2));
+        auto g2 = group();
+        g2->set_transform(scaling(1, 2, 3));
+        auto s = sphere();
+        const auto s_ptr = s.get();
+        s->set_transform(translation(5, 0, 0));
+        g2->add_child(std::move(s));
+        g1->add_child(std::move(g2));
+
+        const auto n = s_ptr->normal_to_world(vector(numbers::sqrt3 / 3, numbers::sqrt3 / 3, numbers::sqrt3 / 3));
+
+        EXPECT_TRUE(approx_equals(n, vector(0.2857, 0.4286, -0.8571), 1e-4));
+    }
+
+    TEST(ShapeTest, Finding_the_normal_on_a_child_object) {
+        const auto g1 = group();
+        g1->set_transform(rotation_y(numbers::pi / 2));
+        auto g2 = group();
+        g2->set_transform(scaling(1, 2, 3));
+        auto s = sphere();
+        const auto s_ptr = s.get();
+        s->set_transform(translation(5, 0, 0));
+        g2->add_child(std::move(s));
+        g1->add_child(std::move(g2));
+
+        const auto n = s_ptr->normal_at(point(1.7321, 1.1547, -5.5774));
+
+        EXPECT_TRUE(approx_equals(n, vector(0.2857, 0.4286, -0.8571), 1e-4));
+    }
+
     class RaySphereIntersectionTest : public testing::TestWithParam<std::tuple<Ray, std::vector<double> > > {
     };
 
@@ -193,7 +236,7 @@ namespace rt {
     }
 
     TEST(PlaneTest, PlaneNormalIsConstant) {
-        auto p = plane();
+        const auto p = plane();
 
         const auto n1 = p->local_normal_at(point(0, 0, 0));
         const auto n2 = p->local_normal_at(point(10, 0, -10));

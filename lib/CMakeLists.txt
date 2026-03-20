@@ -8,6 +8,7 @@ target_sources(ray_tracer
         Matrix.h
         Transformation.h
         Ray.h
+        Ray.cpp
         Shape.h
         Shape.cpp
         Intersection.h
@@ -20,6 +21,8 @@ target_sources(ray_tracer
         Camera.cpp
         Pattern.h
         Pattern.cpp
+        Group.h
+        Group.cpp
 )
 
 target_include_directories(ray_tracer

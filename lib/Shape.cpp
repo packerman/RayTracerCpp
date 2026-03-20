@@ -4,6 +4,8 @@
 #include <cmath>
 #include <algorithm>
 
+#include "Group.h"
+
 using namespace std;
 
 namespace rt {
@@ -13,11 +15,29 @@ namespace rt {
     }
 
     Vector Shape::normal_at(const Point& point) const {
-        const auto local_point = inversed_transform() * point;
+        const auto local_point = world_to_object(point);
         const auto local_normal = local_normal_at(local_point);
-        auto world_normal = inversed_transform().transpose() * local_normal;
+        return normal_to_world(local_normal);
+    }
+
+    Point Shape::world_to_object(const Point& world_point) const {
+        auto object_point = world_point;
+        if (parent_) {
+            object_point = parent_->world_to_object(object_point);
+        }
+        return inversed_transform() * object_point;
+    }
+
+    Vector Shape::normal_to_world(const Vector& normal) const {
+        auto world_normal = inversed_transform().transpose() * normal;
         world_normal.w = 0;
-        return world_normal.normalize();
+        world_normal = world_normal.normalize();
+
+        if (parent_) {
+            world_normal = parent_->normal_to_world(world_normal);
+        }
+
+        return world_normal;
     }
 
     std::vector<Intersection> Sphere::local_intersect(const Ray& ray) {

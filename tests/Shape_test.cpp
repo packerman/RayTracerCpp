@@ -159,7 +159,7 @@ namespace rt {
 
         const auto n = s_ptr->normal_at(point(1.7321, 1.1547, -5.5774));
 
-        EXPECT_EQ(n, vector(0.2857, 0.4286, -0.8571));
+        EXPECT_TRUE(approx_equals(n, vector(0.2857, 0.4286, -0.8571), 1e-4));
     }
 
     class RaySphereIntersectionTest : public testing::TestWithParam<std::tuple<Ray, std::vector<double> > > {

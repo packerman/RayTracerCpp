@@ -4,7 +4,7 @@
 
 namespace rt {
     Color Pattern::at_shape(const Shape &shape, const Point &world_point) const {
-        const auto object_point = shape.inversed_transform() * world_point;
+        const auto object_point = shape.world_to_object(world_point);
         const auto pattern_point = inversed_transform() * object_point;
 
         return at(pattern_point);

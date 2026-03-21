@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 
+#include "Bounds.h"
 #include "Ray.h"
 #include "Intersection.h"
 #include "Transformation.h"
@@ -33,14 +34,7 @@ namespace rt {
             return inversed_transform_;
         }
 
-        void set_transform(const Transformation& transform) {
-            transform_ = transform;
-            if (const auto inversed = transform.inverse(); inversed) {
-                inversed_transform_ = inversed.value();
-            } else {
-                throw std::invalid_argument("Matrix is not invertible.");
-            }
-        }
+        void set_transform(const Transformation& transform);
 
         [[nodiscard]] const Material& material() const {
             return material_;
@@ -70,6 +64,8 @@ namespace rt {
             return parent_;
         }
 
+        [[nodiscard]] virtual Bounds bounds() const = 0;
+
     private:
         Transformation transform_{Transformation::identity()};
         Transformation inversed_transform_{Transformation::identity()};
@@ -94,6 +90,8 @@ namespace rt {
         std::vector<Intersection> local_intersect(const Ray& ray) override;
 
         [[nodiscard]] Vector local_normal_at(const Point& local_point) const override;
+
+        [[nodiscard]] Bounds bounds() const override;
     };
 
     std::unique_ptr<Shape> sphere();
@@ -103,6 +101,8 @@ namespace rt {
         std::vector<Intersection> local_intersect(const Ray& ray) override;
 
         [[nodiscard]] Vector local_normal_at(const Point& point) const override;
+
+        [[nodiscard]] Bounds bounds() const override;
     };
 
     std::unique_ptr<Shape> plane();
@@ -112,6 +112,8 @@ namespace rt {
         std::vector<Intersection> local_intersect(const Ray& ray) override;
 
         [[nodiscard]] Vector local_normal_at(const Point& local_point) const override;
+
+        [[nodiscard]] Bounds bounds() const override;
 
     private:
         static std::pair<double, double> check_axis(double origin, double direction);
@@ -130,6 +132,8 @@ namespace rt {
         std::vector<Intersection> local_intersect(const Ray& ray) override;
 
         [[nodiscard]] Vector local_normal_at(const Point& local_point) const override;
+
+        [[nodiscard]] Bounds bounds() const override;
 
         [[nodiscard]] double minimum() const {
             return minimum_;
@@ -168,6 +172,8 @@ namespace rt {
         std::vector<Intersection> local_intersect(const Ray& ray) override;
 
         [[nodiscard]] Vector local_normal_at(const Point& local_point) const override;
+
+        [[nodiscard]] Bounds bounds() const override;
 
     private:
         double minimum_;

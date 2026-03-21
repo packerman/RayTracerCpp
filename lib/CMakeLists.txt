@@ -23,6 +23,8 @@ target_sources(ray_tracer
         Pattern.cpp
         Group.h
         Group.cpp
+        Bounds.h
+        Bounds.cpp
 )
 
 target_include_directories(ray_tracer

@@ -15,7 +15,6 @@
 using namespace std;
 
 namespace rt {
-
     std::unique_ptr<TestShape> test_shape() {
         return make_unique<TestShape>();
     }
@@ -585,5 +584,40 @@ namespace rt {
             make_tuple(point(0, 0, -5), vector(0, 1, 0), 0),
             make_tuple(point(0, 0, -0.25), vector(0, 1, 1), 2),
             make_tuple(point(0, 0, -0.25), vector(0, 1, 0), 4)
+        ));
+
+    class ConeBoundsTest : public testing::TestWithParam<tuple<double, double, Bounds> > {
+    };
+
+    TEST_P(ConeBoundsTest, ConeBounds) {
+        auto [minimum, maximum, bounds] = GetParam();
+        const auto shape = cone(minimum, maximum);
+
+        const auto result = shape->bounds();
+
+        EXPECT_EQ(result, bounds);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        ConeBoundsTestSuite,
+        ConeBoundsTest,
+        ::testing::Values(
+            make_tuple(-numeric_limits<double>::infinity(), numeric_limits<double>::infinity(),
+                Bounds{
+                point(-numeric_limits<double>::infinity(), -numeric_limits<double>::infinity(),
+                    -numeric_limits<double>::infinity()),
+                point(numeric_limits<double>::infinity(), numeric_limits<double>::infinity(),
+                    numeric_limits<double>::infinity())
+                }),
+            make_tuple(2, 3,
+                Bounds{
+                point(-3, 2, -3),
+                point(3, 3, 3)
+                }),
+            make_tuple(-3, -2,
+                Bounds{
+                point(-3, -3, -3),
+                point(3, -2, 3)
+                })
         ));
 }

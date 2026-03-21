@@ -19,6 +19,10 @@ namespace rt {
         throw std::runtime_error("Group::local_normal_at not implemented");
     }
 
+    Bounds Group::bounds() const {
+        throw std::runtime_error("Group::bounds not implemented");
+    }
+
     void Group::add_child(std::unique_ptr<Shape> shape) {
         shape->parent_ = this;
         children_.push_back(std::move(shape));

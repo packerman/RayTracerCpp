@@ -9,6 +9,15 @@
 using namespace std;
 
 namespace rt {
+    void Shape::set_transform(const Transformation& transform) {
+        transform_ = transform;
+        if (const auto inversed = transform.inverse(); inversed) {
+            inversed_transform_ = inversed.value();
+        } else {
+            throw std::invalid_argument("Matrix is not invertible.");
+        }
+    }
+
     std::vector<Intersection> Shape::intersect(const Ray& ray) {
         const auto local_ray = ray.transform(inversed_transform());
         return local_intersect(local_ray);
@@ -62,6 +71,10 @@ namespace rt {
         return local_point - point(0, 0, 0);
     }
 
+    Bounds Sphere::bounds() const {
+        return {point(-1, -1, -1), point(1, 1, 1)};
+    }
+
     std::unique_ptr<Shape> sphere() {
         return make_unique<Sphere>();
     }
@@ -76,6 +89,13 @@ namespace rt {
 
     Vector Plane::local_normal_at(const Point& point) const {
         return vector(0, 1, 0);
+    }
+
+    Bounds Plane::bounds() const {
+        return {
+            point(-numeric_limits<double>::infinity(), 0, -numeric_limits<double>::infinity()),
+            point(numeric_limits<double>::infinity(), 0, numeric_limits<double>::infinity())
+        };
     }
 
     std::unique_ptr<Shape> plane() {
@@ -107,6 +127,10 @@ namespace rt {
             return vector(0, local_point.y, 0);
         }
         return vector(0, 0, local_point.z);
+    }
+
+    Bounds Cube::bounds() const {
+        return {point(-1, -1, -1), point(1, 1, 1)};
     }
 
     std::pair<double, double> Cube::check_axis(const double origin, const double direction) {
@@ -162,6 +186,10 @@ namespace rt {
             return vector(0, -1, 0);
         }
         return vector(local_point.x, 0, local_point.z);
+    }
+
+    Bounds Cylinder::bounds() const {
+        return {point(-1, minimum_, -1), point(1, maximum_, 1)};
     }
 
     void Cylinder::intersect_caps(const Ray& ray, std::vector<Intersection>& xs) {
@@ -222,6 +250,15 @@ namespace rt {
 
     Vector Cone::local_normal_at(const Point& local_point) const {
         return {};
+    }
+
+    Bounds Cone::bounds() const {
+        const auto min_xz = min(-abs(minimum_), -abs(maximum_));
+        const auto max_xz = max(abs(minimum_), abs(maximum_));
+        return {
+            point(min_xz, minimum_, min_xz),
+            point(max_xz, maximum_, max_xz),
+        };
     }
 
     void Cone::intersect_caps(const Ray& ray, std::vector<Intersection>& xs) {

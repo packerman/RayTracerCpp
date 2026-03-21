@@ -14,6 +14,19 @@ namespace rt {
             return vector(point.x, point.y, point.z);
         }
 
+        [[nodiscard]] Bounds bounds() const override {
+            return {
+                {
+                    point(-std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
+                          -std::numeric_limits<double>::infinity())
+                },
+                {
+                    point(std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity(),
+                          std::numeric_limits<double>::infinity())
+                }
+            };
+        }
+
         Ray saved_ray{point(0, 0, 0), vector(0, 0, 0)};
     };
 

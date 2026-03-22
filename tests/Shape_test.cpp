@@ -586,7 +586,29 @@ namespace rt {
             make_tuple(point(0, 0, -0.25), vector(0, 1, 0), 4)
         ));
 
-    class ConeBoundsTest : public testing::TestWithParam<tuple<double, double, Bounds> > {
+    class ConeNormalTest : public testing::TestWithParam<std::tuple<Point, Vector> > {
+    };
+
+    TEST_P(ConeNormalTest, Computing_the_normal_vector_on_a_cone) {
+        auto [point, normal] = GetParam();
+
+        const auto shape = cone();
+
+        const auto n = shape->local_normal_at(point);
+
+        EXPECT_EQ(n, normal);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        ConeNormalTestSuite,
+        ConeNormalTest,
+        ::testing::Values(
+            make_tuple(point(0, 0, 0), vector(0, 0, 0)),
+            make_tuple(point(1, 1, 1), vector(1, -numbers::sqrt2, 1)),
+            make_tuple(point(-1, -1, 0), vector(-1, 1, 0))
+        ));
+
+    class ConeBoundsTest : public testing::TestWithParam<std::tuple<double, double, Bounds> > {
     };
 
     TEST_P(ConeBoundsTest, ConeBounds) {

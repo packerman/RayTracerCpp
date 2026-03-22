@@ -249,7 +249,20 @@ namespace rt {
     }
 
     Vector Cone::local_normal_at(const Point& local_point) const {
-        return {};
+        const auto dist = pow(local_point.x, 2) + pow(local_point.z, 2);
+
+        if (dist < pow(local_point.y, 2) && local_point.y >= maximum_ - numeric_limits<double>::epsilon()) {
+            return vector(0, 1, 0);
+        }
+        if (dist < pow(local_point.y, 2) && local_point.y <= minimum_ + numeric_limits<double>::epsilon()) {
+            return vector(0, -1, 0);
+        }
+        auto y = sqrt(dist);
+        if (local_point.y > 0) {
+            y = -y;
+        }
+
+        return vector(local_point.x, y, local_point.z);
     }
 
     Bounds Cone::bounds() const {

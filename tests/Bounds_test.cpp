@@ -61,20 +61,20 @@ namespace rt {
                 point(1/numbers::sqrt2 + 1, 1/numbers::sqrt2 + 1, numbers::sqrt2)
                 }),
             make_tuple(rotation_x(numbers::pi/6), Bounds{
-                point(-1, 0, 0),
-                point(1, 0, 0)
+                point(-1, -numbers::sqrt3/2 - 0.5, -numbers::sqrt3/2 - 0.5),
+                point(1, numbers::sqrt3/2 + 0.5, numbers::sqrt3/2 + 0.5)
                 }),
             make_tuple(rotation_y(numbers::pi/6), Bounds{
-                point(0, 0, 0),
-                point(0, 0, 0)
+                point(-numbers::sqrt3/2 - 0.5, -1, -numbers::sqrt3/2 - 0.5),
+                point(numbers::sqrt3/2 + 0.5, 1, numbers::sqrt3/2 + 0.5)
                 }),
             make_tuple(rotation_z(numbers::pi/6), Bounds{
-                point(0, 0, 0),
-                point(0, 0, 0)
+                point(-numbers::sqrt3/2 - 0.5, -numbers::sqrt3/2 - 0.5, -1),
+                point(numbers::sqrt3/2 + 0.5, numbers::sqrt3/2 + 0.5, 1)
                 }),
             make_tuple(rotation_z(numbers::pi/6)*rotation_y(numbers::pi/6), Bounds{
-                point(0, 0, 0),
-                point(0, 0, 0)
+                point(-1.25-numbers::sqrt3/4, -3*numbers::sqrt3/4-0.25, -numbers::sqrt3/2 - 0.5),
+                point(1.25+numbers::sqrt3/4, 3*numbers::sqrt3/4+0.25, numbers::sqrt3/2 + 0.5)
                 }),
             make_tuple(translation(1, 1, 1), Bounds{
                 point(0, 0, 0),

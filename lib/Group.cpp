@@ -20,12 +20,11 @@ namespace rt {
     }
 
     Bounds Group::bounds() const {
-        std::vector<Bounds> boxes;
+        std::vector<Bounds> boxes(children_.size());
         for (const auto& child: children_) {
             boxes.emplace_back(child->bounds().transform(child->transform()));
         }
-
-        throw std::runtime_error("Group::bounds not implemented");
+        return combine_bounds(boxes);
     }
 
     void Group::add_child(std::unique_ptr<Shape> shape) {

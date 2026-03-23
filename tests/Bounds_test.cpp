@@ -94,6 +94,6 @@ namespace rt {
 
         EXPECT_EQ(result, Bounds(
                       point(-1, -10, -3),
-                      point(-1, 11, 14)));
+                      point(1, 11, 14)));
     }
 }

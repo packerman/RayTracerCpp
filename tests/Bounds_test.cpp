@@ -82,4 +82,18 @@ namespace rt {
                 })
         )
     );
+
+    TEST(BoundsTest, Combine_bounds) {
+        const std::vector<Bounds> boxes{
+            {point(-1, -1, -1), point(1, 1, 1)},
+            {point(-1, 10, -3), point(1, 11, 14)},
+            {point(-1, -10, 3), point(1, -8, 12)}
+        };
+
+        const auto result = combine_bounds(boxes);
+
+        EXPECT_EQ(result, Bounds(
+                      point(-1, -10, -3),
+                      point(-1, 11, 14)));
+    }
 }

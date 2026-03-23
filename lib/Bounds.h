@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ostream>
+#include <vector>
 
 #include "Transformation.h"
 #include "Tuple.h"
@@ -18,4 +19,6 @@ namespace rt {
 
         friend std::ostream& operator<<(std::ostream& os, const Bounds& obj);
     };
+
+    Bounds combine_bounds(const std::vector<Bounds>& boxes);
 }

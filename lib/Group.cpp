@@ -20,6 +20,11 @@ namespace rt {
     }
 
     Bounds Group::bounds() const {
+        std::vector<Bounds> boxes;
+        for (const auto& child: children_) {
+            boxes.emplace_back(child->bounds().transform(child->transform()));
+        }
+
         throw std::runtime_error("Group::bounds not implemented");
     }
 

@@ -27,6 +27,37 @@ namespace rt {
         };
     }
 
+    Bounds combine_bounds(const std::vector<Bounds>& boxes) {
+        Bounds result{
+            point(numeric_limits<double>::infinity(), numeric_limits<double>::infinity(),
+                  numeric_limits<double>::infinity()),
+            point(-numeric_limits<double>::infinity(), -numeric_limits<double>::infinity(),
+                  -numeric_limits<double>::infinity())
+        };
+
+        for (const auto& box: boxes) {
+            if (box.minimum.x < result.minimum.x) {
+                result.minimum.x = box.minimum.x;
+            }
+            if (box.minimum.y < result.minimum.y) {
+                result.minimum.y = box.minimum.y;
+            }
+            if (box.minimum.z < result.minimum.z) {
+                result.minimum.z = box.minimum.z;
+            }
+            if (box.maximum.x > result.maximum.x) {
+                result.maximum.x = box.maximum.x;
+            }
+            if (box.maximum.y > result.maximum.y) {
+                result.maximum.y = box.maximum.y;
+            }
+            if (box.maximum.z > result.maximum.z) {
+                result.maximum.z = box.maximum.z;
+            }
+        }
+        return result;
+    }
+
     bool operator==(const Bounds& lhs, const Bounds& rhs) {
         return std::tie(lhs.minimum, lhs.maximum) == std::tie(rhs.minimum, rhs.maximum);
     }

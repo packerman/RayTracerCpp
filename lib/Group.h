@@ -20,6 +20,8 @@ namespace rt {
         }
 
     private:
+        [[nodiscard]] bool intersects_bounds(const Ray& ray) const;
+
         std::vector<std::unique_ptr<Shape> > children_;
     };
 

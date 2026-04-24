@@ -114,9 +114,8 @@ namespace rt {
         [[nodiscard]] Vector local_normal_at(const Point& local_point) const override;
 
         [[nodiscard]] Bounds bounds() const override;
-
     private:
-        static std::pair<double, double> check_axis(double origin, double direction);
+        static constexpr Bounds bounds_{point(-1, -1, -1), point(1, 1, 1)};
     };
 
     std::unique_ptr<Shape> cube();

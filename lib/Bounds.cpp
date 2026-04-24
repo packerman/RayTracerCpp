@@ -27,6 +27,36 @@ namespace rt {
         };
     }
 
+    std::vector<double> Bounds::local_intersect(const Ray& ray) const {
+        auto [xt_min, xt_max] = check_axis(ray.origin().x, ray.direction().x, minimum.x, maximum.x);
+        auto [yt_min, yt_max] = check_axis(ray.origin().y, ray.direction().y, minimum.y, maximum.y);
+        auto [zt_min, zt_max] = check_axis(ray.origin().z, ray.direction().z, minimum.z, maximum.z);
+
+        auto t_min = max({xt_min, yt_min, zt_min});
+        auto t_max = min({xt_max, yt_max, zt_max});
+
+        if (t_min > t_max) {
+            return {};
+        }
+
+        return {t_min, t_max};
+    }
+
+    std::pair<double, double> Bounds::check_axis(const double origin, const double direction, const double axis_min,
+                                                 const double axis_max) {
+        const auto t_min_numerator = axis_min - origin;
+        const auto t_max_numerator = axis_max - origin;
+
+        auto t_min = t_min_numerator / direction;
+        auto t_max = t_max_numerator / direction;
+
+        if (t_min > t_max) {
+            swap(t_min, t_max);
+        }
+
+        return {t_min, t_max};
+    }
+
     Bounds combine_bounds(const std::vector<Bounds>& boxes) {
         Bounds result{
             point(numeric_limits<double>::infinity(), numeric_limits<double>::infinity(),

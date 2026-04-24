@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Shape.h"
+#include "Constant.h"
 
 namespace rt {
     class World {
@@ -54,7 +55,6 @@ namespace rt {
     private:
         std::vector<std::unique_ptr<Shape> > objects_;
         std::vector<std::unique_ptr<Light> > lights_;
-        static constexpr int default_max_recursion_depth = 5;
     };
 
     World default_world();

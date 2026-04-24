@@ -25,6 +25,7 @@ target_sources(ray_tracer
         Group.cpp
         Bounds.h
         Bounds.cpp
+        Constant.h
 )
 
 target_include_directories(ray_tracer

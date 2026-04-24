@@ -103,18 +103,10 @@ namespace rt {
     }
 
     std::vector<Intersection> Cube::local_intersect(const Ray& ray) {
-        auto [xt_min, xt_max] = check_axis(ray.origin().x, ray.direction().x);
-        auto [yt_min, yt_max] = check_axis(ray.origin().y, ray.direction().y);
-        auto [zt_min, zt_max] = check_axis(ray.origin().z, ray.direction().z);
-
-        auto t_min = max({xt_min, yt_min, zt_min});
-        auto t_max = min({xt_max, yt_max, zt_max});
-
-        if (t_min > t_max) {
-            return {};
-        }
-
-        return {{t_min, this}, {t_max, this}};
+        const auto ts = bounds().local_intersect(ray);
+        std::vector<Intersection> xs(ts.size());
+        ranges::transform(ts, xs.begin(), [this](auto t) { return Intersection{t, this}; });
+        return xs;
     }
 
     Vector Cube::local_normal_at(const Point& local_point) const {
@@ -130,21 +122,7 @@ namespace rt {
     }
 
     Bounds Cube::bounds() const {
-        return {point(-1, -1, -1), point(1, 1, 1)};
-    }
-
-    std::pair<double, double> Cube::check_axis(const double origin, const double direction) {
-        const auto t_min_numerator = -1 - origin;
-        const auto t_max_numerator = 1 - origin;
-
-        auto t_min = t_min_numerator / direction;
-        auto t_max = t_max_numerator / direction;
-
-        if (t_min > t_max) {
-            swap(t_min, t_max);
-        }
-
-        return {t_min, t_max};
+        return bounds_;
     }
 
     std::unique_ptr<Shape> cube() {

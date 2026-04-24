@@ -2,10 +2,20 @@
 
 #include <algorithm>
 
+#include "Constant.h"
+
 using namespace std;
 
 namespace rt {
+    bool Group::intersects_bounds(const Ray& ray) const {
+        return use_group_bounding_box && bounds().local_intersect(ray).empty();
+    }
+
     std::vector<Intersection> Group::local_intersect(const Ray& ray) {
+        if (intersects_bounds(ray)) {
+            return {};
+        }
+
         std::vector<Intersection> result;
         for (const auto& child: children_) {
             auto xs = child->intersect(ray);

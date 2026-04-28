@@ -14,7 +14,7 @@ namespace rt {
             return vector(point.x, point.y, point.z);
         }
 
-        [[nodiscard]] Bounds bounds() const override {
+        [[nodiscard]] Bounds bounds() override {
             return {
                 {
                     point(-std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),

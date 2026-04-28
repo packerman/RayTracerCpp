@@ -7,7 +7,7 @@
 using namespace std;
 
 namespace rt {
-    bool Group::intersects_bounds(const Ray& ray) const {
+    bool Group::intersects_bounds(const Ray& ray) {
         return use_group_bounding_box && bounds().local_intersect(ray).empty();
     }
 
@@ -29,12 +29,15 @@ namespace rt {
         throw std::runtime_error("Group::local_normal_at not implemented");
     }
 
-    Bounds Group::bounds() const {
-        std::vector<Bounds> boxes(children_.size());
-        for (const auto& child: children_) {
-            boxes.emplace_back(child->bounds().transform(child->transform()));
+    Bounds Group::bounds() {
+        if (!cached_bounds_) {
+            std::vector<Bounds> boxes(children_.size());
+            for (const auto& child: children_) {
+                boxes.emplace_back(child->bounds().transform(child->transform()));
+            }
+            cached_bounds_ = combine_bounds(boxes);
         }
-        return combine_bounds(boxes);
+        return cached_bounds_.value();
     }
 
     void Group::add_child(std::unique_ptr<Shape> shape) {

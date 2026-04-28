@@ -71,7 +71,7 @@ namespace rt {
         return local_point - point(0, 0, 0);
     }
 
-    Bounds Sphere::bounds() const {
+    Bounds Sphere::bounds() {
         return {point(-1, -1, -1), point(1, 1, 1)};
     }
 
@@ -91,7 +91,7 @@ namespace rt {
         return vector(0, 1, 0);
     }
 
-    Bounds Plane::bounds() const {
+    Bounds Plane::bounds() {
         return {
             point(-numeric_limits<double>::infinity(), 0, -numeric_limits<double>::infinity()),
             point(numeric_limits<double>::infinity(), 0, numeric_limits<double>::infinity())
@@ -121,7 +121,7 @@ namespace rt {
         return vector(0, 0, local_point.z);
     }
 
-    Bounds Cube::bounds() const {
+    Bounds Cube::bounds() {
         return bounds_;
     }
 
@@ -166,7 +166,7 @@ namespace rt {
         return vector(local_point.x, 0, local_point.z);
     }
 
-    Bounds Cylinder::bounds() const {
+    Bounds Cylinder::bounds() {
         return {point(-1, minimum_, -1), point(1, maximum_, 1)};
     }
 
@@ -243,7 +243,7 @@ namespace rt {
         return vector(local_point.x, y, local_point.z);
     }
 
-    Bounds Cone::bounds() const {
+    Bounds Cone::bounds() {
         const auto min_xz = min(-abs(minimum_), -abs(maximum_));
         const auto max_xz = max(abs(minimum_), abs(maximum_));
         return {

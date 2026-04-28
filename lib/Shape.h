@@ -64,7 +64,7 @@ namespace rt {
             return parent_;
         }
 
-        [[nodiscard]] virtual Bounds bounds() const = 0;
+        [[nodiscard]] virtual Bounds bounds() = 0;
 
     private:
         Transformation transform_{Transformation::identity()};
@@ -91,7 +91,7 @@ namespace rt {
 
         [[nodiscard]] Vector local_normal_at(const Point& local_point) const override;
 
-        [[nodiscard]] Bounds bounds() const override;
+        [[nodiscard]] Bounds bounds() override;
     };
 
     std::unique_ptr<Shape> sphere();
@@ -102,7 +102,7 @@ namespace rt {
 
         [[nodiscard]] Vector local_normal_at(const Point& point) const override;
 
-        [[nodiscard]] Bounds bounds() const override;
+        [[nodiscard]] Bounds bounds() override;
     };
 
     std::unique_ptr<Shape> plane();
@@ -113,7 +113,8 @@ namespace rt {
 
         [[nodiscard]] Vector local_normal_at(const Point& local_point) const override;
 
-        [[nodiscard]] Bounds bounds() const override;
+        [[nodiscard]] Bounds bounds() override;
+
     private:
         static constexpr Bounds bounds_{point(-1, -1, -1), point(1, 1, 1)};
     };
@@ -132,7 +133,7 @@ namespace rt {
 
         [[nodiscard]] Vector local_normal_at(const Point& local_point) const override;
 
-        [[nodiscard]] Bounds bounds() const override;
+        [[nodiscard]] Bounds bounds() override;
 
         [[nodiscard]] double minimum() const {
             return minimum_;
@@ -172,7 +173,7 @@ namespace rt {
 
         [[nodiscard]] Vector local_normal_at(const Point& local_point) const override;
 
-        [[nodiscard]] Bounds bounds() const override;
+        [[nodiscard]] Bounds bounds() override;
 
     private:
         double minimum_;

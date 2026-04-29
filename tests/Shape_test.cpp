@@ -15,7 +15,6 @@
 using namespace std;
 
 namespace rt {
-
     std::unique_ptr<TestShape> test_shape() {
         return make_unique<TestShape>();
     }
@@ -585,5 +584,62 @@ namespace rt {
             make_tuple(point(0, 0, -5), vector(0, 1, 0), 0),
             make_tuple(point(0, 0, -0.25), vector(0, 1, 1), 2),
             make_tuple(point(0, 0, -0.25), vector(0, 1, 0), 4)
+        ));
+
+    class ConeNormalTest : public testing::TestWithParam<std::tuple<Point, Vector> > {
+    };
+
+    TEST_P(ConeNormalTest, Computing_the_normal_vector_on_a_cone) {
+        auto [point, normal] = GetParam();
+
+        const auto shape = cone();
+
+        const auto n = shape->local_normal_at(point);
+
+        EXPECT_EQ(n, normal);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        ConeNormalTestSuite,
+        ConeNormalTest,
+        ::testing::Values(
+            make_tuple(point(0, 0, 0), vector(0, 0, 0)),
+            make_tuple(point(1, 1, 1), vector(1, -numbers::sqrt2, 1)),
+            make_tuple(point(-1, -1, 0), vector(-1, 1, 0))
+        ));
+
+    class ConeBoundsTest : public testing::TestWithParam<std::tuple<double, double, Bounds> > {
+    };
+
+    TEST_P(ConeBoundsTest, ConeBounds) {
+        auto [minimum, maximum, bounds] = GetParam();
+        const auto shape = cone(minimum, maximum);
+
+        const auto result = shape->bounds();
+
+        EXPECT_EQ(result, bounds);
+    }
+
+    INSTANTIATE_TEST_SUITE_P(
+        ConeBoundsTestSuite,
+        ConeBoundsTest,
+        ::testing::Values(
+            make_tuple(-numeric_limits<double>::infinity(), numeric_limits<double>::infinity(),
+                Bounds{
+                point(-numeric_limits<double>::infinity(), -numeric_limits<double>::infinity(),
+                    -numeric_limits<double>::infinity()),
+                point(numeric_limits<double>::infinity(), numeric_limits<double>::infinity(),
+                    numeric_limits<double>::infinity())
+                }),
+            make_tuple(2, 3,
+                Bounds{
+                point(-3, 2, -3),
+                point(3, 3, 3)
+                }),
+            make_tuple(-3, -2,
+                Bounds{
+                point(-3, -3, -3),
+                point(3, -2, 3)
+                })
         ));
 }

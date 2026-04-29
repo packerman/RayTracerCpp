@@ -5,7 +5,16 @@
 using namespace std;
 
 namespace rt {
+    void Group::update() {
+        cached_bounds_.reset();
+        Shape::update();
+    }
+
     std::vector<Intersection> Group::local_intersect(const Ray& ray) {
+        if (bounds().local_intersect(ray).empty()) {
+            return {};
+        }
+
         std::vector<Intersection> result;
         for (const auto& child: children_) {
             auto xs = child->intersect(ray);
@@ -17,6 +26,17 @@ namespace rt {
 
     Vector Group::local_normal_at(const Point& local_point) const {
         throw std::runtime_error("Group::local_normal_at not implemented");
+    }
+
+    Bounds Group::bounds() {
+        if (!cached_bounds_) {
+            std::vector<Bounds> boxes(children_.size());
+            for (const auto& child: children_) {
+                boxes.emplace_back(child->bounds().transform(child->transform()));
+            }
+            cached_bounds_ = combine_bounds(boxes);
+        }
+        return cached_bounds_.value();
     }
 
     void Group::add_child(std::unique_ptr<Shape> shape) {

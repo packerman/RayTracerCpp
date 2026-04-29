@@ -73,4 +73,20 @@ namespace rt {
 
         ASSERT_EQ(xs.size(), 2);
     }
+
+    TEST(GroupTest, BoundingBoxForGroup) {
+        const auto g = group();
+        auto s1 = sphere();
+        s1->set_transform(scaling(1, 2, 4));
+        g->add_child(std::move(s1));
+        auto s2 = sphere();
+        s2->set_transform(translation(-10, 10, -10));
+        g->add_child(std::move(s2));
+
+        const auto b = g->bounds();
+
+        EXPECT_EQ(b, Bounds(
+                      point(-11, -2, -11),
+                      point(1, 11, 4)));
+    }
 }

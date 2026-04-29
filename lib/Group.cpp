@@ -2,17 +2,16 @@
 
 #include <algorithm>
 
-#include "Constant.h"
-
 using namespace std;
 
 namespace rt {
-    bool Group::intersects_bounds(const Ray& ray) {
-        return use_group_bounding_box && bounds().local_intersect(ray).empty();
+    void Group::update() {
+        cached_bounds_.reset();
+        Shape::update();
     }
 
     std::vector<Intersection> Group::local_intersect(const Ray& ray) {
-        if (intersects_bounds(ray)) {
+        if (bounds().local_intersect(ray).empty()) {
             return {};
         }
 

@@ -21,6 +21,8 @@ namespace rt {
             return children_.empty();
         }
 
+        void update() override;
+
     private:
         [[nodiscard]] bool intersects_bounds(const Ray& ray);
 

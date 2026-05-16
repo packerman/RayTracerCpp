@@ -42,7 +42,7 @@ namespace rt {
         explicit SolidPattern(const Color &c) : c(c) {
         }
 
-        Color at(const Point &point) const override {
+        [[nodiscard]] Color at(const Point& point) const override {
             return c;
         }
 

@@ -67,3 +67,13 @@ target_link_libraries(reflection
         PRIVATE
         ray_tracer
 )
+
+add_executable(hexagon_group)
+target_sources(hexagon_group
+        PRIVATE
+        Common.h
+        HexagonGroup.cpp)
+target_link_libraries(hexagon_group
+        PRIVATE
+        ray_tracer
+)

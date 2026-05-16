@@ -66,7 +66,7 @@ namespace rt {
 
         [[nodiscard]] virtual Bounds bounds() = 0;
 
-        virtual void update();
+        virtual void child_updated();
 
     private:
         Transformation transform_{Transformation::identity()};

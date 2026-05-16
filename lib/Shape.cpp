@@ -16,7 +16,7 @@ namespace rt {
         } else {
             throw std::invalid_argument("Matrix is not invertible.");
         }
-        update();
+        child_updated();
     }
 
     std::vector<Intersection> Shape::intersect(const Ray& ray) {
@@ -50,9 +50,9 @@ namespace rt {
         return world_normal;
     }
 
-    void Shape::update() {
+    void Shape::child_updated() {
         if (parent_) {
-            parent_->update();
+            parent_->child_updated();
         }
     }
 

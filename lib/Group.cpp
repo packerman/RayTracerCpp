@@ -5,9 +5,9 @@
 using namespace std;
 
 namespace rt {
-    void Group::update() {
+    void Group::child_updated() {
         cached_bounds_.reset();
-        Shape::update();
+        Shape::child_updated();
     }
 
     std::vector<Intersection> Group::local_intersect(const Ray& ray) {

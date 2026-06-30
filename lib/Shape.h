@@ -3,7 +3,6 @@
 #include <memory>
 #include <vector>
 
-#include "Bounds.h"
 #include "Ray.h"
 #include "Intersection.h"
 #include "Transformation.h"
@@ -64,10 +63,6 @@ namespace rt {
             return parent_;
         }
 
-        [[nodiscard]] virtual Bounds bounds() = 0;
-
-        virtual void child_updated();
-
     private:
         Transformation transform_{Transformation::identity()};
         Transformation inversed_transform_{Transformation::identity()};
@@ -92,8 +87,6 @@ namespace rt {
         std::vector<Intersection> local_intersect(const Ray& ray) override;
 
         [[nodiscard]] Vector local_normal_at(const Point& local_point) const override;
-
-        [[nodiscard]] Bounds bounds() override;
     };
 
     std::unique_ptr<Shape> sphere();
@@ -103,8 +96,6 @@ namespace rt {
         std::vector<Intersection> local_intersect(const Ray& ray) override;
 
         [[nodiscard]] Vector local_normal_at(const Point& point) const override;
-
-        [[nodiscard]] Bounds bounds() override;
     };
 
     std::unique_ptr<Shape> plane();
@@ -115,10 +106,8 @@ namespace rt {
 
         [[nodiscard]] Vector local_normal_at(const Point& local_point) const override;
 
-        [[nodiscard]] Bounds bounds() override;
-
     private:
-        static constexpr Bounds bounds_{point(-1, -1, -1), point(1, 1, 1)};
+        static std::pair<double, double> check_axis(double origin, double direction);
     };
 
     std::unique_ptr<Shape> cube();
@@ -134,8 +123,6 @@ namespace rt {
         std::vector<Intersection> local_intersect(const Ray& ray) override;
 
         [[nodiscard]] Vector local_normal_at(const Point& local_point) const override;
-
-        [[nodiscard]] Bounds bounds() override;
 
         [[nodiscard]] double minimum() const {
             return minimum_;
@@ -174,8 +161,6 @@ namespace rt {
         std::vector<Intersection> local_intersect(const Ray& ray) override;
 
         [[nodiscard]] Vector local_normal_at(const Point& local_point) const override;
-
-        [[nodiscard]] Bounds bounds() override;
 
     private:
         double minimum_;

@@ -607,39 +607,4 @@ namespace rt {
             make_tuple(point(1, 1, 1), vector(1, -numbers::sqrt2, 1)),
             make_tuple(point(-1, -1, 0), vector(-1, 1, 0))
         ));
-
-    class ConeBoundsTest : public testing::TestWithParam<std::tuple<double, double, Bounds> > {
-    };
-
-    TEST_P(ConeBoundsTest, ConeBounds) {
-        auto [minimum, maximum, bounds] = GetParam();
-        const auto shape = cone(minimum, maximum);
-
-        const auto result = shape->bounds();
-
-        EXPECT_EQ(result, bounds);
-    }
-
-    INSTANTIATE_TEST_SUITE_P(
-        ConeBoundsTestSuite,
-        ConeBoundsTest,
-        ::testing::Values(
-            make_tuple(-numeric_limits<double>::infinity(), numeric_limits<double>::infinity(),
-                Bounds{
-                point(-numeric_limits<double>::infinity(), -numeric_limits<double>::infinity(),
-                    -numeric_limits<double>::infinity()),
-                point(numeric_limits<double>::infinity(), numeric_limits<double>::infinity(),
-                    numeric_limits<double>::infinity())
-                }),
-            make_tuple(2, 3,
-                Bounds{
-                point(-3, 2, -3),
-                point(3, 3, 3)
-                }),
-            make_tuple(-3, -2,
-                Bounds{
-                point(-3, -3, -3),
-                point(3, -2, 3)
-                })
-        ));
 }

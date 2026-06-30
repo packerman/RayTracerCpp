@@ -16,7 +16,6 @@ namespace rt {
         } else {
             throw std::invalid_argument("Matrix is not invertible.");
         }
-        child_updated();
     }
 
     std::vector<Intersection> Shape::intersect(const Ray& ray) {
@@ -50,12 +49,6 @@ namespace rt {
         return world_normal;
     }
 
-    void Shape::child_updated() {
-        if (parent_) {
-            parent_->child_updated();
-        }
-    }
-
     std::vector<Intersection> Sphere::local_intersect(const Ray& ray) {
         const Vector sphere_to_ray = ray.origin() - point(0, 0, 0);
 
@@ -78,10 +71,6 @@ namespace rt {
         return local_point - point(0, 0, 0);
     }
 
-    Bounds Sphere::bounds() {
-        return {point(-1, -1, -1), point(1, 1, 1)};
-    }
-
     std::unique_ptr<Shape> sphere() {
         return make_unique<Sphere>();
     }
@@ -98,22 +87,23 @@ namespace rt {
         return vector(0, 1, 0);
     }
 
-    Bounds Plane::bounds() {
-        return {
-            point(-numeric_limits<double>::infinity(), 0, -numeric_limits<double>::infinity()),
-            point(numeric_limits<double>::infinity(), 0, numeric_limits<double>::infinity())
-        };
-    }
-
     std::unique_ptr<Shape> plane() {
         return make_unique<Plane>();
     }
 
     std::vector<Intersection> Cube::local_intersect(const Ray& ray) {
-        const auto ts = bounds().local_intersect(ray);
-        std::vector<Intersection> xs(ts.size());
-        ranges::transform(ts, xs.begin(), [this](auto t) { return Intersection{t, this}; });
-        return xs;
+        auto [xt_min, xt_max] = check_axis(ray.origin().x, ray.direction().x);
+        auto [yt_min, yt_max] = check_axis(ray.origin().y, ray.direction().y);
+        auto [zt_min, zt_max] = check_axis(ray.origin().z, ray.direction().z);
+
+        auto t_min = max({xt_min, yt_min, zt_min});
+        auto t_max = min({xt_max, yt_max, zt_max});
+
+        if (t_min > t_max) {
+            return {};
+        }
+
+        return {{t_min, this}, {t_max, this}};
     }
 
     Vector Cube::local_normal_at(const Point& local_point) const {
@@ -128,8 +118,18 @@ namespace rt {
         return vector(0, 0, local_point.z);
     }
 
-    Bounds Cube::bounds() {
-        return bounds_;
+    std::pair<double, double> Cube::check_axis(double origin, double direction) {
+        const auto t_min_numerator = -1 - origin;
+        const auto t_max_numerator = 1 - origin;
+
+        auto t_min = t_min_numerator / direction;
+        auto t_max = t_max_numerator / direction;
+
+        if (t_min > t_max) {
+            swap(t_min, t_max);
+        }
+
+        return {t_min, t_max};
     }
 
     std::unique_ptr<Shape> cube() {
@@ -171,10 +171,6 @@ namespace rt {
             return vector(0, -1, 0);
         }
         return vector(local_point.x, 0, local_point.z);
-    }
-
-    Bounds Cylinder::bounds() {
-        return {point(-1, minimum_, -1), point(1, maximum_, 1)};
     }
 
     void Cylinder::intersect_caps(const Ray& ray, std::vector<Intersection>& xs) {
@@ -248,15 +244,6 @@ namespace rt {
         }
 
         return vector(local_point.x, y, local_point.z);
-    }
-
-    Bounds Cone::bounds() {
-        const auto min_xz = min(-abs(minimum_), -abs(maximum_));
-        const auto max_xz = max(abs(minimum_), abs(maximum_));
-        return {
-            point(min_xz, minimum_, min_xz),
-            point(max_xz, maximum_, max_xz),
-        };
     }
 
     void Cone::intersect_caps(const Ray& ray, std::vector<Intersection>& xs) {
